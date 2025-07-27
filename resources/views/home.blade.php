@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Bijak Sampah - Solusi Pengelolaan Sampah Berkelanjutan</title>
+  <title>Home-Bijak Sampah</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
@@ -270,6 +270,16 @@
       margin: 0 auto 40px;
     }
     
+    .about-animate {
+      opacity: 0;
+      transform: scale(0.7);
+      transition: opacity 0.8s cubic-bezier(.4,2,.3,1), transform 0.8s cubic-bezier(.4,2,.3,1);
+    }
+    .about-animate.visible {
+      opacity: 1;
+      transform: scale(1);
+    }
+    
     /* Steps Section */
     .steps {
       padding: 100px 5%;
@@ -360,7 +370,7 @@
     .how-it-works h2 {
       font-size: 2.2rem;
       margin-bottom: 60px;
-      color: var(--teal);
+      color: var(--white);
     }
     
     .steps-grid {
@@ -414,7 +424,7 @@
     .step-card h3 {
       font-size: 1.3rem;
       margin-bottom: 15px;
-      color: var(--teal);
+      color: var(--white);
     }
     
     .step-card p {
@@ -422,10 +432,19 @@
       font-size: 0.95rem;
     }
     
+    .step-card h3.gradient-text {
+      background: linear-gradient(90deg, #75E6DA 0%, #05445E 63%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-fill-color: transparent;
+      color: unset;
+    }
+    
     /* Quote & Contact Section */
     .quote-contact {
       padding: 100px 5%;
-      background: linear-gradient(135deg, #75E6DA 0%, #05445E 63%);
+      background: white;
       color: var(--white);
       display: flex;
       flex-wrap: wrap;
@@ -441,6 +460,7 @@
       position: relative;
       padding-left: 40px;
       margin-bottom: 40px;
+      color: var(--dark-blue);
     }
     
     blockquote::before {
@@ -458,19 +478,38 @@
       backdrop-filter: blur(10px);
       padding: 40px;
       border-radius: 16px;
+      color: var(--dark-blue);
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
     }
-    
-    .contact-info p {
-      margin-bottom: 20px;
+    .contact-card {
+      background: rgba(255,255,255,0.85);
+      border-radius: 12px;
+      box-shadow: 0 4px 24px rgba(7, 89, 133, 0.08);
+      padding: 18px 24px;
       display: flex;
       align-items: center;
       gap: 15px;
       font-size: 1.1rem;
+      color: var(--dark-blue);
+      transition: transform 0.25s, box-shadow 0.25s;
+      cursor: pointer;
+      border: 1px solid #e0f2fe;
     }
-    
-    .contact-info i {
+    .contact-card:hover {
+      transform: translateY(-6px) scale(1.03);
+      box-shadow: 0 8px 32px rgba(7, 89, 133, 0.16);
+      background: #e0f2fe;
+    }
+    .contact-card i {
       font-size: 1.3rem;
       color: var(--lime);
+      min-width: 28px;
+      transition: color 0.25s;
+    }
+    .contact-card:hover i {
+      color: var(--primary);
     }
     
     /* Map Section */
@@ -610,6 +649,15 @@
       font-size: 0.9rem;
     }
     
+    .gradient-text {
+      background: linear-gradient(90deg, #75E6DA 0%, #05445E 63%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-fill-color: transparent;
+      color: unset;
+    }
+    
     /* Responsive Styles */
     @media (max-width: 992px) {
       .hero-text h1 {
@@ -692,8 +740,8 @@
       <i class="fas fa-recycle"></i>Bi<span>j</span>ak Sampah
     </div>
     <nav>
-      <a href="#">Home</a>
-      <a href="#">Profil</a>
+      <a href="/">Home</a>
+      <a href="/profil">Profil</a>
       <a href="#">Kontak</a>
     </nav>
     <div class="buttons">
@@ -719,8 +767,8 @@
 
   <!-- About Section -->
   <section class="about">
-    <h2>Tentang <span>Bi</span>jak Sampah</h2>
-    <p>BijakSampah adalah platform edukasi dan reward inovatif yang mengajak masyarakat untuk memilah sampah dengan benar dan mendapatkan poin tabungan setiap kali membuang sampah di bank sampah.</p>
+    <h2 class="about-animate">Tentang <span>Bi</span>jak Sampah</h2>
+    <p class="about-animate">BijakSampah adalah platform edukasi dan reward inovatif yang mengajak masyarakat untuk memilah sampah dengan benar dan mendapatkan poin tabungan setiap kali membuang sampah di bank sampah.</p>
   </section>
 
   <!-- Steps Section -->
@@ -782,7 +830,7 @@
         <div class="step-icon">
           <i class="fas fa-sort-amount-down"></i>
         </div>
-        <h3>Pilah Sampah</h3>
+        <h3 class="gradient-text">Pilah Sampah</h3>
         <p>Pisahkan sampah organik dan anorganik sesuai kategori yang tersedia untuk memudahkan proses daur ulang.</p>
       </div>
       
@@ -790,7 +838,7 @@
         <div class="step-icon">
           <i class="fas fa-truck"></i>
         </div>
-        <h3>Setor ke Bank Sampah</h3>
+        <h3 class="gradient-text">Setor ke Bank Sampah</h3>
         <p>Kirimkan sampah yang sudah dipilah ke lokasi bank sampah terdekat atau gunakan layanan penjemputan kami.</p>
       </div>
       
@@ -798,7 +846,7 @@
         <div class="step-icon">
           <i class="fas fa-coins"></i>
         </div>
-        <h3>Tukar Jadi Rupiah</h3>
+        <h3 class="gradient-text">Tukar Jadi Rupiah</h3>
         <p>Dapatkan insentif atau saldo dari sampah yang telah disetorkan dan tukarkan dengan berbagai hadiah menarik.</p>
       </div>
     </div>
@@ -808,10 +856,10 @@
   <section class="quote-contact">
     <blockquote>"Jangkauan bank sampah yang luas merubah sampah menjadi sumber daya berharga bagi masyarakat dan lingkungan."</blockquote>
     <div class="contact-info">
-      <p><i class="fas fa-map-marker-alt"></i> Bogor, Jawa Barat, Indonesia</p>
-      <p><i class="fas fa-phone"></i> (123) 456-7890</p>
-      <p><i class="fas fa-envelope"></i> info@bijaksampah.com</p>
-      <p><i class="fas fa-clock"></i> Senin-Jumat: 08.00-17.00 WIB</p>
+      <div class="contact-card"><i class="fas fa-map-marker-alt"></i> Bogor, Jawa Barat, Indonesia</div>
+      <div class="contact-card"><i class="fas fa-phone"></i> (123) 456-7890</div>
+      <div class="contact-card"><i class="fas fa-envelope"></i> info@bijaksampah.com</div>
+      <div class="contact-card"><i class="fas fa-clock"></i> Senin-Jumat: 08.00-17.00 WIB</div>
     </div>
   </section>
 
@@ -871,8 +919,22 @@
     </div>
     
     <div class="copyright">
-      &copy; 2023 Dibuat oleh <strong>TEK(G)</strong> | Seluruh Hak Cipta Dilindungi
+      &copy; 2025 Dibuat oleh <strong>TEK(G)</strong> | Seluruh Hak Cipta Dilindungi
     </div>
   </footer>
+  <script>
+    // Animasi popup about section saat muncul di viewport
+    function animateAbout() {
+      const aboutEls = document.querySelectorAll('.about-animate');
+      aboutEls.forEach(el => {
+        const rect = el.getBoundingClientRect();
+        if (rect.top < window.innerHeight - 60) {
+          el.classList.add('visible');
+        }
+      });
+    }
+    window.addEventListener('scroll', animateAbout);
+    window.addEventListener('DOMContentLoaded', animateAbout);
+  </script>
 </body>
 </html>
