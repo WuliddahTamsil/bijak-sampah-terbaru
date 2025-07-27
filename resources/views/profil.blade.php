@@ -827,7 +827,7 @@
     <nav>
       <a href="/">Home</a>
       <a href="/profil">Profil</a>
-      <a href="#">Kontak</a>
+      <a href="/kontakld">Kontak</a>
     </nav>
     <div class="buttons">
       <a href="#" class="masuk"><i class="fas fa-sign-in-alt"></i> Masuk</a>
