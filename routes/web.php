@@ -4,7 +4,15 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('home');
+});
+
+Route::get('/profil', function () {
+    return view('profil');
+});
+
+Route::get('/kontakld', function () {
+    return view('kontakld');
 });
 
 Route::get('/dashboard', function () {
