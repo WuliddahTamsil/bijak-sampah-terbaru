@@ -7,8 +7,8 @@ Route::get('/', function () {
     return view('home');
 });
 
-Route::get('/profil', function () {
-    return view('profil');
+Route::get('/aboutbj', function () {
+    return view('aboutbj');
 });
 
 Route::get('/kontakld', function () {

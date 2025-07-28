@@ -741,7 +741,7 @@
     </div>
     <nav>
       <a href="/">Home</a>
-      <a href="/profil">Profil</a>
+      <a href="/aboutbj">Profil</a>
       <a href="/kontakld">Kontak</a>
     </nav>
     <div class="buttons">

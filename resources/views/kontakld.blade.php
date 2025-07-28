@@ -22,6 +22,7 @@
       --gray-500: #6B7280;
       --gray-700: #374151;
       --gray-900: #111827;
+      --whatsapp: #25D366;
     }
     
     * {
@@ -151,8 +152,8 @@
       flex-wrap: wrap;
       align-items: center;
       justify-content: space-between;
-      padding: 80px 0;
-      gap: 40px;
+      padding: 50px 0 20px;
+      gap: 30px;
     }
     
     .hero-text {
@@ -161,7 +162,7 @@
     
     .hero-text h1 {
       font-size: 2.5rem;
-      margin-bottom: 20px;
+      margin-bottom: 15px;
       color: var(--dark-blue);
     }
     
@@ -188,38 +189,37 @@
     
     /* Contact Info Section */
     .contact-info-section {
-      padding: 40px 0;
+      padding: 15px 0;
       border-top: 1px solid var(--gray-200);
       border-bottom: 1px solid var(--gray-200);
-      margin: 40px 0;
+      margin: 20px 0;
     }
     
     .contact-info-grid {
       display: flex;
       justify-content: space-around;
       flex-wrap: wrap;
-      gap: 20px;
+      gap: 15px;
     }
     
     .contact-info-item {
       text-align: center;
-      padding: 20px;
-      min-width: 200px;
+      padding: 15px;
+      min-width: 180px;
     }
     
     .contact-info-item i {
       font-size: 1.8rem;
       color: var(--accent);
-      margin-bottom: 15px;
-      display: block;
+      margin-bottom: 10px;
     }
     
     /* Feedback Section */
     .feedback-section {
-      background: linear-gradient(135deg, var(--primary) 0%, var(--teal) 100%);
       color: var(--white);
-      padding: 80px 0;
-      margin: 60px 0;
+      padding: 70px 20px;
+      margin: 40px 0;
+      width: 100%;
     }
     
     .feedback-container {
@@ -236,7 +236,7 @@
     .feedback-section p {
       text-align: center;
       font-size: 1.1rem;
-      margin-bottom: 30px;
+      margin-bottom: 25px;
       max-width: 600px;
       margin-left: auto;
       margin-right: auto;
@@ -245,15 +245,15 @@
     
     .feedback-form {
       background: var(--white);
-      padding: 40px;
+      padding: 30px;
       border-radius: 16px;
       box-shadow: 0 10px 30px rgba(0,0,0,0.1);
     }
     
     .form-row {
       display: flex;
-      gap: 20px;
-      margin-bottom: 20px;
+      gap: 15px;
+      margin-bottom: 15px;
     }
     
     .form-group {
@@ -262,7 +262,7 @@
     
     input, textarea {
       width: 100%;
-      padding: 15px;
+      padding: 12px;
       border: 1px solid var(--gray-200);
       border-radius: 8px;
       font-size: 1rem;
@@ -276,14 +276,14 @@
     }
     
     textarea {
-      height: 150px;
+      height: 140px;
       resize: vertical;
     }
     
     .btn-submit {
-      background: var(--lime);
-      color: var(--dark-blue);
-      padding: 15px 30px;
+      background: var(--whatsapp);
+      color: var(--white);
+      padding: 12px 25px;
       border: none;
       border-radius: 8px;
       font-size: 1rem;
@@ -292,20 +292,20 @@
       transition: all 0.3s;
       display: inline-flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
       margin-top: 10px;
     }
     
     .btn-submit:hover {
-      background: #84CC16;
+      background: #128C7E;
       transform: translateY(-3px);
       box-shadow: 0 10px 20px rgba(0,0,0,0.1);
     }
     
     /* Footer */
     footer {
-      background: var(--gray-900);
-      padding: 60px 0 30px;
+      background: linear-gradient(135deg, #75E6DA 0%, #05445E 63%);
+      padding: 50px 0 20px;
       color: var(--white);
     }
     
@@ -315,19 +315,19 @@
       justify-content: space-between;
       max-width: 1200px;
       margin: 0 auto;
-      gap: 40px;
+      gap: 30px;
       padding: 0 20px;
     }
     
     .footer-column {
-      flex: 1 1 250px;
-      margin-bottom: 30px;
+      flex: 1 1 220px;
+      margin-bottom: 20px;
     }
     
     .footer-logo {
-      font-size: 1.8rem;
+      font-size: 1.6rem;
       font-weight: 700;
-      margin-bottom: 20px;
+      margin-bottom: 15px;
       display: flex;
       align-items: center;
     }
@@ -337,22 +337,23 @@
     }
     
     .footer-logo i {
-      margin-right: 10px;
+      margin-right: 8px;
     }
     
     .footer-description {
-      margin-bottom: 20px;
+      margin-bottom: 15px;
       opacity: 0.8;
+      font-size: 0.95rem;
     }
     
     .footer-social-icons {
       display: flex;
-      gap: 15px;
+      gap: 12px;
     }
     
     .footer-social-icons a {
       color: var(--white);
-      font-size: 1.2rem;
+      font-size: 1.1rem;
       transition: color 0.3s;
     }
     
@@ -361,10 +362,10 @@
     }
     
     .footer-column h3 {
-      font-size: 1.3rem;
-      margin-bottom: 20px;
+      font-size: 1.2rem;
+      margin-bottom: 15px;
       position: relative;
-      padding-bottom: 10px;
+      padding-bottom: 8px;
     }
     
     .footer-column h3::after {
@@ -372,7 +373,7 @@
       position: absolute;
       bottom: 0;
       left: 0;
-      width: 50px;
+      width: 40px;
       height: 2px;
       background: var(--lime);
     }
@@ -383,7 +384,7 @@
     }
     
     .footer-links li {
-      margin-bottom: 12px;
+      margin-bottom: 10px;
     }
     
     .footer-links a {
@@ -393,7 +394,8 @@
       transition: opacity 0.3s;
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
+      font-size: 0.9rem;
     }
     
     .footer-links a:hover {
@@ -401,16 +403,35 @@
     }
     
     .footer-links i {
-      font-size: 0.8rem;
+      font-size: 0.7rem;
     }
     
     .copyright {
       text-align: center;
-      margin-top: 50px;
-      padding-top: 20px;
+      margin-top: 40px;
+      padding-top: 15px;
       border-top: 1px solid rgba(255,255,255,0.1);
       opacity: 0.8;
-      font-size: 0.9rem;
+      font-size: 0.85rem;
+    }
+    
+    /* Message Alert */
+    #formMessage {
+      display: none;
+      margin-top: 15px;
+      padding: 10px;
+      border-radius: 8px;
+      font-size: 0.95rem;
+    }
+    
+    .success {
+      background: #d4edda;
+      color: #155724;
+    }
+    
+    .error {
+      background: #f8d7da;
+      color: #721c24;
     }
     
     /* Responsive Styles */
@@ -421,30 +442,30 @@
       
       .form-row {
         flex-direction: column;
-        gap: 15px;
+        gap: 12px;
       }
     }
     
     @media (max-width: 768px) {
       header {
         flex-direction: column;
-        gap: 20px;
+        gap: 15px;
       }
       
       nav {
         flex-direction: column;
-        gap: 15px;
+        gap: 12px;
         align-items: center;
       }
       
       .buttons {
-        margin-top: 15px;
+        margin-top: 12px;
       }
       
       .hero-section {
         flex-direction: column;
         text-align: center;
-        padding: 60px 0;
+        padding: 40px 0;
       }
       
       .contact-info-grid {
@@ -454,7 +475,7 @@
       
       .footer-content {
         flex-direction: column;
-        gap: 30px;
+        gap: 25px;
       }
     }
     
@@ -468,8 +489,15 @@
       }
       
       .feedback-form {
-        padding: 30px 20px;
+        padding: 25px 15px;
       }
+    }
+    .feedback-section h2, .feedback-section p {
+      background: linear-gradient(90deg, #10B981 0%, #0EA5E9 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-fill-color: transparent;
     }
   </style>
 </head>
@@ -481,8 +509,8 @@
     </div>
     <nav>
       <a href="/">Home</a>
-      <a href="/profil">Profil</a>
-      <a href="/kontakld" class="active">Kontak</a>
+      <a href="/aboutbj">Profil</a>
+      <a href="/kontak" class="active">Kontak</a>
     </nav>
     <div class="buttons">
       <a href="#" class="masuk"><i class="fas fa-sign-in-alt"></i> Masuk</a>
@@ -499,7 +527,7 @@
         <p>Solusi Terbaik untuk Pengelolaan Sampah yang Berkelanjutan!</p>
       </div>
       <div class="hero-image">
-        <img src="asset/img/peta (2).png" alt="Peta Lokasi Bijak Sampah">
+        <img src="asset/img/petabj.png" alt="Peta Lokasi Bijak Sampah">
       </div>
     </section>
 
@@ -507,7 +535,11 @@
     <section class="contact-info-section">
       <div class="contact-info-grid">
         <div class="contact-info-item">
-          <i class="fas fa-share-alt"></i>
+          <div style="display:flex; justify-content:center; gap:15px; font-size:1.7rem; margin-bottom:8px;">
+            <a href="mailto:info@bijaksampah.com" target="_blank" title="Email" style="color:#EA4335;"><i class="fas fa-envelope"></i></a>
+            <a href="https://instagram.com/akunbijaksampah" target="_blank" title="Instagram" style="color:#E1306C;"><i class="fab fa-instagram"></i></a>
+            <a href="https://wa.me/6285294939357" target="_blank" title="WhatsApp" style="color:#25D366;"><i class="fab fa-whatsapp"></i></a>
+          </div>
           <h3>Follow Us</h3>
           <p>Media Sosial Kami</p>
         </div>
@@ -523,37 +555,38 @@
         </div>
       </div>
     </section>
-
-    <!-- Feedback Section -->
-    <section class="feedback-section">
-      <div class="feedback-container">
-        <h2>Kritik dan Saran</h2>
-        <p>Kami terbuka untuk segala kritik dan saran. Yuk, bantu kami berkembang jadi lebih baik dengan memberikan masukan yang membangun!</p>
-        
-        <div class="feedback-form">
-          <form>
-            <div class="form-row">
-              <div class="form-group">
-                <input type="text" placeholder="Nama Depan" required />
-              </div>
-              <div class="form-group">
-                <input type="text" placeholder="Nama Belakang" required />
-              </div>
-            </div>
-            <div class="form-group">
-              <input type="email" placeholder="Alamat Email" required />
-            </div>
-            <div class="form-group">
-              <textarea placeholder="Kritik/Saran Anda" required></textarea>
-            </div>
-            <button type="submit" class="btn-submit">
-              <i class="fas fa-paper-plane"></i> KIRIM
-            </button>
-          </form>
-        </div>
-      </div>
-    </section>
   </main>
+
+  <!-- Feedback Section -->
+  <section class="feedback-section">
+    <div class="feedback-container">
+      <h2>Kritik dan Saran</h2>
+      <p>Kami terbuka untuk segala kritik dan saran. Yuk, bantu kami berkembang jadi lebih baik dengan memberikan masukan yang membangun!</p>
+      
+      <div class="feedback-form">
+        <form id="feedbackForm">
+          <div class="form-row">
+            <div class="form-group">
+              <input type="text" id="firstName" placeholder="Nama Depan" required />
+            </div>
+            <div class="form-group">
+              <input type="text" id="lastName" placeholder="Nama Belakang" required />
+            </div>
+          </div>
+          <div class="form-group">
+            <input type="email" id="email" placeholder="Alamat Email" required />
+          </div>
+          <div class="form-group">
+            <textarea id="message" placeholder="Kritik/Saran Anda" required></textarea>
+          </div>
+          <button type="submit" class="btn-submit">
+            <i class="fab fa-whatsapp"></i> KIRIM VIA WHATSAPP
+          </button>
+        </form>
+        <div id="formMessage"></div>
+      </div>
+    </div>
+  </section>
 
   <!-- Footer -->
   <footer>
@@ -606,5 +639,46 @@
       &copy; 2025 Dibuat oleh <strong>TEK(G)</strong> | Seluruh Hak Cipta Dilindungi
     </div>
   </footer>
+
+  <script>
+    document.getElementById('feedbackForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const firstName = document.getElementById('firstName').value;
+      const lastName = document.getElementById('lastName').value;
+      const email = document.getElementById('email').value;
+      const message = document.getElementById('message').value;
+      const formMessage = document.getElementById('formMessage');
+      
+      // Validation
+      if (!firstName || !lastName || !email || !message) {
+        formMessage.textContent = "Harap isi semua field!";
+        formMessage.className = "error";
+        formMessage.style.display = "block";
+        setTimeout(() => { formMessage.style.display = "none"; }, 3000);
+        return;
+      }
+      
+      // Prepare WhatsApp message
+      const whatsappText = `Halo, saya *${firstName} ${lastName}* (${email}). Saya ingin memberikan kritik/saran:\n\n${message}`;
+      
+      // Encode for WhatsApp URL
+      const encodedText = encodeURIComponent(whatsappText);
+      
+      // Open WhatsApp
+      window.open(`https://wa.me/6285294939357?text=${encodedText}`, '_blank');
+      
+      // Show success message
+      formMessage.textContent = "Terima kasih! Anda akan diarahkan ke WhatsApp.";
+      formMessage.className = "success";
+      formMessage.style.display = "block";
+      
+      // Reset form
+      document.getElementById('feedbackForm').reset();
+      
+      // Hide message after 5 seconds
+      setTimeout(() => { formMessage.style.display = "none"; }, 5000);
+    });
+  </script>
 </body>
 </html>
