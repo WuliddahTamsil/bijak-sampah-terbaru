@@ -23,8 +23,8 @@ Route::get('/notifikasi', function () {
     return view('notifikasi');
 });
 
-Route::get('/profil', function () {
-    return view('profil');
+Route::get('/profile', function () {
+    return view('profile');
 });
 
 Route::get('/bank-sampah', function () {
@@ -66,4 +66,13 @@ Route::post('/feedback', function (Request $request) {
     // Simpan feedback ke database atau kirim email di sini jika ingin
     // Untuk dummy, cukup tampilkan pesan sukses
     return redirect('/feedback')->with('success', 'Terima kasih atas umpan balik Anda!');
+});
+
+// Route untuk nasabahregister
+Route::get('/nasabahregister', function () {
+    return view('nasabahregister');
+});
+
+Route::get('/nasabahdashboard', function () {
+    return view('nasabahdashboard');
 });
