@@ -93,3 +93,19 @@ Route::get('/poin-nasabah', function () {
     return view('poin-nasabah');
 });
 
+
+
+Route::get('/non-nasabah-register', function () {
+    return view('non-nasabah-register');
+});
+
+
+
+Route::get('/non-nasabah-dashboard', function () {
+    return view('non-nasabah-dashboard');
+});
+
+
+Route::get('/poin-non-nasabah', function () {
+    return view('poin-non-nasabah');
+});

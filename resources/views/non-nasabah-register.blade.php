@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Profil Nasabah - Bijak Sampah</title>
+<title>Profil Non Nasabah - Bijak Sampah</title>
 <style>
 /* ... (CSS yang sudah ada tidak berubah) ... */
 * {
@@ -671,14 +671,6 @@ padding: 30px 20px;
 <span class="menu-text">Dashboard</span>
 </li>
 <li class="menu-item">
-<div class="menu-icon"><i class="fas fa-users"></i></div>
-<span class="menu-text">Komunitas</span>
-</li>
-<li class="menu-item">
-<div class="menu-icon"><i class="fas fa-trash-alt"></i></div>
-<span class="menu-text">Riwayat Sampah</span>
-</li>
-<li class="menu-item">
 <div class="menu-icon"><i class="fas fa-coins"></i></div>
 <span class="menu-text">Poin Mu</span>
 </li>
@@ -702,7 +694,7 @@ padding: 30px 20px;
 </div>
 <div class="main-content">
 <div class="header" style="display:flex;justify-content:space-between;align-items:center;">
-<h1 class="page-title">Registrasi Nasabah</h1>
+<h1 class="page-title">Registrasi Non-Nasabah</h1>
 <div style="display:flex;align-items:center;gap:18px;">
 <button class="icon-btn" title="Notifikasi" id="notificationBtn" style="background:none;border:none;cursor:pointer;font-size:1.3rem;color:#05445E;">
 <i class="fas fa-bell"></i>
