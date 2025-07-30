@@ -728,7 +728,7 @@
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
-      text-fill-color: transparent;
+      -webkit-text-fill-color: transparent;
       color: unset;
     }
     
@@ -1077,7 +1077,7 @@
 
       function updateSlider() {
         // Update position
-        slider.style.transform = translateX(-${currentIndex * 76}%);
+        slider.style.transform = `translateX(-${currentIndex * 76}%)`;
         // Update active/prev/next card
         cards.forEach((card, index) => {
           card.classList.remove('active', 'prev', 'next');

@@ -76,3 +76,20 @@ Route::get('/nasabahregister', function () {
 Route::get('/nasabahdashboard', function () {
     return view('nasabahdashboard');
 });
+// ...existing code...
+Route::get('/nasabahregister', function () {
+    return view('nasabahregister');
+})->name('nasabah.register');
+// ...existing code...
+Route::get('/sampahnasabah', function () {
+    return view('sampahnasabah');
+});
+
+Route::get('/nasabahkomunitas', function () {
+    return view('nasabahkomunitas');
+});
+
+Route::get('/poin-nasabah', function () {
+    return view('poin-nasabah');
+});
+

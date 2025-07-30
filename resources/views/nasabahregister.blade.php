@@ -721,7 +721,7 @@
       </li>
       <li class="menu-item">
         <div class="menu-icon"><i class="fas fa-trash-alt"></i></div>
-        <span class="menu-text">Penjemputan Sampah</span>
+        <span class="menu-text">Riwayat Sampah</span>
       </li>
       <li class="menu-item">
         <div class="menu-icon"><i class="fas fa-coins"></i></div>
@@ -729,7 +729,7 @@
       </li>
       <li class="menu-item">
         <div class="menu-icon"><i class="fas fa-history"></i></div>
-        <span class="menu-text">Riwayat Sampah</span>
+        <span class="menu-text">Riwayat Transaksi</span>
       </li>
       <li class="menu-item">
         <div class="menu-icon"><i class="fas fa-store"></i></div>
