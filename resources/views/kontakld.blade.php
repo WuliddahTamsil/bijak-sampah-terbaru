@@ -1,11 +1,18 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" x-data="kontakApp()" x-init="init()">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Kontak - BijakSampah</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  
+  {{-- Alpine.js --}}
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.12.0/dist/cdn.min.js"></script>
+  
+  {{-- Theme Manager Scripts --}}
+  <script src="{{ asset('asset/js/theme-manager.js') }}" defer></script>
+  <script src="{{ asset('asset/js/update-themes.js') }}" defer></script>
   <style>
     :root {
       --primary: #0369A1;
@@ -509,8 +516,8 @@
     </div>
     <nav>
       <a href="/">Home</a>
-      <a href="/aboutbj">Profil</a>
-      <a href="/kontak" class="active">Kontak</a>
+      <a href="/profile">Profil</a>
+      <a href="/kontakld" class="active">Kontak</a>
     </nav>
     <div class="buttons">
       <a href="#" class="masuk"><i class="fas fa-sign-in-alt"></i> Masuk</a>
@@ -639,8 +646,236 @@
       &copy; 2025 Dibuat oleh <strong>TEK(G)</strong> | Seluruh Hak Cipta Dilindungi
     </div>
   </footer>
-
   <script>
+    // Alpine.js component for kontak page
+    function kontakApp() {
+      return {
+        language: 'id',
+        labels: {
+          // Indonesian labels
+          id: {
+            navHome: 'Beranda',
+            navAbout: 'Tentang',
+            navServices: 'Layanan',
+            navContact: 'Kontak',
+            navProfile: 'Profil',
+            heroTitle: 'Hubungi <span>Kami</span>',
+            heroSubtitle: 'Kami siap membantu Anda dengan pertanyaan dan kebutuhan terkait pengelolaan sampah',
+            contactTitle: 'Informasi <span>Kontak</span>',
+            contactSubtitle: 'Berbagai cara untuk menghubungi tim kami',
+            emailTitle: 'Email',
+            emailDesc: 'Kirim pesan langsung',
+            emailAddress: 'info@bijaksampah.com',
+            phoneTitle: 'Telepon',
+            phoneDesc: 'Hubungi kami langsung',
+            phoneNumber: '+62 878 0598 7309',
+            locationTitle: 'Lokasi',
+            locationDesc: 'Kunjungi kantor kami',
+            locationAddress: 'IPB University, Bogor',
+            socialTitle: 'Follow Us',
+            socialDesc: 'Media Sosial Kami',
+            feedbackTitle: 'Kritik dan Saran',
+            feedbackSubtitle: 'Kami terbuka untuk segala kritik dan saran. Yuk, bantu kami berkembang jadi lebih baik dengan memberikan masukan yang membangun!',
+            firstNamePlaceholder: 'Nama Depan',
+            lastNamePlaceholder: 'Nama Belakang',
+            emailPlaceholder: 'Alamat Email',
+            messagePlaceholder: 'Kritik/Saran Anda',
+            submitButton: 'KIRIM VIA WHATSAPP',
+            footerAbout: 'Tentang Kami',
+            footerCompany: 'Perusahaan',
+            footerContact: 'Kontak',
+            footerProducts: 'Produk',
+            footerResources: 'Sumber Daya',
+            footerTerms: 'Syarat & Ketentuan',
+            footerFAQ: 'FAQ',
+            footerTeam: 'Tim Kami',
+            footerPartners: 'Partner Kami',
+            footerPrivacy: 'Kebijakan Privasi',
+            footerFeatures: 'Fitur',
+            footerPhone: '+62 878 0598 7309',
+            footerEmail: 'info@bijaksampah.com',
+            footerAddress: 'Bogor, Jawa Barat',
+            footerDesc: 'Dari Pilah, Jadi Rupiah! Solusi pengelolaan sampah berkelanjutan untuk masa depan yang lebih baik.',
+            copyright: '© 2025 Dibuat oleh TEK(G) | Seluruh Hak Cipta Dilindungi'
+          },
+          // English labels
+          en: {
+            navHome: 'Home',
+            navAbout: 'About',
+            navServices: 'Services',
+            navContact: 'Contact',
+            navProfile: 'Profile',
+            heroTitle: 'Contact <span>Us</span>',
+            heroSubtitle: 'We are ready to help you with questions and needs related to waste management',
+            contactTitle: 'Contact <span>Information</span>',
+            contactSubtitle: 'Various ways to contact our team',
+            emailTitle: 'Email',
+            emailDesc: 'Send direct message',
+            emailAddress: 'info@bijaksampah.com',
+            phoneTitle: 'Phone',
+            phoneDesc: 'Call us directly',
+            phoneNumber: '+62 878 0598 7309',
+            locationTitle: 'Location',
+            locationDesc: 'Visit our office',
+            locationAddress: 'IPB University, Bogor',
+            socialTitle: 'Follow Us',
+            socialDesc: 'Our Social Media',
+            feedbackTitle: 'Feedback & Suggestions',
+            feedbackSubtitle: 'We are open to all criticism and suggestions. Help us grow better by providing constructive input!',
+            firstNamePlaceholder: 'First Name',
+            lastNamePlaceholder: 'Last Name',
+            emailPlaceholder: 'Email Address',
+            messagePlaceholder: 'Your Feedback/Suggestion',
+            submitButton: 'SEND VIA WHATSAPP',
+            footerAbout: 'About Us',
+            footerCompany: 'Company',
+            footerContact: 'Contact',
+            footerProducts: 'Products',
+            footerResources: 'Resources',
+            footerTerms: 'Terms & Conditions',
+            footerFAQ: 'FAQ',
+            footerTeam: 'Our Team',
+            footerPartners: 'Our Partners',
+            footerPrivacy: 'Privacy Policy',
+            footerFeatures: 'Features',
+            footerPhone: '+62 878 0598 7309',
+            footerEmail: 'info@bijaksampah.com',
+            footerAddress: 'Bogor, West Java',
+            footerDesc: 'From Sort to Cash! Sustainable waste management solution for a better future.',
+            copyright: '© 2025 Made by TEK(G) | All Rights Reserved'
+          }
+        },
+        
+        init() {
+          // Wait for theme manager to be available
+          this.waitForThemeManager();
+          
+          // Listen for language changes
+          window.addEventListener('languageChanged', (e) => {
+            console.log('Kontak: Language changed to:', e.detail.language);
+            this.language = e.detail.language;
+            this.updateContent();
+          });
+          
+          // Listen for storage changes
+          window.addEventListener('storage', (e) => {
+            if (e.key === 'globalSettings') {
+              const settings = JSON.parse(e.newValue || '{}');
+              if (settings.language && settings.language !== this.language) {
+                this.language = settings.language;
+                this.updateContent();
+              }
+            }
+          });
+        },
+        
+        waitForThemeManager() {
+          if (window.themeManager && window.themeManager.initialized) {
+            const settings = window.themeManager.getSettings();
+            this.language = settings.language || 'id';
+            this.updateContent();
+          } else {
+            setTimeout(() => this.waitForThemeManager(), 100);
+          }
+        },
+        
+        updateContent() {
+          // Update HTML lang attribute
+          document.documentElement.lang = this.language;
+          
+          // Update navigation
+          this.updateNavigation();
+          
+          // Update hero section
+          this.updateHero();
+          
+          // Update contact section
+          this.updateContact();
+          
+          // Update feedback section
+          this.updateFeedback();
+          
+          // Update footer
+          this.updateFooter();
+        },
+        
+        updateNavigation() {
+          const navLinks = document.querySelectorAll('nav a');
+          if (navLinks.length >= 3) {
+            navLinks[0].textContent = this.labels[this.language].navHome;
+            navLinks[1].textContent = this.labels[this.language].navProfile;
+            navLinks[2].textContent = this.labels[this.language].navContact;
+          }
+        },
+        
+        updateHero() {
+          const heroTitle = document.querySelector('.hero-text h1');
+          const heroSubtitle = document.querySelector('.hero-text p');
+          
+          if (heroTitle) heroTitle.innerHTML = this.labels[this.language].heroTitle;
+          if (heroSubtitle) heroSubtitle.textContent = this.labels[this.language].heroSubtitle;
+        },
+        
+        updateContact() {
+          // Update contact info items
+          const contactItems = document.querySelectorAll('.contact-info-item');
+          if (contactItems.length >= 3) {
+            // Social
+            contactItems[0].querySelector('h3').textContent = this.labels[this.language].socialTitle;
+            contactItems[0].querySelector('p').textContent = this.labels[this.language].socialDesc;
+            
+            // Phone
+            contactItems[1].querySelector('h3').textContent = this.labels[this.language].phoneTitle;
+            contactItems[1].querySelector('p').textContent = this.labels[this.language].phoneNumber;
+            
+            // Location
+            contactItems[2].querySelector('h3').textContent = this.labels[this.language].locationTitle;
+            contactItems[2].querySelector('p').textContent = this.labels[this.language].locationAddress;
+          }
+        },
+        
+        updateFeedback() {
+          const feedbackTitle = document.querySelector('.feedback-section h2');
+          const feedbackSubtitle = document.querySelector('.feedback-section p');
+          
+          if (feedbackTitle) feedbackTitle.textContent = this.labels[this.language].feedbackTitle;
+          if (feedbackSubtitle) feedbackSubtitle.textContent = this.labels[this.language].feedbackSubtitle;
+          
+          // Update form placeholders
+          const formInputs = document.querySelectorAll('.feedback-form input, .feedback-form textarea');
+          if (formInputs.length >= 4) {
+            formInputs[0].placeholder = this.labels[this.language].firstNamePlaceholder;
+            formInputs[1].placeholder = this.labels[this.language].lastNamePlaceholder;
+            formInputs[2].placeholder = this.labels[this.language].emailPlaceholder;
+            formInputs[3].placeholder = this.labels[this.language].messagePlaceholder;
+          }
+          
+          // Update submit button
+          const submitButton = document.querySelector('.btn-submit');
+          if (submitButton) {
+            const icon = submitButton.querySelector('i');
+            submitButton.innerHTML = icon.outerHTML + ' ' + this.labels[this.language].submitButton;
+          }
+        },
+        
+        updateFooter() {
+          const footerColumns = document.querySelectorAll('.footer-column h3');
+          if (footerColumns.length >= 3) {
+            footerColumns[0].textContent = this.labels[this.language].footerAbout;
+            footerColumns[1].textContent = this.labels[this.language].footerCompany;
+            footerColumns[2].textContent = this.labels[this.language].footerContact;
+          }
+          
+          const footerDesc = document.querySelector('.footer-description');
+          if (footerDesc) footerDesc.textContent = this.labels[this.language].footerDesc;
+          
+          const copyright = document.querySelector('.copyright');
+          if (copyright) copyright.innerHTML = this.labels[this.language].copyright;
+        }
+      };
+    }
+    
+    // WhatsApp form submission
     document.getElementById('feedbackForm').addEventListener('submit', function(e) {
       e.preventDefault();
       
@@ -679,6 +914,7 @@
       // Hide message after 5 seconds
       setTimeout(() => { formMessage.style.display = "none"; }, 5000);
     });
+  </script>
   </script>
 </body>
 </html>

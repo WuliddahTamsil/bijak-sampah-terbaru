@@ -1,11 +1,19 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" x-data="homeApp()" x-init="init()">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Home-Bijak Sampah</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  
+  {{-- Alpine.js --}}
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.12.0/dist/cdn.min.js"></script>
+  
+  {{-- Theme Manager Scripts --}}
+  <script src="{{ asset('asset/js/theme-manager.js') }}" defer></script>
+  <script src="{{ asset('asset/js/update-themes.js') }}" defer></script>
+  
   <style>
     :root {
       --primary: #0369A1;
@@ -741,7 +749,7 @@
     </div>
     <nav>
       <a href="/">Home</a>
-      <a href="/aboutbj">Profil</a>
+      <a href="/profile">Profil</a>
       <a href="/kontakld">Kontak</a>
     </nav>
     <div class="buttons">
@@ -923,6 +931,270 @@
     </div>
   </footer>
   <script>
+    // Alpine.js component for home page
+    function homeApp() {
+      return {
+        language: 'id',
+        labels: {
+          // Indonesian labels
+          id: {
+            navHome: 'Beranda',
+            navAbout: 'Tentang',
+            navServices: 'Layanan',
+            navContact: 'Kontak',
+            heroTitle: 'Kelola Sampah dengan <span>Bijak</span>',
+            heroSubtitle: 'Dari Pilah, Jadi Rupiah! Solusi pengelolaan sampah berkelanjutan untuk masa depan yang lebih baik.',
+            heroButton: 'Mulai Sekarang',
+            aboutTitle: 'Tentang <span>Kami</span>',
+            aboutSubtitle: 'Bijak Sampah adalah platform inovatif yang menghubungkan masyarakat dengan bank sampah untuk pengelolaan sampah yang berkelanjutan.',
+            aboutDesc: 'Kami membantu masyarakat mengubah sampah menjadi sumber daya berharga melalui sistem yang terintegrasi dan mudah digunakan.',
+            servicesTitle: 'Layanan <span>Kami</span>',
+            servicesSubtitle: 'Solusi lengkap untuk pengelolaan sampah yang efisien dan menguntungkan',
+            service1Title: 'Penjemputan Sampah',
+            service1Desc: 'Layanan penjemputan sampah langsung dari rumah Anda dengan jadwal yang fleksibel.',
+            service2Title: 'Bank Sampah Digital',
+            service2Desc: 'Sistem bank sampah digital yang memudahkan transaksi dan monitoring saldo.',
+            service3Title: 'Edukasi Lingkungan',
+            service3Desc: 'Program edukasi untuk meningkatkan kesadaran masyarakat tentang pengelolaan sampah.',
+            service4Title: 'Reward System',
+            service4Desc: 'Sistem reward yang memberikan insentif untuk partisipasi dalam pengelolaan sampah.',
+            processTitle: 'Cara <span>Kerja</span>',
+            processSubtitle: 'Langkah sederhana untuk mulai mengelola sampah dengan bijak',
+            step1Title: 'Pilah Sampah',
+            step1Desc: 'Pisahkan sampah organik dan anorganik sesuai dengan kategori yang ditentukan.',
+            step2Title: 'Setor ke Bank Sampah',
+            step2Desc: 'Kirimkan sampah yang sudah dipilah ke lokasi bank sampah terdekat atau gunakan layanan penjemputan kami.',
+            step3Title: 'Tukar Jadi Rupiah',
+            step3Desc: 'Dapatkan insentif atau saldo dari sampah yang telah disetorkan dan tukarkan dengan berbagai hadiah menarik.',
+            quote: '"Jangkauan bank sampah yang luas merubah sampah menjadi sumber daya berharga bagi masyarakat dan lingkungan."',
+            mapTitle: 'Peta <span>Jangkauan</span> Kami',
+            footerAbout: 'Tentang Kami',
+            footerCompany: 'Perusahaan',
+            footerContact: 'Kontak',
+            footerProducts: 'Produk',
+            footerResources: 'Sumber Daya',
+            footerTerms: 'Syarat & Ketentuan',
+            footerFAQ: 'FAQ',
+            footerTeam: 'Tim Kami',
+            footerPartners: 'Partner Kami',
+            footerPrivacy: 'Kebijakan Privasi',
+            footerFeatures: 'Fitur',
+            footerPhone: '+62 878 0598 7309',
+            footerEmail: 'info@bijaksampah.com',
+            footerAddress: 'Bogor, Jawa Barat',
+            footerDesc: 'Dari Pilah, Jadi Rupiah! Solusi pengelolaan sampah berkelanjutan untuk masa depan yang lebih baik.',
+            copyright: '© 2025 Dibuat oleh TEK(G) | Seluruh Hak Cipta Dilindungi'
+          },
+          // English labels
+          en: {
+            navHome: 'Home',
+            navAbout: 'About',
+            navServices: 'Services',
+            navContact: 'Contact',
+            heroTitle: 'Manage Waste with <span>Wisdom</span>',
+            heroSubtitle: 'From Sort to Cash! Sustainable waste management solution for a better future.',
+            heroButton: 'Get Started',
+            aboutTitle: 'About <span>Us</span>',
+            aboutSubtitle: 'Bijak Sampah is an innovative platform that connects communities with waste banks for sustainable waste management.',
+            aboutDesc: 'We help communities transform waste into valuable resources through an integrated and easy-to-use system.',
+            servicesTitle: 'Our <span>Services</span>',
+            servicesSubtitle: 'Complete solution for efficient and profitable waste management',
+            service1Title: 'Waste Pickup',
+            service1Desc: 'Direct waste pickup service from your home with flexible scheduling.',
+            service2Title: 'Digital Waste Bank',
+            service2Desc: 'Digital waste bank system that facilitates transactions and balance monitoring.',
+            service3Title: 'Environmental Education',
+            service3Desc: 'Education program to increase public awareness about waste management.',
+            service4Title: 'Reward System',
+            service4Desc: 'Reward system that provides incentives for participation in waste management.',
+            processTitle: 'How It <span>Works</span>',
+            processSubtitle: 'Simple steps to start managing waste wisely',
+            step1Title: 'Sort Waste',
+            step1Desc: 'Separate organic and inorganic waste according to specified categories.',
+            step2Title: 'Deposit to Waste Bank',
+            step2Desc: 'Send sorted waste to the nearest waste bank location or use our pickup service.',
+            step3Title: 'Exchange for Cash',
+            step3Desc: 'Get incentives or balance from deposited waste and exchange for various attractive rewards.',
+            quote: '"The extensive reach of waste banks transforms waste into valuable resources for communities and the environment."',
+            mapTitle: 'Our <span>Coverage</span> Map',
+            footerAbout: 'About Us',
+            footerCompany: 'Company',
+            footerContact: 'Contact',
+            footerProducts: 'Products',
+            footerResources: 'Resources',
+            footerTerms: 'Terms & Conditions',
+            footerFAQ: 'FAQ',
+            footerTeam: 'Our Team',
+            footerPartners: 'Our Partners',
+            footerPrivacy: 'Privacy Policy',
+            footerFeatures: 'Features',
+            footerPhone: '+62 878 0598 7309',
+            footerEmail: 'info@bijaksampah.com',
+            footerAddress: 'Bogor, West Java',
+            footerDesc: 'From Sort to Cash! Sustainable waste management solution for a better future.',
+            copyright: '© 2025 Made by TEK(G) | All Rights Reserved'
+          }
+        },
+        
+        init() {
+          // Wait for theme manager to be available
+          this.waitForThemeManager();
+          
+          // Listen for language changes
+          window.addEventListener('languageChanged', (e) => {
+            console.log('Home: Language changed to:', e.detail.language);
+            this.language = e.detail.language;
+            this.updateContent();
+          });
+          
+          // Listen for storage changes
+          window.addEventListener('storage', (e) => {
+            if (e.key === 'globalSettings') {
+              const settings = JSON.parse(e.newValue || '{}');
+              if (settings.language && settings.language !== this.language) {
+                this.language = settings.language;
+                this.updateContent();
+              }
+            }
+          });
+        },
+        
+        waitForThemeManager() {
+          if (window.themeManager && window.themeManager.initialized) {
+            const settings = window.themeManager.getSettings();
+            this.language = settings.language || 'id';
+            this.updateContent();
+          } else {
+            setTimeout(() => this.waitForThemeManager(), 100);
+          }
+        },
+        
+        updateContent() {
+          // Update HTML lang attribute
+          document.documentElement.lang = this.language;
+          
+          // Update navigation
+          this.updateNavigation();
+          
+          // Update hero section
+          this.updateHero();
+          
+          // Update about section
+          this.updateAbout();
+          
+          // Update services section
+          this.updateServices();
+          
+          // Update process section
+          this.updateProcess();
+          
+          // Update quote section
+          this.updateQuote();
+          
+          // Update map section
+          this.updateMap();
+          
+          // Update footer
+          this.updateFooter();
+        },
+        
+        updateNavigation() {
+          const navLinks = document.querySelectorAll('nav a');
+          if (navLinks.length >= 4) {
+            navLinks[0].textContent = this.labels[this.language].navHome;
+            navLinks[1].textContent = this.labels[this.language].navAbout;
+            navLinks[2].textContent = this.labels[this.language].navServices;
+            navLinks[3].textContent = this.labels[this.language].navContact;
+          }
+        },
+        
+        updateHero() {
+          const heroTitle = document.querySelector('.hero h1');
+          const heroSubtitle = document.querySelector('.hero p');
+          const heroButton = document.querySelector('.hero .cta-button');
+          
+          if (heroTitle) heroTitle.innerHTML = this.labels[this.language].heroTitle;
+          if (heroSubtitle) heroSubtitle.textContent = this.labels[this.language].heroSubtitle;
+          if (heroButton) heroButton.textContent = this.labels[this.language].heroButton;
+        },
+        
+        updateAbout() {
+          const aboutTitle = document.querySelector('.about h2');
+          const aboutSubtitle = document.querySelector('.about .section-subtitle');
+          const aboutDesc = document.querySelector('.about .about-description');
+          
+          if (aboutTitle) aboutTitle.innerHTML = this.labels[this.language].aboutTitle;
+          if (aboutSubtitle) aboutSubtitle.textContent = this.labels[this.language].aboutSubtitle;
+          if (aboutDesc) aboutDesc.textContent = this.labels[this.language].aboutDesc;
+        },
+        
+        updateServices() {
+          const servicesTitle = document.querySelector('.services h2');
+          const servicesSubtitle = document.querySelector('.services .section-subtitle');
+          
+          if (servicesTitle) servicesTitle.innerHTML = this.labels[this.language].servicesTitle;
+          if (servicesSubtitle) servicesSubtitle.textContent = this.labels[this.language].servicesSubtitle;
+          
+          // Update service cards
+          const serviceCards = document.querySelectorAll('.service-card');
+          if (serviceCards.length >= 4) {
+            serviceCards[0].querySelector('h3').textContent = this.labels[this.language].service1Title;
+            serviceCards[0].querySelector('p').textContent = this.labels[this.language].service1Desc;
+            serviceCards[1].querySelector('h3').textContent = this.labels[this.language].service2Title;
+            serviceCards[1].querySelector('p').textContent = this.labels[this.language].service2Desc;
+            serviceCards[2].querySelector('h3').textContent = this.labels[this.language].service3Title;
+            serviceCards[2].querySelector('p').textContent = this.labels[this.language].service3Desc;
+            serviceCards[3].querySelector('h3').textContent = this.labels[this.language].service4Title;
+            serviceCards[3].querySelector('p').textContent = this.labels[this.language].service4Desc;
+          }
+        },
+        
+        updateProcess() {
+          const processTitle = document.querySelector('.process h2');
+          const processSubtitle = document.querySelector('.process .section-subtitle');
+          
+          if (processTitle) processTitle.innerHTML = this.labels[this.language].processTitle;
+          if (processSubtitle) processSubtitle.textContent = this.labels[this.language].processSubtitle;
+          
+          // Update step cards
+          const stepCards = document.querySelectorAll('.step-card');
+          if (stepCards.length >= 3) {
+            stepCards[0].querySelector('h3').textContent = this.labels[this.language].step1Title;
+            stepCards[0].querySelector('p').textContent = this.labels[this.language].step1Desc;
+            stepCards[1].querySelector('h3').textContent = this.labels[this.language].step2Title;
+            stepCards[1].querySelector('p').textContent = this.labels[this.language].step2Desc;
+            stepCards[2].querySelector('h3').textContent = this.labels[this.language].step3Title;
+            stepCards[2].querySelector('p').textContent = this.labels[this.language].step3Desc;
+          }
+        },
+        
+        updateQuote() {
+          const quote = document.querySelector('.quote-contact blockquote');
+          if (quote) quote.textContent = this.labels[this.language].quote;
+        },
+        
+        updateMap() {
+          const mapTitle = document.querySelector('.map-section h2');
+          if (mapTitle) mapTitle.innerHTML = this.labels[this.language].mapTitle;
+        },
+        
+        updateFooter() {
+          const footerColumns = document.querySelectorAll('.footer-column h3');
+          if (footerColumns.length >= 3) {
+            footerColumns[0].textContent = this.labels[this.language].footerAbout;
+            footerColumns[1].textContent = this.labels[this.language].footerCompany;
+            footerColumns[2].textContent = this.labels[this.language].footerContact;
+          }
+          
+          const footerDesc = document.querySelector('.footer-description');
+          if (footerDesc) footerDesc.textContent = this.labels[this.language].footerDesc;
+          
+          const copyright = document.querySelector('.copyright');
+          if (copyright) copyright.innerHTML = this.labels[this.language].copyright;
+        }
+      };
+    }
+    
     // Animasi popup about section saat muncul di viewport
     function animateAbout() {
       const aboutEls = document.querySelectorAll('.about-animate');
