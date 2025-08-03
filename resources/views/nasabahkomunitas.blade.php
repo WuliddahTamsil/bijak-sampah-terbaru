@@ -567,10 +567,9 @@
   <!-- Sidebar -->
   <div class="sidebar" id="sidebar">
     <div class="logo-container">
-      <div class="logo">
-        <span class="logo-icon"><i class="fas fa-recycle"></i></span>
-        <span class="logo-text">Bijak<span>Sampah</span></span>
-      </div>
+                              <div class="logo">
+                            <img src="{{ asset('asset/img/Logo Alternative_Dark (1).png') }}" alt="Bijak Sampah Logo" style="width: 200px; height: 200px; object-fit: contain;">
+                        </div>
       <button class="toggle-collapse" id="toggleCollapse">
         <i class="fas fa-chevron-left"></i>
       </button>
@@ -578,36 +577,52 @@
     
     <ul class="menu-items">
       <li class="menu-item">
-        <div class="menu-icon"><i class="fas fa-home"></i></div>
-        <span class="menu-text">Dashboard</span>
+        <a href="{{ route('nasabahdashboard') }}" style="text-decoration: none; color: inherit; display: flex; align-items: center; width: 100%;">
+          <div class="menu-icon"><i class="fas fa-home"></i></div>
+          <span class="menu-text">Dashboard</span>
+        </a>
       </li>
       <li class="menu-item">
-        <div class="menu-icon"><i class="fas fa-bell"></i></div>
-        <span class="menu-text">Notifikasi</span>
+        <a href="{{ route('notifikasi') }}" style="text-decoration: none; color: inherit; display: flex; align-items: center; width: 100%;">
+          <div class="menu-icon"><i class="fas fa-bell"></i></div>
+          <span class="menu-text">Notifikasi</span>
+        </a>
       </li>
       <li class="menu-item">
-        <div class="menu-icon"><i class="fas fa-store"></i></div>
-        <span class="menu-text">Marketplace</span>
+        <a href="{{ route('tokou') }}" style="text-decoration: none; color: inherit; display: flex; align-items: center; width: 100%;">
+          <div class="menu-icon"><i class="fas fa-store"></i></div>
+          <span class="menu-text">Marketplace</span>
+        </a>
       </li>
       <li class="menu-item">
-        <div class="menu-icon"><i class="fas fa-users"></i></div>
-        <span class="menu-text">Komunitas</span>
+        <a href="{{ route('nasabahkomunitas') }}" style="text-decoration: none; color: inherit; display: flex; align-items: center; width: 100%;">
+          <div class="menu-icon"><i class="fas fa-users"></i></div>
+          <span class="menu-text">Komunitas</span>
+        </a>
       </li>
       <li class="menu-item">
-        <div class="menu-icon"><i class="fas fa-balance-scale"></i></div>
-        <span class="menu-text">Bank Sampah</span>
+        <a href="{{ route('bank-sampah') }}" style="text-decoration: none; color: inherit; display: flex; align-items: center; width: 100%;">
+          <div class="menu-icon"><i class="fas fa-balance-scale"></i></div>
+          <span class="menu-text">Bank Sampah</span>
+        </a>
       </li>
       <li class="menu-item active">
-        <div class="menu-icon"><i class="fas fa-comments"></i></div>
-        <span class="menu-text">Forum Diskusi</span>
+        <a href="{{ route('nasabahkomunitas') }}" style="text-decoration: none; color: inherit; display: flex; align-items: center; width: 100%;">
+          <div class="menu-icon"><i class="fas fa-comments"></i></div>
+          <span class="menu-text">Forum Diskusi</span>
+        </a>
       </li>
       <li class="menu-item">
-        <div class="menu-icon"><i class="fas fa-info-circle"></i></div>
-        <span class="menu-text">Informasi</span>
+        <a href="{{ route('berita') }}" style="text-decoration: none; color: inherit; display: flex; align-items: center; width: 100%;">
+          <div class="menu-icon"><i class="fas fa-info-circle"></i></div>
+          <span class="menu-text">Informasi</span>
+        </a>
       </li>
       <li class="menu-item">
-        <div class="menu-icon"><i class="fas fa-cog"></i></div>
-        <span class="menu-text">Pengaturan</span>
+        <a href="{{ route('settings') }}" style="text-decoration: none; color: inherit; display: flex; align-items: center; width: 100%;">
+          <div class="menu-icon"><i class="fas fa-cog"></i></div>
+          <span class="menu-text">Pengaturan</span>
+        </a>
       </li>
     </ul>
   </div>

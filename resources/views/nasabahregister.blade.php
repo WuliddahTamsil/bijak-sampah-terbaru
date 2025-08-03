@@ -656,10 +656,9 @@ padding: 30px 20px;
 <body>
 <div class="sidebar" id="sidebar">
 <div class="logo-container">
-<div class="logo">
-<span class="logo-icon"><i class="fas fa-recycle"></i></span>
-<span class="logo-text">Bijak<span>Sampah</span></span>
-</div>
+                              <div class="logo">
+                            <img src="{{ asset('asset/img/Logo Alternative_Dark (1).png') }}" alt="Bijak Sampah Logo" style="width: 200px; height: 200px; object-fit: contain;">
+                        </div>
 <button class="toggle-collapse" id="toggleCollapse">
 <i class="fas fa-chevron-left"></i>
 </button>
@@ -667,36 +666,52 @@ padding: 30px 20px;
 
 <ul class="menu-items">
 <li class="menu-item">
+<a href="{{ route('nasabahdashboard') }}" style="text-decoration: none; color: inherit; display: flex; align-items: center; width: 100%;">
 <div class="menu-icon"><i class="fas fa-home"></i></div>
 <span class="menu-text">Dashboard</span>
+</a>
 </li>
 <li class="menu-item">
+<a href="{{ route('nasabahkomunitas') }}" style="text-decoration: none; color: inherit; display: flex; align-items: center; width: 100%;">
 <div class="menu-icon"><i class="fas fa-users"></i></div>
 <span class="menu-text">Komunitas</span>
+</a>
 </li>
 <li class="menu-item">
+<a href="{{ route('sampahnasabah') }}" style="text-decoration: none; color: inherit; display: flex; align-items: center; width: 100%;">
 <div class="menu-icon"><i class="fas fa-trash-alt"></i></div>
 <span class="menu-text">Riwayat Sampah</span>
+</a>
 </li>
 <li class="menu-item">
+<a href="{{ route('poin-nasabah') }}" style="text-decoration: none; color: inherit; display: flex; align-items: center; width: 100%;">
 <div class="menu-icon"><i class="fas fa-coins"></i></div>
 <span class="menu-text">Poin Mu</span>
+</a>
 </li>
 <li class="menu-item">
+<a href="{{ route('riwayattransaksinasabah') }}" style="text-decoration: none; color: inherit; display: flex; align-items: center; width: 100%;">
 <div class="menu-icon"><i class="fas fa-history"></i></div>
 <span class="menu-text">Riwayat Transaksi</span>
+</a>
 </li>
 <li class="menu-item">
+<a href="{{ route('tokou') }}" style="text-decoration: none; color: inherit; display: flex; align-items: center; width: 100%;">
 <div class="menu-icon"><i class="fas fa-store"></i></div>
 <span class="menu-text">Marketplace</span>
+</a>
 </li>
 <li class="menu-item active">
+<a href="{{ route('settings') }}" style="text-decoration: none; color: inherit; display: flex; align-items: center; width: 100%;">
 <div class="menu-icon"><i class="fas fa-cog"></i></div>
 <span class="menu-text">Settings</span>
+</a>
 </li>
 <li class="menu-item">
+<a href="{{ route('logout') }}" style="text-decoration: none; color: inherit; display: flex; align-items: center; width: 100%;">
 <div class="menu-icon"><i class="fas fa-sign-out-alt"></i></div>
 <span class="menu-text">Logout</span>
+</a>
 </li>
 </ul>
 </div>

@@ -61,8 +61,8 @@
         }
 
         .logo img {
-            width: 40px;
-            height: 40px;
+            width: 200px;
+            height: 200px;
             object-fit: contain;
         }
 
@@ -119,6 +119,24 @@
             border-left: 4px solid #f16728;
         }
 
+        .sub-menu-item {
+            padding: 10px 20px 10px 50px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            white-space: nowrap;
+            font-size: 14px;
+        }
+
+        .sub-menu-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .sub-menu-item.active {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
         .menu-icon {
             width: 24px;
             height: 24px;
@@ -150,6 +168,21 @@
 
         .sidebar.collapsed .logo-icon {
             font-size: 22px;
+        }
+
+        .sidebar.collapsed .logo-text {
+            display: none;
+        }
+
+        .sidebar.collapsed .logo-icon {
+            font-size: 22px;
+        }
+
+        .sidebar-footer {
+            padding: 0;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            margin-top: auto;
+            flex-shrink: 0;
         }
 
         /* Main Content */
@@ -417,13 +450,6 @@
             to { transform: scaleY(1); }
         }
 
-        /* .bar.green tidak diperlukan lagi jika semua bar berwarna sama,
-           tapi tetap bisa dipertahankan untuk fleksibilitas jika suatu saat
-           ada bar dengan warna berbeda. */
-        /* .bar.green {
-            background: linear-gradient(to top, #05445E, #189AB4);
-        } */
-
         .bar-label {
             position: absolute;
             top: -40px;
@@ -651,69 +677,85 @@
 </head>
 <body>
 
-    <div class="sidebar collapsed" id="sidebar">
+<div class="sidebar" id="sidebar">
         <div class="logo-container">
             <div class="logo">
-                <img src="{{ asset('asset/img/Logo Alternative_Dark (1).png') }}" alt="Bijak Sampah Logo" style="width: 200px; height: 200px; object-fit: contain;">
+                <img src="{{ asset('asset/img/Logo Alternative_Dark (1).png') }}" alt="Bijak Sampah Logo">
             </div>
             <button class="toggle-collapse" id="toggleCollapse">
                 <i class="fas fa-chevron-left"></i>
             </button>
         </div>
         
-        <ul class="menu-items">
-            <li class="menu-item active">
-                <a href="{{ route('nasabahdashboard') }}" style="text-decoration: none; color: inherit; display: flex; align-items: center; width: 100%;">
-                    <div class="menu-icon"><i class="fas fa-home"></i></div>
-                    <span class="menu-text">Dashboard</span>
-                </a>
-            </li>
-            <li class="menu-item">
-                <a href="{{ route('nasabahkomunitas') }}" style="text-decoration: none; color: inherit; display: flex; align-items: center; width: 100%;">
+        <div class="menu-container">
+            <ul class="menu-items">
+                <li class="menu-item active">
+                    <a href="{{ route('dashboard-banksampah') }}" style="text-decoration: none; color: inherit;">
+                        <div class="menu-icon"><i class="fas fa-home"></i></div>
+                        <span class="menu-text">Dashboard</span>
+                    </a>
+                </li>
+                <li class="menu-item">
                     <div class="menu-icon"><i class="fas fa-users"></i></div>
-                    <span class="menu-text">Komunitas</span>
-                </a>
-            </li>
-            <li class="menu-item">
-                <a href="{{ route('sampahnasabah') }}" style="text-decoration: none; color: inherit; display: flex; align-items: center; width: 100%;">
-                    <div class="menu-icon"><i class="fas fa-trash-alt"></i></div>
-                    <span class="menu-text">Riwayat Sampah</span>
-                </a>
-            </li>
-            <li class="menu-item">
-                <a href="{{ route('poin-nasabah') }}" style="text-decoration: none; color: inherit; display: flex; align-items: center; width: 100%;">
-                    <div class="menu-icon"><i class="fas fa-coins"></i></div>
-                    <span class="menu-text">Poin Mu</span>
-                </a>
-            </li>
-            <li class="menu-item">
-                <a href="{{ route('riwayattransaksinasabah') }}" style="text-decoration: none; color: inherit; display: flex; align-items: center; width: 100%;">
-                    <div class="menu-icon"><i class="fas fa-history"></i></div>
-                    <span class="menu-text">Riwayat Transaksi</span>
-                </a>
-            </li>
-            <li class="menu-item">
-                <a href="{{ route('tokou') }}" style="text-decoration: none; color: inherit; display: flex; align-items: center; width: 100%;">
-                    <div class="menu-icon"><i class="fas fa-store"></i></div>
-                    <span class="menu-text">Marketplace</span>
-                </a>
-            </li>
-            <li class="menu-item">
-                <a href="{{ route('settings') }}" style="text-decoration: none; color: inherit; display: flex; align-items: center; width: 100%;">
+                    <span class="menu-text">Nasabah</span>
+                </li>
+                <li class="sub-menu-item">
+                    <a href="{{ route('verifikasi-nasabah-banksampah') }}" style="text-decoration: none; color: inherit;">
+                        <div class="menu-icon"><i class="fas fa-user-check"></i></div>
+                        <span class="menu-text">Verifikasi Nasabah</span>
+                    </a>
+                </li>
+                <li class="sub-menu-item">
+                    <a href="{{ route('data-nasabah-banksampah') }}" style="text-decoration: none; color: inherit;">
+                        <div class="menu-icon"><i class="fas fa-database"></i></div>
+                        <span class="menu-text">Data Nasabah</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="{{ route('penjemputan-sampah-banksampah') }}" style="text-decoration: none; color: inherit;">
+                        <div class="menu-icon"><i class="fas fa-truck"></i></div>
+                        <span class="menu-text">Penjemputan Sampah</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="{{ route('penimbangansampah-banksampah') }}" style="text-decoration: none; color: inherit;">
+                        <div class="menu-icon"><i class="fas fa-weight-hanging"></i></div>
+                        <span class="menu-text">Penimbangan</span>
+                    </a>
+                </li>
+                <li class="sub-menu-item">
+                    <div class="menu-icon"><i class="fas fa-plus-circle"></i></div>
+                    <span class="menu-text">Input Setoran</span>
+                </li>
+                <li class="menu-item">
+                    <a href="{{ route('datasampah-banksampah') }}" style="text-decoration: none; color: inherit;">
+                        <div class="menu-icon"><i class="fas fa-trash-alt"></i></div>
+                        <span class="menu-text">Data Sampah</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="{{ route('penjualansampah-banksampah') }}" style="text-decoration: none; color: inherit;">
+                        <div class="menu-icon"><i class="fas fa-shopping-cart"></i></div>
+                        <span class="menu-text">Penjualan Sampah</span>
+                    </a>
+                </li>
+                <li class="menu-item">
                     <div class="menu-icon"><i class="fas fa-cog"></i></div>
-                    <span class="menu-text">Settings</span>
-                </a>
-            </li>
-            <li class="menu-item">
-                <a href="{{ route('logout') }}" style="text-decoration: none; color: inherit; display: flex; align-items: center; width: 100%;">
-                    <div class="menu-icon"><i class="fas fa-sign-out-alt"></i></div>
-                    <span class="menu-text">Logout</span>
-                </a>
-            </li>
-        </ul>
+                    <span class="menu-text">Setting</span>
+                </li>
+            </ul>
+        </div>
+
+        <div class="sidebar-footer">
+            <div class="menu-item">
+                <div class="menu-icon"><i class="fas fa-sign-out-alt"></i></div>
+                <span class="menu-text">Logout</span>
+            </div>
+        </div>
     </div>
 
-    <div class="main-content collapsed">
+    
+    <div class="main-content">
         <div class="header">
             <h1 class="page-title"><i class="fas fa-bell"></i> Notifikasi</h1>
             <div class="profile-actions">
@@ -728,16 +770,18 @@
         </div>
 
         <div class="notif-cards" id="notifContainer">
-            </div>
+            <!-- Notifikasi akan dimuat di sini -->
+        </div>
 
         <div class="chart-section">
             <div class="chart-title">
-                <i class="fas fa-chart-line"></i> Data Partisipasi Anda
+                <i class="fas fa-chart-line"></i> Data Penimbangan Sampah
             </div>
             <div class="chart-sub">Minggu Lalu</div>
 
             <div class="chart-content" id="chart-content">
-                </div>
+                <!-- Grafik akan dimuat di sini -->
+            </div>
         </div>
 
         <div class="footer">
@@ -757,7 +801,8 @@
                     <input type="text" id="notifInput" placeholder="Masukkan pesan notifikasi">
                 </div>
                 <div id="notifList">
-                    </div>
+                    <!-- Daftar notifikasi akan dimuat di sini -->
+                </div>
             </div>
             <div class="modal-footer">
                 <button class="btn btn-outline" id="cancelNotif">Batal</button>
@@ -777,7 +822,8 @@
                     <input type="text" id="searchInput" placeholder="Masukkan kata kunci...">
                 </div>
                 <div id="searchResults">
-                    </div>
+                    <!-- Hasil pencarian akan dimuat di sini -->
+                </div>
             </div>
         </div>
     </div>
@@ -814,45 +860,45 @@
         </div>
     </div>
 
+
     <script>
-        // Data Notifikasi
+        // Data Notifikasi yang sudah diubah
         let notifications = [
             { 
                 id: 1,
-                title: "Sampah Telah di Ambil",
-                icon: "fas fa-trash-restore",
-                message: "Sampah Anda telah diambil oleh petugas bank sampah. Terima kasih atas partisipasinya!",
+                title: "Sampah Penuh",
+                icon: "fas fa-exclamation-circle",
+                message: "Notif sampah penuh di bak sampah dengan ID SR78388. Tempat sampah Nasabah Suyatno telah penuh, segera ambil sampah untuk penimbangan.",
                 date: "22 Juni 2025",
                 time: "20:45"
             },
             { 
                 id: 2,
-                title: "Sampah akan di Ambil",
-                icon: "fas fa-truck",
-                message: "Petugas bank sampah akan menjemput sampah Anda hari ini. Mohon siapkan ya!",
+                title: "UMKM Ingin Mengambil Sampah",
+                icon: "fas fa-store",
+                message: "UMKM Sumber Rezeki sudah melakukan pembelian dan ingin mengambil sampah.",
                 date: "23 Juni 2025",
                 time: "14:14"
             },
             { 
                 id: 3,
-                title: "Sampah telah penuh",
-                icon: "fas fa-exclamation-circle",
-                message: "Tempat sampah Nasabah Rahimi telah penuh. Segera ambil sampah untuk penimbangan.",
+                title: "Penjemputan Sampah",
+                icon: "fas fa-truck",
+                message: "Petugas bank sampah akan menjemput sampah Anda hari ini. Mohon siapkan ya!",
                 date: "23 Juni 2025",
                 time: "16:14"
             }
         ];
 
-        // Data untuk grafik
-        // Semua 'isGreen' diatur menjadi 'true' agar semua batang grafik berwarna
+        // Data untuk grafik penimbangan (dalam kg)
         const chartData = [
-            { height: 30, value: '30%', isGreen: true }, 
-            { height: 75, value: '75%', isGreen: true }, 
-            { height: 97, value: '97%', isGreen: true },
-            { height: 65, value: '65%', isGreen: true }, 
-            { height: 40, value: '40%', isGreen: true }, 
-            { height: 68, value: '68%', isGreen: true }, 
-            { height: 70, value: '70%', isGreen: true }  
+            { height: 20, value: '20 kg', isGreen: true }, 
+            { height: 45, value: '45 kg', isGreen: true }, 
+            { height: 60, value: '60 kg', isGreen: true },
+            { height: 35, value: '35 kg', isGreen: true }, 
+            { height: 25, value: '25 kg', isGreen: true }, 
+            { height: 50, value: '50 kg', isGreen: true }, 
+            { height: 40, value: '40 kg', isGreen: true }  
         ];
 
         // DOM Elements
@@ -875,23 +921,7 @@
         const saveProfile = document.getElementById('saveProfile');
         const chartContent = document.getElementById('chart-content');
 
-        // Responsive Sidebar Hover Behavior
-        let hoverTimeout;
-        
-        sidebar.addEventListener('mouseenter', function() {
-            clearTimeout(hoverTimeout);
-            sidebar.classList.remove('collapsed');
-            mainContent.classList.remove('collapsed');
-        });
-        
-        sidebar.addEventListener('mouseleave', function() {
-            hoverTimeout = setTimeout(function() {
-                sidebar.classList.add('collapsed');
-                mainContent.classList.add('collapsed');
-            }, 300); // Small delay to prevent flickering
-        });
-        
-        // Keep toggle button for manual control
+        // Toggle Sidebar
         toggleCollapse.addEventListener('click', function() {
             sidebar.classList.toggle('collapsed');
             mainContent.classList.toggle('collapsed');
@@ -964,9 +994,6 @@
             const currentDay = today.getDay(); // 0 (Minggu), 1 (Senin), ..., 6 (Sabtu)
 
             // Hitung tanggal Senin pada minggu ini
-            // Jika hari ini Minggu (0), maka Senin minggu ini adalah 6 hari yang lalu
-            // Jika hari ini Senin (1), maka Senin minggu ini adalah 0 hari yang lalu
-            // dst.
             const daysSinceMonday = currentDay === 0 ? 6 : currentDay - 1;
             const thisMonday = new Date(today);
             thisMonday.setDate(today.getDate() - daysSinceMonday);

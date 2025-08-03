@@ -723,10 +723,9 @@
 <body>
     <div class="sidebar" id="sidebar">
         <div class="logo-container">
-            <div class="logo">
-                <span class="logo-icon"><i class="fas fa-recycle"></i></span>
-                <span class="logo-text">Bijak<span>Sampah</span></span>
-            </div>
+                                          <div class="logo">
+                            <img src="{{ asset('asset/img/Logo Alternative_Dark (1).png') }}" alt="Bijak Sampah Logo" style="width: 200px; height: 200px; object-fit: contain;">
+                        </div>
             <button class="toggle-collapse" id="toggleCollapse">
                 <i class="fas fa-chevron-left"></i>
             </button>
@@ -734,28 +733,40 @@
 
         <ul class="menu-items">
             <li class="menu-item" id="dashboard-menu"> 
-                <div class="menu-icon"><i class="fas fa-home"></i></div>
-                <span class="menu-text">Dashboard</span>
+                <a href="{{ route('non-nasabah-dashboard') }}" style="text-decoration: none; color: inherit; display: flex; align-items: center; width: 100%;">
+                    <div class="menu-icon"><i class="fas fa-home"></i></div>
+                    <span class="menu-text">Dashboard</span>
+                </a>
             </li>
-            <li class="menu-item active" id="poinmu-menu" onclick="showSection('poinmuDashboard')">
-                <div class="menu-icon"><i class="fas fa-coins"></i></div>
-                <span class="menu-text">Poin Mu</span>
+            <li class="menu-item active" id="poinmu-menu">
+                <a href="{{ route('poin-non-nasabah') }}" style="text-decoration: none; color: inherit; display: flex; align-items: center; width: 100%;">
+                    <div class="menu-icon"><i class="fas fa-coins"></i></div>
+                    <span class="menu-text">Poin Mu</span>
+                </a>
             </li>
-            <li class="menu-item" id="history-menu" onclick="showSection('transactionHistorySection')">
-                <div class="menu-icon"><i class="fas fa-history"></i></div>
-                <span class="menu-text">Riwayat Transaksi</span>
-            </li>
-            <li class="menu-item">
-                <div class="menu-icon"><i class="fas fa-store"></i></div>
-                <span class="menu-text">Marketplace</span>
-            </li>
-            <li class="menu-item">
-                <div class="menu-icon"><i class="fas fa-cog"></i></div>
-                <span class="menu-text">Settings</span>
+            <li class="menu-item" id="history-menu">
+                <a href="{{ route('non-nasabah-dashboard') }}" style="text-decoration: none; color: inherit; display: flex; align-items: center; width: 100%;">
+                    <div class="menu-icon"><i class="fas fa-history"></i></div>
+                    <span class="menu-text">Riwayat Transaksi</span>
+                </a>
             </li>
             <li class="menu-item">
-                <div class="menu-icon"><i class="fas fa-sign-out-alt"></i></div>
-                <span class="menu-text">Logout</span>
+                <a href="{{ route('toko') }}" style="text-decoration: none; color: inherit; display: flex; align-items: center; width: 100%;">
+                    <div class="menu-icon"><i class="fas fa-store"></i></div>
+                    <span class="menu-text">Marketplace</span>
+                </a>
+            </li>
+            <li class="menu-item">
+                <a href="{{ route('settings') }}" style="text-decoration: none; color: inherit; display: flex; align-items: center; width: 100%;">
+                    <div class="menu-icon"><i class="fas fa-cog"></i></div>
+                    <span class="menu-text">Settings</span>
+                </a>
+            </li>
+            <li class="menu-item">
+                <a href="{{ route('logout') }}" style="text-decoration: none; color: inherit; display: flex; align-items: center; width: 100%;">
+                    <div class="menu-icon"><i class="fas fa-sign-out-alt"></i></div>
+                    <span class="menu-text">Logout</span>
+                </a>
             </li>
         </ul>
     </div>
@@ -791,7 +802,7 @@
                         </div>
                     </div>
                     <div class="poinmu-image-section">
-                         <img src="asset/img/poin.png" alt="Ilustrasi Poin Mu" />
+                         <img src="https://rbtv.disway.id/upload/7973c3e23499d8cb1b1ad11767042315.jpg" alt="Ilustrasi Poin Mu" />
                     </div>
                 </div>
 

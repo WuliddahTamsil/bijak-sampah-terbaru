@@ -283,55 +283,43 @@
             {{-- Navigation Menu --}}
             <nav class="flex flex-col gap-2 w-full flex-1">
                 {{-- Dashboard Link --}}
-                <a href="/dashboard" class="flex items-center gap-3 p-3 font-medium sidebar-nav-item whitespace-nowrap w-full" :class="open ? (active === 'dashboard' ? 'active text-white' : 'text-white') : (active === 'dashboard' ? 'active text-white justify-center' : 'text-white justify-center')">
+                <a href="{{ route('nasabahdashboard') }}" class="flex items-center gap-3 p-3 font-medium sidebar-nav-item whitespace-nowrap w-full" :class="open ? (active === 'dashboard' ? 'active text-white' : 'text-white') : (active === 'dashboard' ? 'active text-white justify-center' : 'text-white justify-center')">
                     <i class="fas fa-home text-lg"></i>
                     <span x-show="open" class="text-sm font-medium">Dashboard</span>
                 </a>
                 
-                {{-- Bank Sampah Link --}}
-                <a href="/bank-sampah" class="flex items-center gap-3 p-3 rounded-lg sidebar-item-hover whitespace-nowrap w-full" :class="open ? (active === 'bank-sampah' ? 'bg-white/20 text-white shadow-lg' : 'hover:bg-white/20 text-white') : (active === 'bank-sampah' ? 'bg-white/20 text-white justify-center' : 'hover:bg-white/20 text-white justify-center')">
-                    <i class="fas fa-balance-scale text-lg"></i>
-                    <span x-show="open" class="text-sm font-medium">Bank Sampah</span>
-                </a>
-                
-                {{-- Toko Link --}}
-                <a href="/toko" class="flex items-center gap-3 p-3 rounded-lg sidebar-item-hover whitespace-nowrap w-full" :class="open ? (active === 'toko' ? 'bg-white/20 text-white shadow-lg' : 'hover:bg-white/20 text-white') : (active === 'toko' ? 'bg-white/20 text-white justify-center' : 'hover:bg-white/20 text-white justify-center')">
-                    <i class="fas fa-store text-lg"></i>
-                    <span x-show="open" class="text-sm font-medium">Toko</span>
-                </a>
-                
                 {{-- Komunitas Link --}}
-                <a href="/komunitas" class="flex items-center gap-3 p-3 rounded-lg sidebar-item-hover whitespace-nowrap w-full" :class="open ? (active === 'komunitas' ? 'bg-white/20 text-white shadow-lg' : 'hover:bg-white/20 text-white') : (active === 'komunitas' ? 'bg-white/20 text-white justify-center' : 'hover:bg-white/20 text-white justify-center')">
+                <a href="{{ route('nasabahkomunitas') }}" class="flex items-center gap-3 p-3 rounded-lg sidebar-item-hover whitespace-nowrap w-full" :class="open ? (active === 'komunitas' ? 'bg-white/20 text-white shadow-lg' : 'hover:bg-white/20 text-white') : (active === 'komunitas' ? 'bg-white/20 text-white justify-center' : 'hover:bg-white/20 text-white justify-center')">
                     <i class="fas fa-users text-lg"></i>
                     <span x-show="open" class="text-sm font-medium">Komunitas</span>
                 </a>
                 
-                {{-- Berita Link --}}
-                <a href="/berita" class="flex items-center gap-3 p-3 rounded-lg sidebar-item-hover whitespace-nowrap w-full" :class="open ? (active === 'berita' ? 'bg-white/20 text-white shadow-lg' : 'hover:bg-white/20 text-white') : (active === 'berita' ? 'bg-white/20 text-white justify-center' : 'hover:bg-white/20 text-white justify-center')">
-                    <i class="fas fa-newspaper text-lg"></i>
-                    <span x-show="open" class="text-sm font-medium">Berita</span>
+                {{-- Riwayat Sampah Link --}}
+                <a href="{{ route('sampahnasabah') }}" class="flex items-center gap-3 p-3 rounded-lg sidebar-item-hover whitespace-nowrap w-full" :class="open ? (active === 'sampah' ? 'bg-white/20 text-white shadow-lg' : 'hover:bg-white/20 text-white') : (active === 'sampah' ? 'bg-white/20 text-white justify-center' : 'hover:bg-white/20 text-white justify-center')">
+                    <i class="fas fa-trash-alt text-lg"></i>
+                    <span x-show="open" class="text-sm font-medium">Riwayat Sampah</span>
                 </a>
                 
-                {{-- Keuangan Link --}}
-                <a href="/keuangan" class="flex items-center gap-3 p-3 rounded-lg sidebar-item-hover whitespace-nowrap w-full" :class="open ? (active === 'keuangan' ? 'bg-white/20 text-white shadow-lg' : 'hover:bg-white/20 text-white') : (active === 'keuangan' ? 'bg-white/20 text-white justify-center' : 'hover:bg-white/20 text-white justify-center')">
-                    <i class="fas fa-file-invoice-dollar text-lg"></i>
-                    <span x-show="open" class="text-sm font-medium">Keuangan</span>
+                {{-- Poin Mu Link --}}
+                <a href="{{ route('poin-nasabah') }}" class="flex items-center gap-3 p-3 rounded-lg sidebar-item-hover whitespace-nowrap w-full" :class="open ? (active === 'poin' ? 'bg-white/20 text-white shadow-lg' : 'hover:bg-white/20 text-white') : (active === 'poin' ? 'bg-white/20 text-white justify-center' : 'hover:bg-white/20 text-white justify-center')">
+                    <i class="fas fa-coins text-lg"></i>
+                    <span x-show="open" class="text-sm font-medium">Poin Mu</span>
                 </a>
                 
-                {{-- Pesan Link --}}
-                <a href="/chat" class="flex items-center gap-3 p-3 rounded-lg sidebar-item-hover whitespace-nowrap w-full" :class="open ? (active === 'chat' ? 'bg-white/20 text-white shadow-lg' : 'hover:bg-white/20 text-white') : (active === 'chat' ? 'bg-white/20 text-white justify-center' : 'hover:bg-white/20 text-white justify-center')">
-                    <i class="fas fa-comment-dots text-lg"></i>
-                    <span x-show="open" class="text-sm font-medium">Pesan</span>
+                {{-- Riwayat Transaksi Link --}}
+                <a href="{{ route('riwayattransaksinasabah') }}" class="flex items-center gap-3 p-3 rounded-lg sidebar-item-hover whitespace-nowrap w-full" :class="open ? (active === 'transaksi' ? 'bg-white/20 text-white shadow-lg' : 'hover:bg-white/20 text-white') : (active === 'transaksi' ? 'bg-white/20 text-white justify-center' : 'hover:bg-white/20 text-white justify-center')">
+                    <i class="fas fa-history text-lg"></i>
+                    <span x-show="open" class="text-sm font-medium">Riwayat Transaksi</span>
                 </a>
                 
-                {{-- Umpan Balik Link --}}
-                <a href="/feedback" class="flex items-center gap-3 p-3 rounded-lg sidebar-item-hover whitespace-nowrap w-full" :class="open ? (active === 'feedback' ? 'bg-white/20 text-white shadow-lg' : 'hover:bg-white/20 text-white') : (active === 'feedback' ? 'bg-white/20 text-white justify-center' : 'hover:bg-white/20 text-white justify-center')">
-                    <i class="fas fa-info-circle text-lg"></i>
-                    <span x-show="open" class="text-sm font-medium">Umpan Balik</span>
+                {{-- Marketplace Link --}}
+                <a href="{{ route('tokou') }}" class="flex items-center gap-3 p-3 rounded-lg sidebar-item-hover whitespace-nowrap w-full" :class="open ? (active === 'marketplace' ? 'bg-white/20 text-white shadow-lg' : 'hover:bg-white/20 text-white') : (active === 'marketplace' ? 'bg-white/20 text-white justify-center' : 'hover:bg-white/20 text-white justify-center')">
+                    <i class="fas fa-store text-lg"></i>
+                    <span x-show="open" class="text-sm font-medium">Marketplace</span>
                 </a>
                 
                 {{-- Settings Link --}}
-                <a href="/settings" class="flex items-center gap-3 p-3 rounded-lg sidebar-item-hover whitespace-nowrap w-full" :class="open ? (active === 'settings' ? 'bg-white/20 text-white shadow-lg' : 'hover:bg-white/20 text-white') : (active === 'settings' ? 'bg-white/20 text-white justify-center' : 'hover:bg-white/20 text-white justify-center')">
+                <a href="{{ route('settings') }}" class="flex items-center gap-3 p-3 rounded-lg sidebar-item-hover whitespace-nowrap w-full" :class="open ? (active === 'settings' ? 'bg-white/20 text-white shadow-lg' : 'hover:bg-white/20 text-white') : (active === 'settings' ? 'bg-white/20 text-white justify-center' : 'hover:bg-white/20 text-white justify-center')">
                     <i class="fas fa-cog text-lg"></i>
                     <span x-show="open" class="text-sm font-medium">Settings</span>
                 </a>
@@ -339,7 +327,7 @@
             
             {{-- Logout Section --}}
             <div class="w-full flex items-center py-3 mt-auto">
-                <a href="/logout" class="flex items-center gap-3 p-3 rounded-lg sidebar-item-hover text-white hover:text-red-300 transition-all duration-200 w-full whitespace-nowrap" :class="open ? (active === 'logout' ? 'bg-white/20 text-white shadow-lg' : 'hover:bg-white/20 text-white') : (active === 'logout' ? 'bg-white/20 text-white justify-center' : 'hover:bg-white/20 text-white justify-center')">
+                <a href="{{ route('logout') }}" class="flex items-center gap-3 p-3 rounded-lg sidebar-item-hover text-white hover:text-red-300 transition-all duration-200 w-full whitespace-nowrap" :class="open ? (active === 'logout' ? 'bg-white/20 text-white shadow-lg' : 'hover:bg-white/20 text-white') : (active === 'logout' ? 'bg-white/20 text-white justify-center' : 'hover:bg-white/20 text-white justify-center')">
                     <i class="fas fa-sign-out-alt text-lg"></i>
                     <span x-show="open" class="text-sm font-medium">Logout</span>
                 </a>
@@ -357,7 +345,7 @@
         <div class="fixed-header">
             <h1 class="text-white font-semibold text-lg">BijakSampah</h1>
             <div class="flex items-center gap-4">
-                <a href="/notifikasi" class="relative">
+                <a href="{{ route('notifikasi') }}" class="relative">
                     <i class="far fa-bell text-white text-sm"></i>
                     <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center font-medium">2</span>
                 </a>
@@ -365,7 +353,7 @@
                     <i class="fas fa-search text-white text-sm"></i>
                 </button>
                 <div class="flex items-center gap-2">
-                    <a href="/profile" class="w-8 h-8 rounded-full overflow-hidden flex items-center justify-center border-2 border-gray-300">
+                    <a href="{{ route('profile') }}" class="w-8 h-8 rounded-full overflow-hidden flex items-center justify-center border-2 border-gray-300">
                         <img src="{{ asset('asset/img/user_profile.jpg') }}" alt="Profile" class="w-full h-full object-cover">
                     </a>
                     <i class="fas fa-chevron-down text-white text-xs"></i>

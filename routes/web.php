@@ -116,6 +116,118 @@ Route::get('/test-theme', function () {
     return view('test-theme');
 })->name('test-theme');
 
+
 Route::get('/demo-theme', function () {
     return view('demo-theme');
 })->name('demo-theme');
+
+Route::get('/poin-nasabah', function () {
+    return view('poin-nasabah');
+})->name('poin-nasabah');
+
+Route::get('/non-nasabah-register', function () {
+    return view('non-nasabah-register');
+})->name('non-nasabah-register');
+
+Route::get('/non-nasabah-dashboard', function () {
+    return view('non-nasabah-dashboard');
+})->name('non-nasabah-dashboard');
+
+Route::get('/poin-non-nasabah', function () {
+    return view('poin-non-nasabah');
+})->name('poin-non-nasabah');
+
+Route::get('/pilihan-login', function () {
+    return view('pilihan-login');
+})->name('pilihan-login');
+
+Route::get('/dashboard-banksampah', function () {
+    return view('dashboard-banksampah');
+})->name('dashboard-banksampah');
+
+Route::get('/data-nasabah-banksampah', function () {
+    return view('data-nasabah-banksampah');
+})->name('data-nasabah-banksampah');
+
+Route::get('/profile-nasabah', function () {
+    return view('profile-nasabah');
+})->name('profile-nasabah');
+
+Route::get('/penjemputan-sampah-banksampah', function () {
+    return view('penjemputan-sampah-banksampah');
+})->name('penjemputan-sampah-banksampah');
+
+Route::get('/nasabahdashboard', function () {
+    return view('nasabahdashboard');
+})->name('nasabahdashboard');
+
+Route::get('/nasabahregister', function () {
+    return view('nasabahregister');
+})->name('nasabahregister');
+
+Route::get('/sampahnasabah', function () {
+    return view('sampahnasabah');
+})->name('sampahnasabah');
+
+Route::get('/nasabahkomunitas', function () {
+    return view('nasabahkomunitas');
+})->name('nasabahkomunitas');
+
+Route::get('/riwayattransaksinasabah', function () {
+    return view('riwayattransaksinasabah');
+})->name('riwayattransaksinasabah');
+
+Route::get('/tokou', function () {
+    return view('tokou');
+})->name('tokou');
+
+
+Route::get('/penimbangansampah-banksampah', function () {
+    return view('penimbangansampah-banksampah');
+})->name('penimbangansampah-banksampah');
+
+Route::get('/datasampah-banksampah', function () {
+    return view('datasampah-banksampah');
+})->name('datasampah-banksampah');
+
+Route::get('/penjualansampah-banksampah', function () {
+    return view('penjualansampah-banksampah');
+})->name('penjualansampah-banksampah');
+
+Route::get('/verifikasi-nasabah-banksampah', function () {
+    return view('verifikasi-nasabah-banksampah');
+})->name('verifikasi-nasabah-banksampah');
+
+Route::post('/send-verification-email', function (Request $request) {
+    // Validasi input
+    $request->validate([
+        'to' => 'required|email',
+        'name' => 'required|string',
+        'accountNumber' => 'required|string',
+        'deviceId' => 'required|string',
+        'jenisBak' => 'required|string',
+        'noBak' => 'required|string',
+        'email' => 'required|email'
+    ]);
+
+    try {
+        // Data email
+        $emailData = $request->all();
+        
+        // Kirim email menggunakan Laravel Mail
+        \Mail::send('emails.verification-success', $emailData, function($message) use ($emailData) {
+            $message->to($emailData['to'])
+                    ->subject('Verifikasi Nasabah Bijak Sampah - Berhasil');
+        });
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Email verifikasi berhasil dikirim'
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Gagal mengirim email: ' . $e->getMessage()
+        ], 500);
+    }
+})->name('send-verification-email');

@@ -830,8 +830,8 @@
       <a href="/kontakld">Kontak</a>
     </nav>
     <div class="buttons">
-      <a href="#" class="masuk"><i class="fas fa-sign-in-alt"></i> Masuk</a>
-      <a href="#" class="daftar"><i class="fas fa-user-plus"></i> Daftar</a>
+      <a href="{{ route('pilihan-login') }}" class="masuk"><i class="fas fa-sign-in-alt"></i> Masuk</a>
+      <a href="{{ route('pilihan-login') }}" class="daftar"><i class="fas fa-user-plus"></i> Daftar</a>
     </div>
   </header>
 
