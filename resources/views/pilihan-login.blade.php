@@ -1070,7 +1070,7 @@
                     redirectUrl = "{{ route('nasabahdashboard') }}";
                     break;
                 case "UMKM":
-                    redirectUrl = "{{ route('toko') }}";
+                    redirectUrl = "{{ route('dashboard') }}";
                     break;
                 case "Non Nasabah":
                     redirectUrl = "{{ route('non-nasabah-dashboard') }}";

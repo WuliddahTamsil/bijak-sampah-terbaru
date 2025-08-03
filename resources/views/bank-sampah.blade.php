@@ -165,7 +165,7 @@
                 
                 {{-- Bank Sampah Link --}}
                 <a href="{{ route('bank-sampah') }}" class="flex items-center gap-3 p-3 rounded-lg sidebar-item-hover whitespace-nowrap w-full" :class="open ? (active === 'bank-sampah' ? 'bg-white/20 text-white shadow-lg' : 'hover:bg-white/20 text-white') : (active === 'bank-sampah' ? 'bg-white/20 text-white justify-center' : 'hover:bg-white/20 text-white justify-center')">
-                    <i class="fas fa-recycle text-lg"></i>
+                <i class="fas fa-tachometer-alt text-lg"></i>
                     <span x-show="open" class="text-sm font-medium">Bank Sampah</span>
                 </a>
                 
