@@ -117,6 +117,16 @@
             border-spacing: 0;
         }
 
+        /* Hide scrollbar for sidebar */
+        .sidebar-banksampah-gradient nav {
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* Internet Explorer 10+ */
+        }
+        
+        .sidebar-banksampah-gradient nav::-webkit-scrollbar {
+            display: none; /* Chrome, Safari, Opera */
+        }
+
         .data-table thead th {
             background-color: #f8fafc;
             color: #64748b;
@@ -589,6 +599,601 @@
             }
         }
 
+        /* Content Container */
+        .content-container {
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Welcome Section */
+        .welcome-section {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .eco-score-card {
+            background: white;
+            border-radius: 50%;
+            width: 120px;
+            height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 25px rgba(117, 230, 218, 0.3);
+            border: 4px solid #75E6DA;
+        }
+
+        .eco-score-circle {
+            text-align: center;
+        }
+
+        .eco-score-number {
+            display: block;
+            font-size: 2rem;
+            font-weight: 700;
+            color: #05445E;
+            line-height: 1;
+        }
+
+        .eco-score-label {
+            display: block;
+            font-size: 0.8rem;
+            color: #666;
+            margin-top: 0.25rem;
+        }
+
+        /* Quick Actions Grid */
+        .quick-actions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .action-card {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            border: 2px solid transparent;
+        }
+
+        .action-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            border-color: #75E6DA;
+        }
+
+        .action-card.primary-action {
+            background: linear-gradient(135deg, #75E6DA 0%, #05445E 100%);
+            color: white;
+        }
+
+        .action-card.primary-action:hover {
+            background: linear-gradient(135deg, #05445E 0%, #75E6DA 100%);
+        }
+
+        .action-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: #05445E;
+        }
+
+        .action-card.primary-action .action-icon {
+            color: white;
+        }
+
+        .action-card h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .action-card p {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .action-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: #FF5A5F;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        /* Section Headers */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #05445E;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .view-all-btn {
+            background: #75E6DA;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .view-all-btn:hover {
+            background: #05445E;
+            transform: translateY(-2px);
+        }
+
+        /* Eco Challenge Section */
+        .challenge-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .challenge-card {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .challenge-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .challenge-card.active {
+            border-color: #75E6DA;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        }
+
+        .challenge-progress {
+            flex-shrink: 0;
+        }
+
+        .progress-circle {
+            position: relative;
+            width: 60px;
+            height: 60px;
+        }
+
+        .progress-circle svg {
+            width: 100%;
+            height: 100%;
+            transform: rotate(-90deg);
+        }
+
+        .progress-circle path:first-child {
+            fill: none;
+            stroke: #e2e8f0;
+            stroke-width: 3;
+        }
+
+        .progress-circle path:last-child {
+            fill: none;
+            stroke: #75E6DA;
+            stroke-width: 3;
+            stroke-linecap: round;
+            transition: stroke-dasharray 0.5s ease;
+        }
+
+        .progress-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #05445E;
+        }
+
+        .challenge-content {
+            flex: 1;
+        }
+
+        .challenge-content h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #05445E;
+        }
+
+        .challenge-content p {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 0.75rem;
+        }
+
+        .challenge-reward {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.8rem;
+            color: #f16728;
+            font-weight: 600;
+        }
+
+        /* Waste Calculator Section */
+        .calculator-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        .calculator-card {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .calculator-card h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #05445E;
+        }
+
+        .calculator-inputs {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .input-group label {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #555;
+        }
+
+        .input-group input {
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .input-group input:focus {
+            border-color: #75E6DA;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(117, 230, 218, 0.2);
+        }
+
+        .calculate-btn {
+            background: linear-gradient(135deg, #75E6DA 0%, #05445E 100%);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .calculate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(117, 230, 218, 0.3);
+        }
+
+        .impact-results {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border-radius: 16px;
+            padding: 1.5rem;
+            border: 2px solid #75E6DA;
+        }
+
+        .impact-results h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #05445E;
+        }
+
+        .impact-metrics {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .metric {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .metric i {
+            color: #75E6DA;
+            font-size: 1.2rem;
+        }
+
+        .metric span {
+            font-weight: 600;
+            color: #05445E;
+        }
+
+        /* Eco Tips Section */
+        .tips-carousel {
+            position: relative;
+            margin-bottom: 1rem;
+        }
+
+        .tip-card {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .tip-card.active {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .tip-icon {
+            flex-shrink: 0;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #75E6DA 0%, #05445E 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        .tip-content {
+            flex: 1;
+        }
+
+        .tip-content h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #05445E;
+        }
+
+        .tip-content p {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+
+        .tip-stats {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .tip-stats span {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            font-size: 0.8rem;
+            color: #f16728;
+            font-weight: 600;
+        }
+
+        .tips-navigation {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .nav-btn {
+            background: #75E6DA;
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .nav-btn:hover {
+            background: #05445E;
+            transform: scale(1.1);
+        }
+
+        .tip-indicators {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #ddd;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .indicator.active {
+            background: #75E6DA;
+            transform: scale(1.2);
+        }
+
+        /* Community Events Section */
+        .events-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .event-card {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .event-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .event-date {
+            flex-shrink: 0;
+            text-align: center;
+            background: linear-gradient(135deg, #75E6DA 0%, #05445E 100%);
+            color: white;
+            padding: 1rem;
+            border-radius: 12px;
+            min-width: 80px;
+        }
+
+        .event-date .day {
+            display: block;
+            font-size: 1.5rem;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .event-date .month {
+            display: block;
+            font-size: 0.8rem;
+            opacity: 0.9;
+        }
+
+        .event-content {
+            flex: 1;
+        }
+
+        .event-content h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #05445E;
+        }
+
+        .event-content p {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 0.75rem;
+        }
+
+        .event-location,
+        .event-participants {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.8rem;
+            color: #666;
+            margin-bottom: 0.25rem;
+        }
+
+        .join-event-btn {
+            background: #75E6DA;
+            color: white;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 20px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.8rem;
+        }
+
+        .join-event-btn:hover {
+            background: #05445E;
+            transform: translateY(-2px);
+        }
+
+        /* Responsive Design for New Features */
+        @media (max-width: 768px) {
+            .quick-actions-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .challenge-cards {
+                grid-template-columns: 1fr;
+            }
+            
+            .calculator-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .events-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .tip-card.active {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .tip-stats {
+                justify-content: center;
+            }
+        }
+
         /* Full width adjustments */
         @media (min-width: 1200px) {
             .main-content {
@@ -633,7 +1238,7 @@
         </div>
         
             {{-- Navigation Menu --}}
-            <nav class="flex flex-col gap-2 w-full flex-1 overflow-y-auto">
+            <nav class="flex flex-col gap-2 w-full flex-1">
                 <a 
                     href="{{ route('non-nasabah-dashboard') }}" 
                     class="flex items-center p-3 font-medium rounded-lg whitespace-nowrap w-full transition-colors duration-200 bg-white/20 shadow-sm"
@@ -726,67 +1331,330 @@
             <h1 class="text-white font-semibold text-lg" style="position: absolute; left: 1.5rem;">BijakSampah</h1>
             <div class="flex items-center gap-4" style="position: absolute; right: 1.5rem;">
                 <button onclick="showDevelopmentModal('Sign In')" class="bg-white/20 hover:bg-white/30 text-white px-4 py-1 rounded-full text-sm font-medium transition-colors duration-200">Sign in</button>
-                <button onclick="showDevelopmentModal('Notification')" class="relative hover:text-white/80 transition-colors">
+                <button onclick="showNotifModal()" class="relative hover:text-white/80 transition-colors">
                     <i class="far fa-bell text-white text-sm"></i>
                     <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center font-medium">2</span>
                 </button>
-                <button onclick="showDevelopmentModal('Search')" class="focus:outline-none hover:text-white/80 transition-colors">
+                <button onclick="showSearchModal()" class="focus:outline-none hover:text-white/80 transition-colors">
                     <i class="fas fa-search text-white text-sm"></i>
                 </button>
                 <div class="flex items-center gap-2">
-                    <button onclick="showDevelopmentModal('Profile')" class="w-8 h-8 rounded-full overflow-hidden flex items-center justify-center border-2 border-gray-300 cursor-pointer hover:border-white/50 transition-colors">
+                    <button onclick="showProfileModal()" class="w-8 h-8 rounded-full overflow-hidden flex items-center justify-center border-2 border-gray-300 cursor-pointer hover:border-white/50 transition-colors">
                         <img src="https://ui-avatars.com/api/?name=Non+Nasabah&background=75E6DA&color=05445E" alt="Profile" class="w-full h-full object-cover">
                     </button>
                     <button onclick="showDevelopmentModal('Profile Menu')" class="hover:text-white/80 transition-colors">
                         <i class="fas fa-chevron-down text-white text-xs"></i>
                     </button>
-            </div>
                 </div>
-                </div>
-
-        <div class="p-6" style="padding-top: 20px; width: 100%; max-width: 100%;">
-            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4" style="width: 100%;">
-                <div style="width: 100%;">
-                    <h1 class="text-2xl font-bold text-gray-800">Dashboard - User Biasa</h1>
-                    <p class="text-sm text-gray-500">Selamat datang di marketplace daur ulang</p>
             </div>
         </div>
 
-            {{-- Notifikasi Section --}}
-            <div class="mb-8" style="width: 100%;">
-                <h2 class="text-2xl font-bold text-gray-800 mb-4">Notifikasi</h2>
-                <div class="notif-cards" id="notifContainer" style="width: 100%;">
-            <!-- Notifikasi akan dimuat di sini -->
-                </div>
-        </div>
-
-            {{-- Aktivitas Section --}}
-        <div class="chart-section">
-                <div class="flex justify-between items-center mb-4">
+        {{-- Content Container --}}
+        <div class="content-container">
+            {{-- Welcome Section with Eco Score --}}
+            <div class="welcome-section mb-8">
+                <div class="flex items-center justify-between mb-6">
                     <div>
-                        <h2 class="text-2xl font-bold text-gray-800 mb-2">Aktivitasmu</h2>
-                        <p class="text-sm text-gray-500">Minggu Lalu</p>
-            </div>
-                    <div class="flex items-center gap-4">
-                        <div class="bg-green-100 text-green-800 px-4 py-2 rounded-full text-sm font-semibold">
-                            Hurraaahhh! Super Productive
+                        <h1 class="text-3xl font-bold text-gray-800 mb-2">Selamat Datang! 🌱</h1>
+                        <p class="text-gray-600">Mulai perjalanan ramah lingkunganmu bersama BijakSampah</p>
+                    </div>
+                    <div class="eco-score-card">
+                        <div class="eco-score-circle">
+                            <span class="eco-score-number">75</span>
+                            <span class="eco-score-label">Eco Score</span>
                         </div>
-                        <div class="text-2xl font-bold text-green-600">97%</div>
-                        <button class="bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded-lg text-sm font-medium transition-colors">
-                            Bulan <i class="fas fa-chevron-down ml-1"></i>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Quick Actions Grid --}}
+            <div class="quick-actions-grid mb-8">
+                <div class="action-card primary-action" onclick="showEcoChallenge()">
+                    <div class="action-icon">
+                        <i class="fas fa-seedling"></i>
+                    </div>
+                    <h3>Eco Challenge</h3>
+                    <p>Ikuti tantangan ramah lingkungan</p>
+                    <div class="action-badge">Baru!</div>
+                </div>
+                
+                <div class="action-card" onclick="showWasteCalculator()">
+                    <div class="action-icon">
+                        <i class="fas fa-calculator"></i>
+                    </div>
+                    <h3>Kalkulator Sampah</h3>
+                    <p>Hitung dampak lingkunganmu</p>
+                </div>
+                
+                <div class="action-card" onclick="showEcoTips()">
+                    <div class="action-icon">
+                        <i class="fas fa-lightbulb"></i>
+                    </div>
+                    <h3>Tips Hijau</h3>
+                    <p>Tips ramah lingkungan harian</p>
+                </div>
+                
+                <div class="action-card" onclick="showCommunityEvents()">
+                    <div class="action-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3>Event Komunitas</h3>
+                    <p>Bergabung dengan komunitas hijau</p>
+                </div>
+            </div>
+
+            {{-- Eco Challenge Section --}}
+            <div class="eco-challenge-section mb-8">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <i class="fas fa-trophy"></i>
+                        Tantangan Minggu Ini
+                    </h2>
+                    <button onclick="showAllChallenges()" class="view-all-btn">Lihat Semua</button>
+                </div>
+                
+                <div class="challenge-cards">
+                    <div class="challenge-card active">
+                        <div class="challenge-progress">
+                            <div class="progress-circle">
+                                <svg viewBox="0 0 36 36">
+                                    <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                                    <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" stroke-dasharray="75, 100"/>
+                                </svg>
+                                <span class="progress-text">75%</span>
+                            </div>
+                        </div>
+                        <div class="challenge-content">
+                            <h3>Kurangi Sampah Plastik</h3>
+                            <p>Gunakan tas belanja reusable selama 7 hari</p>
+                            <div class="challenge-reward">
+                                <i class="fas fa-star"></i>
+                                <span>+50 Poin Eco</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="challenge-card">
+                        <div class="challenge-progress">
+                            <div class="progress-circle">
+                                <svg viewBox="0 0 36 36">
+                                    <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                                    <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" stroke-dasharray="30, 100"/>
+                                </svg>
+                                <span class="progress-text">30%</span>
+                            </div>
+                        </div>
+                        <div class="challenge-content">
+                            <h3>Kompos Organik</h3>
+                            <p>Buat kompos dari sampah dapur</p>
+                            <div class="challenge-reward">
+                                <i class="fas fa-star"></i>
+                                <span>+100 Poin Eco</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Waste Calculator Section --}}
+            <div class="waste-calculator-section mb-8">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <i class="fas fa-chart-pie"></i>
+                        Kalkulator Dampak Lingkungan
+                    </h2>
+                </div>
+                
+                <div class="calculator-grid">
+                    <div class="calculator-card">
+                        <h3>Hitung Sampah Harian</h3>
+                        <div class="calculator-inputs">
+                            <div class="input-group">
+                                <label>Botol Plastik</label>
+                                <input type="number" id="plasticBottles" min="0" value="2">
+                            </div>
+                            <div class="input-group">
+                                <label>Kantong Plastik</label>
+                                <input type="number" id="plasticBags" min="0" value="3">
+                            </div>
+                            <div class="input-group">
+                                <label>Sampah Organik (kg)</label>
+                                <input type="number" id="organicWaste" min="0" value="0.5">
+                            </div>
+                        </div>
+                        <button onclick="calculateWasteImpact()" class="calculate-btn">
+                            <i class="fas fa-calculator"></i>
+                            Hitung Dampak
                         </button>
+                    </div>
+                    
+                    <div class="impact-results" id="impactResults">
+                        <h3>Hasil Perhitungan</h3>
+                        <div class="impact-metrics">
+                            <div class="metric">
+                                <i class="fas fa-leaf"></i>
+                                <span>CO2: 2.5 kg</span>
+                            </div>
+                            <div class="metric">
+                                <i class="fas fa-tree"></i>
+                                <span>Pohon: 0.3</span>
+                            </div>
+                            <div class="metric">
+                                <i class="fas fa-recycle"></i>
+                                <span>Recycle: 60%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Eco Tips Section --}}
+            <div class="eco-tips-section mb-8">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <i class="fas fa-lightbulb"></i>
+                        Tips Hijau Hari Ini
+                    </h2>
+                </div>
+                
+                <div class="tips-carousel">
+                    <div class="tip-card active">
+                        <div class="tip-icon">
+                            <i class="fas fa-utensils"></i>
+                        </div>
+                        <div class="tip-content">
+                            <h3>Bawa Kotak Makan Sendiri</h3>
+                            <p>Mengurangi sampah sekali pakai hingga 80% dan menghemat uang!</p>
+                            <div class="tip-stats">
+                                <span><i class="fas fa-leaf"></i> -2kg CO2/hari</span>
+                                <span><i class="fas fa-coins"></i> Hemat Rp 15.000/minggu</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="tip-card">
+                        <div class="tip-icon">
+                            <i class="fas fa-bicycle"></i>
+                        </div>
+                        <div class="tip-content">
+                            <h3>Bersepeda ke Pasar</h3>
+                            <p>Selain sehat, juga mengurangi emisi karbon dan polusi udara</p>
+                            <div class="tip-stats">
+                                <span><i class="fas fa-leaf"></i> -1.5kg CO2/trip</span>
+                                <span><i class="fas fa-heart"></i> +30 menit olahraga</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tips-navigation">
+                    <button onclick="previousTip()" class="nav-btn">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <div class="tip-indicators">
+                        <span class="indicator active"></span>
+                        <span class="indicator"></span>
+                    </div>
+                    <button onclick="nextTip()" class="nav-btn">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            {{-- Community Events Section --}}
+            <div class="community-events-section mb-8">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <i class="fas fa-calendar-alt"></i>
+                        Event Komunitas Terdekat
+                    </h2>
+                </div>
+                
+                <div class="events-grid">
+                    <div class="event-card">
+                        <div class="event-date">
+                            <span class="day">25</span>
+                            <span class="month">Jun</span>
+                        </div>
+                        <div class="event-content">
+                            <h3>Clean Up Day</h3>
+                            <p>Bersih-bersih pantai bersama komunitas</p>
+                            <div class="event-location">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>Pantai Kuta, Bali</span>
+                            </div>
+                            <div class="event-participants">
+                                <i class="fas fa-users"></i>
+                                <span>45 peserta terdaftar</span>
+                            </div>
+                        </div>
+                        <button class="join-event-btn">Bergabung</button>
+                    </div>
+                    
+                    <div class="event-card">
+                        <div class="event-date">
+                            <span class="day">28</span>
+                            <span class="month">Jun</span>
+                        </div>
+                        <div class="event-content">
+                            <h3>Workshop Kompos</h3>
+                            <p>Belajar membuat kompos dari sampah dapur</p>
+                            <div class="event-location">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>Kebun Raya Bogor</span>
+                            </div>
+                            <div class="event-participants">
+                                <i class="fas fa-users"></i>
+                                <span>32 peserta terdaftar</span>
+                            </div>
+                        </div>
+                        <button class="join-event-btn">Bergabung</button>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Original Content (Notifications & Charts) --}}
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                {{-- Notifications Section --}}
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-bell"></i>
+                            Notifikasi Terbaru
+                        </h3>
+                        <button onclick="showNotifModal()" class="card-btn">
+                            <i class="fas fa-cog"></i>
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <div id="notifContainer" class="notif-cards">
+                            <!-- Notifications will be loaded here -->
+                        </div>
                     </div>
                 </div>
 
-            <div class="chart-content" id="chart-content">
-                <!-- Grafik akan dimuat di sini -->
+                {{-- Activity Chart Section --}}
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-chart-bar"></i>
+                            Aktivitas Mingguan
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container">
+                            <div id="chart-content" class="chart-content">
+                                <!-- Chart will be generated here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
 
-        <div class="footer">
-            Created by <strong>TEK(G)</strong> | All Right Reserved!
+            {{-- Footer --}}
+            <div class="footer">
+                <p>&copy; 2025 <strong>BijakSampah</strong>. Membuat dunia lebih hijau, satu sampah pada satu waktu.</p>
             </div>
-        </div>
         </div>
     </div>
 
@@ -1218,36 +2086,233 @@
         }
 
         // Show Development Modal
-        function showDevelopmentModal(featureName) {
+        function showDevelopmentModal(feature) {
             const modal = document.getElementById('developmentModal');
             const title = modal.querySelector('.modal-title');
-            title.textContent = `${featureName} - Fitur Dalam Pengembangan`;
+            title.textContent = feature + ' - Fitur Dalam Pengembangan';
             modal.style.display = 'flex';
         }
 
         // Close Development Modal
-        document.getElementById('closeDevelopmentModal').addEventListener('click', function() {
-            document.getElementById('developmentModal').style.display = 'none';
-        });
-
         document.getElementById('closeDevModal').addEventListener('click', function() {
             document.getElementById('developmentModal').style.display = 'none';
         });
 
-        // Close modal when clicking outside
-        window.addEventListener('click', function(event) {
-            const developmentModal = document.getElementById('developmentModal');
-            if (event.target === developmentModal) {
-                developmentModal.style.display = 'none';
+        // Initialize everything when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            loadNotifications();
+            generateChart();
+            initializeTipsCarousel();
+            initializeEcoScore();
+        });
+
+        // Eco Challenge Functions
+        function showEcoChallenge() {
+            showDevelopmentModal('Eco Challenge');
+        }
+
+        function showAllChallenges() {
+            showDevelopmentModal('Semua Tantangan');
+        }
+
+        // Waste Calculator Functions
+        function showWasteCalculator() {
+            // Scroll to calculator section
+            document.querySelector('.waste-calculator-section').scrollIntoView({ 
+                behavior: 'smooth' 
+            });
+        }
+
+        function calculateWasteImpact() {
+            const plasticBottles = parseInt(document.getElementById('plasticBottles').value) || 0;
+            const plasticBags = parseInt(document.getElementById('plasticBags').value) || 0;
+            const organicWaste = parseFloat(document.getElementById('organicWaste').value) || 0;
+
+            // Calculate impact (simplified calculations)
+            const co2Impact = (plasticBottles * 0.5) + (plasticBags * 0.3) + (organicWaste * 2.5);
+            const treeEquivalent = co2Impact / 8; // 1 tree absorbs ~8kg CO2/year
+            const recycleRate = Math.min(100, ((plasticBottles + plasticBags) * 10) + (organicWaste * 50));
+
+            // Update results
+            const impactResults = document.getElementById('impactResults');
+            impactResults.innerHTML = `
+                <h3>Hasil Perhitungan</h3>
+                <div class="impact-metrics">
+                    <div class="metric">
+                        <i class="fas fa-leaf"></i>
+                        <span>CO2: ${co2Impact.toFixed(1)} kg</span>
+                    </div>
+                    <div class="metric">
+                        <i class="fas fa-tree"></i>
+                        <span>Pohon: ${treeEquivalent.toFixed(1)}</span>
+                    </div>
+                    <div class="metric">
+                        <i class="fas fa-recycle"></i>
+                        <span>Recycle: ${Math.min(100, recycleRate.toFixed(0))}%</span>
+                    </div>
+                </div>
+            `;
+
+            // Animate the results
+            impactResults.style.animation = 'fadeIn 0.5s ease';
+        }
+
+        // Eco Tips Functions
+        function showEcoTips() {
+            // Scroll to tips section
+            document.querySelector('.eco-tips-section').scrollIntoView({ 
+                behavior: 'smooth' 
+            });
+        }
+
+        let currentTipIndex = 0;
+        const tips = [
+            {
+                icon: 'fas fa-utensils',
+                title: 'Bawa Kotak Makan Sendiri',
+                description: 'Mengurangi sampah sekali pakai hingga 80% dan menghemat uang!',
+                stats: [
+                    { icon: 'fas fa-leaf', text: '-2kg CO2/hari' },
+                    { icon: 'fas fa-coins', text: 'Hemat Rp 15.000/minggu' }
+                ]
+            },
+            {
+                icon: 'fas fa-bicycle',
+                title: 'Bersepeda ke Pasar',
+                description: 'Selain sehat, juga mengurangi emisi karbon dan polusi udara',
+                stats: [
+                    { icon: 'fas fa-leaf', text: '-1.5kg CO2/trip' },
+                    { icon: 'fas fa-heart', text: '+30 menit olahraga' }
+                ]
+            },
+            {
+                icon: 'fas fa-tint',
+                title: 'Gunakan Air Keran',
+                description: 'Mengurangi sampah botol plastik dan menghemat biaya air minum',
+                stats: [
+                    { icon: 'fas fa-leaf', text: '-1kg CO2/hari' },
+                    { icon: 'fas fa-coins', text: 'Hemat Rp 50.000/bulan' }
+                ]
+            },
+            {
+                icon: 'fas fa-seedling',
+                title: 'Tanam Sayuran Sendiri',
+                description: 'Fresh, organic, dan mengurangi transportasi makanan',
+                stats: [
+                    { icon: 'fas fa-leaf', text: '-0.5kg CO2/minggu' },
+                    { icon: 'fas fa-coins', text: 'Hemat Rp 100.000/bulan' }
+                ]
+            }
+        ];
+
+        function initializeTipsCarousel() {
+            showTip(0);
+        }
+
+        function showTip(index) {
+            const tipCards = document.querySelectorAll('.tip-card');
+            const indicators = document.querySelectorAll('.indicator');
+            
+            // Hide all tips
+            tipCards.forEach(card => card.classList.remove('active'));
+            indicators.forEach(indicator => indicator.classList.remove('active'));
+            
+            // Show current tip
+            if (tipCards[index]) {
+                tipCards[index].classList.add('active');
+                indicators[index].classList.add('active');
+            }
+            
+            currentTipIndex = index;
+        }
+
+        function nextTip() {
+            currentTipIndex = (currentTipIndex + 1) % tips.length;
+            showTip(currentTipIndex);
+        }
+
+        function previousTip() {
+            currentTipIndex = (currentTipIndex - 1 + tips.length) % tips.length;
+            showTip(currentTipIndex);
+        }
+
+        // Community Events Functions
+        function showCommunityEvents() {
+            // Scroll to events section
+            document.querySelector('.community-events-section').scrollIntoView({ 
+                behavior: 'smooth' 
+            });
+        }
+
+        // Add event listeners for join buttons
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('join-event-btn')) {
+                showDevelopmentModal('Bergabung Event');
             }
         });
 
-        // Initialize when DOM is ready
+        // Eco Score Functions
+        function initializeEcoScore() {
+            // Animate eco score on load
+            const ecoScoreNumber = document.querySelector('.eco-score-number');
+            if (ecoScoreNumber) {
+                let currentScore = 0;
+                const targetScore = 75;
+                const increment = targetScore / 50;
+                
+                const timer = setInterval(() => {
+                    currentScore += increment;
+                    if (currentScore >= targetScore) {
+                        currentScore = targetScore;
+                        clearInterval(timer);
+                    }
+                    ecoScoreNumber.textContent = Math.floor(currentScore);
+                }, 50);
+            }
+        }
+
+        // Challenge Progress Animation
+        function animateChallengeProgress() {
+            const progressPaths = document.querySelectorAll('.progress-circle path:last-child');
+            progressPaths.forEach((path, index) => {
+                const progress = index === 0 ? 75 : 30;
+                const circumference = 2 * Math.PI * 15.9155;
+                const offset = circumference - (progress / 100) * circumference;
+                path.style.strokeDasharray = `${circumference} ${circumference}`;
+                path.style.strokeDashoffset = offset;
+            });
+        }
+
+        // Initialize challenge animations
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('DOM loaded, initializing...');
-        loadNotifications();
-        generateChart();
-            updateNotificationCount();
+            setTimeout(animateChallengeProgress, 1000);
+        });
+
+        // Add smooth scrolling for all internal links
+        document.addEventListener('click', function(e) {
+            if (e.target.matches('[onclick*="scrollIntoView"]')) {
+                e.preventDefault();
+            }
+        });
+
+        // Add loading animations
+        function addLoadingAnimations() {
+            const cards = document.querySelectorAll('.action-card, .challenge-card, .event-card');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                
+                setTimeout(() => {
+                    card.style.transition = 'all 0.5s ease';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+        }
+
+        // Initialize loading animations
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(addLoadingAnimations, 500);
         });
     </script>
 </body>

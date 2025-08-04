@@ -81,15 +81,49 @@
     .border-gray-300 { border-color: var(--border-secondary) !important; }
     .bg-gray-50 { background-color: var(--bg-secondary) !important; }
     .bg-white { background-color: var(--bg-primary) !important; }
+    
+    /* Sidebar overlay styles */
+    .sidebar-overlay {
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0, 0, 0, 0.5); z-index: 45; opacity: 0; visibility: hidden;
+        transition: all 0.3s ease;
+    }
+    .sidebar-overlay.active { opacity: 1; visibility: visible; }
+    
+    /* Main content wrapper styles */
+    .main-content-wrapper {
+        min-height: 100vh;
+        background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #f1f5f9 100%);
+        padding-top: 60px; 
+        padding-left: 4rem; 
+        padding-right: 0;
+        transition: padding-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative; 
+        overflow-x: hidden;
+        width: 100%;
+        scroll-behavior: smooth;
+    }
+    .content-container { 
+        width: 100%; 
+        margin: 0; 
+        padding: 2rem; 
+        position: relative; 
+        z-index: 1; 
+        box-sizing: border-box;
+        scroll-behavior: smooth;
+    }
 </style>
 <div class="flex min-h-screen" style="background-color: var(--bg-secondary);" x-data="settingsApp()" x-init="init()">
+    {{-- Sidebar Overlay --}}
+    <div class="sidebar-overlay" :class="{ 'active': sidebarOpen }" @click="sidebarOpen = false"></div>
+
     {{-- Sidebar --}}
     <aside
         x-data="{ open: false, active: 'settings' }"
         x-ref="sidebar"
         @mouseenter="open = true; $root.sidebarOpen = true"
         @mouseleave="open = false; $root.sidebarOpen = false"
-        class="fixed top-0 left-0 z-20 flex flex-col py-6 sidebar-hover overflow-hidden shadow-2xl group sidebar-gradient"
+        class="fixed top-0 left-0 z-50 flex flex-col py-6 sidebar-hover overflow-hidden shadow-2xl group sidebar-gradient"
         :class="open ? 'w-64' : 'w-16'"
         style="transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1); margin-top: 48px; height: calc(100vh - 48px);"
     >
@@ -103,51 +137,39 @@
             {{-- Navigation Menu --}}
             <nav class="flex flex-col gap-2 w-full flex-1">
                 {{-- Dashboard Link --}}
-                <a href="{{ route('dashboard') }}" class="flex items-center gap-3 p-3 font-medium sidebar-nav-item whitespace-nowrap w-full" :class="open ? (active === 'dashboard' ? 'active text-white' : 'text-white') : (active === 'dashboard' ? 'active text-white justify-center' : 'text-white justify-center')">
+                <a href="{{ route('nasabahdashboard') }}" class="flex items-center gap-3 p-3 font-medium sidebar-nav-item whitespace-nowrap w-full" :class="open ? (active === 'dashboard' ? 'active text-white' : 'text-white') : (active === 'dashboard' ? 'active text-white justify-center' : 'text-white justify-center')">
                     <i class="fas fa-home text-lg"></i>
                     <span x-show="open" class="text-sm font-medium">Dashboard</span>
                 </a>
                 
-                {{-- Bank Sampah Link --}}
-                <a href="{{ route('bank-sampah') }}" class="flex items-center gap-3 p-3 rounded-lg sidebar-item-hover whitespace-nowrap w-full" :class="open ? (active === 'bank-sampah' ? 'bg-white/20 text-white shadow-lg' : 'hover:bg-white/20 text-white') : (active === 'bank-sampah' ? 'bg-white/20 text-white justify-center' : 'hover:bg-white/20 text-white justify-center')">
-                    <i class="fas fa-tachometer-alt text-lg"></i>
-                    <span x-show="open" class="text-sm font-medium">Bank Sampah</span>
-                </a>
-                
-                {{-- Toko Link --}}
-                <a href="{{ route('toko') }}" class="flex items-center gap-3 p-3 rounded-lg sidebar-item-hover whitespace-nowrap w-full" :class="open ? (active === 'toko' ? 'bg-white/20 text-white shadow-lg' : 'hover:bg-white/20 text-white') : (active === 'toko' ? 'bg-white/20 text-white justify-center' : 'hover:bg-white/20 text-white justify-center')">
-                    <i class="fas fa-store text-lg"></i>
-                    <span x-show="open" class="text-sm font-medium">Toko</span>
-                </a>
-                
                 {{-- Komunitas Link --}}
-                <a href="{{ route('komunitas') }}" class="flex items-center gap-3 p-3 rounded-lg sidebar-item-hover whitespace-nowrap w-full" :class="open ? (active === 'komunitas' ? 'bg-white/20 text-white shadow-lg' : 'hover:bg-white/20 text-white') : (active === 'komunitas' ? 'bg-white/20 text-white justify-center' : 'hover:bg-white/20 text-white justify-center')">
+                <a href="{{ route('nasabahkomunitas') }}" class="flex items-center gap-3 p-3 rounded-lg sidebar-item-hover whitespace-nowrap w-full" :class="open ? (active === 'komunitas' ? 'bg-white/20 text-white shadow-lg' : 'hover:bg-white/20 text-white') : (active === 'komunitas' ? 'bg-white/20 text-white justify-center' : 'hover:bg-white/20 text-white justify-center')">
                     <i class="fas fa-users text-lg"></i>
                     <span x-show="open" class="text-sm font-medium">Komunitas</span>
                 </a>
                 
-                {{-- Berita Link --}}
-                <a href="{{ route('berita') }}" class="flex items-center gap-3 p-3 rounded-lg sidebar-item-hover whitespace-nowrap w-full" :class="open ? (active === 'berita' ? 'bg-white/20 text-white shadow-lg' : 'hover:bg-white/20 text-white') : (active === 'berita' ? 'bg-white/20 text-white justify-center' : 'hover:bg-white/20 text-white justify-center')">
-                    <i class="fas fa-newspaper text-lg"></i>
-                    <span x-show="open" class="text-sm font-medium">Berita</span>
+                {{-- Penjemputan Sampah Link --}}
+                <a href="{{ route('sampahnasabah') }}" class="flex items-center gap-3 p-3 rounded-lg sidebar-item-hover whitespace-nowrap w-full" :class="open ? (active === 'penjemputan' ? 'bg-white/20 text-white shadow-lg' : 'hover:bg-white/20 text-white') : (active === 'penjemputan' ? 'bg-white/20 text-white justify-center' : 'hover:bg-white/20 text-white justify-center')">
+                    <i class="fas fa-trash-alt text-lg"></i>
+                    <span x-show="open" class="text-sm font-medium">Penjemputan Sampah</span>
                 </a>
                 
-                {{-- Keuangan Link --}}
-                <a href="{{ route('keuangan') }}" class="flex items-center gap-3 p-3 rounded-lg sidebar-item-hover whitespace-nowrap w-full" :class="open ? (active === 'keuangan' ? 'bg-white/20 text-white shadow-lg' : 'hover:bg-white/20 text-white') : (active === 'keuangan' ? 'bg-white/20 text-white justify-center' : 'hover:bg-white/20 text-white justify-center')">
-                    <i class="fas fa-file-invoice-dollar text-lg"></i>
-                    <span x-show="open" class="text-sm font-medium">Keuangan</span>
+                {{-- Poin Link --}}
+                <a href="{{ route('poin-nasabah') }}" class="flex items-center gap-3 p-3 rounded-lg sidebar-item-hover whitespace-nowrap w-full" :class="open ? (active === 'poin' ? 'bg-white/20 text-white shadow-lg' : 'hover:bg-white/20 text-white') : (active === 'poin' ? 'bg-white/20 text-white justify-center' : 'hover:bg-white/20 text-white justify-center')">
+                    <i class="fas fa-coins text-lg"></i>
+                    <span x-show="open" class="text-sm font-medium">Poin Mu</span>
                 </a>
                 
-                {{-- Pesan Link --}}
-                <a href="{{ route('chat') }}" class="flex items-center gap-3 p-3 rounded-lg sidebar-item-hover whitespace-nowrap w-full" :class="open ? (active === 'chat' ? 'bg-white/20 text-white shadow-lg' : 'hover:bg-white/20 text-white') : (active === 'pesan' ? 'bg-white/20 text-white justify-center' : 'hover:bg-white/20 text-white justify-center')">
-                    <i class="fas fa-comment-dots text-lg"></i>
-                    <span x-show="open" class="text-sm font-medium">Pesan</span>
+                {{-- Riwayat Transaksi Link --}}
+                <a href="{{ route('riwayattransaksinasabah') }}" class="flex items-center gap-3 p-3 rounded-lg sidebar-item-hover whitespace-nowrap w-full" :class="open ? (active === 'riwayat-transaksi' ? 'bg-white/20 text-white shadow-lg' : 'hover:bg-white/20 text-white') : (active === 'riwayat-transaksi' ? 'bg-white/20 text-white justify-center' : 'hover:bg-white/20 text-white justify-center')">
+                    <i class="fas fa-history text-lg"></i>
+                    <span x-show="open" class="text-sm font-medium">Riwayat Transaksi</span>
                 </a>
                 
-                {{-- Umpan Balik Link --}}
-                <a href="{{ route('feedback') }}" class="flex items-center gap-3 p-3 rounded-lg sidebar-item-hover whitespace-nowrap w-full" :class="open ? (active === 'feedback' ? 'bg-white/20 text-white shadow-lg' : 'hover:bg-white/20 text-white') : (active === 'umpan-balik' ? 'bg-white/20 text-white justify-center' : 'hover:bg-white/20 text-white justify-center')">
-                    <i class="fas fa-info-circle text-lg"></i>
-                    <span x-show="open" class="text-sm font-medium">Umpan Balik</span>
+                {{-- Marketplace Link --}}
+                <a href="{{ route('tokou') }}" class="flex items-center gap-3 p-3 rounded-lg sidebar-item-hover whitespace-nowrap w-full" :class="open ? (active === 'marketplace' ? 'bg-white/20 text-white shadow-lg' : 'hover:bg-white/20 text-white') : (active === 'marketplace' ? 'bg-white/20 text-white justify-center' : 'hover:bg-white/20 text-white justify-center')">
+                    <i class="fas fa-store text-lg"></i>
+                    <span x-show="open" class="text-sm font-medium">Marketplace</span>
                 </a>
                 
                 {{-- Settings Link --}}
@@ -166,29 +188,33 @@
             </div>
         </div>
     </aside>
-         {{-- Main Content Area --}}
-     <div class="flex-1 min-h-screen" style="background-color: var(--bg-primary);" :style="'padding-left:' + (sidebarOpen ? '16rem' : '4rem') + '; transition: padding-left 0.3s cubic-bezier(0.4,0,0.2,1);'">
+
+    {{-- Main Content Area --}}
+    <div class="main-content-wrapper">
         {{-- Top Header Bar --}}
-        <div class="fixed-header" :style="'padding-left:' + (sidebarOpen ? '16rem' : '4rem') + ';'">
+        <div class="fixed-header">
             <h1 class="text-white font-semibold text-lg">BijakSampah</h1>
             <div class="flex items-center gap-4">
-                <a href="{{ route('notifikasi') }}" class="relative">
+                <button onclick="showDevelopmentModal('Notification')" class="relative hover:text-white/80 transition-colors">
                     <i class="far fa-bell text-white text-sm"></i>
                     <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center font-medium">2</span>
-                </a>
-                <button class="focus:outline-none">
+                </button>
+                <button onclick="showDevelopmentModal('Search')" class="focus:outline-none hover:text-white/80 transition-colors">
                     <i class="fas fa-search text-white text-sm"></i>
                 </button>
                 <div class="flex items-center gap-2">
-                    <a href="{{ route('profile') }}" class="w-8 h-8 rounded-full overflow-hidden flex items-center justify-center border-2 border-gray-300">
-                        <img src="{{ asset('asset/img/user_profile.jpg') }}" alt="Profile" class="w-full h-full object-cover">
-                    </a>
-                    <i class="fas fa-chevron-down text-white text-xs"></i>
+                    <button onclick="showDevelopmentModal('Profile')" class="w-8 h-8 rounded-full overflow-hidden flex items-center justify-center border-2 border-gray-300 cursor-pointer hover:border-white/50 transition-colors">
+                        <img src="https://ui-avatars.com/api/?name=Non+Nasabah&background=75E6DA&color=05445E" alt="Profile" class="w-full h-full object-cover">
+                    </button>
+                    <button onclick="showDevelopmentModal('Profile Menu')" class="hover:text-white/80 transition-colors">
+                        <i class="fas fa-chevron-down text-white text-xs"></i>
+                    </button>
                 </div>
             </div>
         </div>
-        {{-- Main Content --}}
-        <div class="p-8 w-full" style="padding-top: 60px;">
+        
+        {{-- Content Container --}}
+        <div class="content-container">
             {{-- Settings Title --}}
             <div class="mb-8">
                 <h1 class="text-3xl font-bold text-gray-900" x-text="labels.settings"></h1>
@@ -628,4 +654,5 @@ function settingsApp() {
     };
 }
 </script>
+</div>
 @endsection 

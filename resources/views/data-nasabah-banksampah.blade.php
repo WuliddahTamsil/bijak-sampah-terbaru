@@ -63,57 +63,99 @@
       userAvatar.src = user.photoURL || 'https://ui-avatars.com/api/?name=Admin&background=75E6DA&color=05445E';
     };
 
-    // Fungsi untuk memuat data nasabah dari Firebase
+    // Data nasabah manual untuk window.loadCustomerData
+    const windowManualCustomers = [
+      {
+        nama: 'Wuliddah Tamsil',
+        alamat: 'Jl. Sudirman No. 123',
+        kota: 'Jakarta',
+        email: 'wuliddah.tamsil@email.com',
+        telepon: '081234567890',
+        status: 'aktif'
+      },
+      {
+        nama: 'Titing',
+        alamat: 'Jl. Thamrin No. 456',
+        kota: 'Jakarta',
+        email: 'titing@email.com',
+        telepon: '081234567891',
+        status: 'aktif'
+      },
+      {
+        nama: 'Santoso',
+        alamat: 'Jl. Gatot Subroto No. 789',
+        kota: 'Jakarta',
+        email: 'santoso@email.com',
+        telepon: '081234567892',
+        status: 'aktif'
+      },
+      {
+        nama: 'Dani Wardani',
+        alamat: 'Jl. Sudirman No. 321',
+        kota: 'Bandung',
+        email: 'dani.wardani@email.com',
+        telepon: '081234567893',
+        status: 'aktif'
+      },
+      {
+        nama: 'Jaka Nugraha',
+        alamat: 'Jl. Asia Afrika No. 654',
+        kota: 'Bandung',
+        email: 'jaka.nugraha@email.com',
+        telepon: '081234567894',
+        status: 'aktif'
+      },
+      {
+        nama: 'Farhanudin',
+        alamat: 'Jl. Merdeka No. 987',
+        kota: 'Surabaya',
+        email: 'farhanudin@email.com',
+        telepon: '081234567895',
+        status: 'aktif'
+      }
+    ];
+
+    // Fungsi untuk memuat data nasabah (menggunakan data manual)
     window.loadCustomerData = () => {
       console.log('Loading customer data...');
-      const customersRef = ref(database, 'nasabah'); // Mengambil data dari koleksi 'nasabah'
-      
-      onValue(customersRef, (snapshot) => {
-        const customersTableBody = document.getElementById('customersTableBody');
-        customersTableBody.innerHTML = ''; // Hapus spinner atau data lama
+      const customersTableBody = document.getElementById('customersTableBody');
+      customersTableBody.innerHTML = ''; // Hapus spinner atau data lama
 
-        if (snapshot.exists()) {
-          const customers = snapshot.val();
-          let totalCustomers = 0;
-          let activeCustomers = 0;
-          let inactiveCustomers = 0;
+      // Menggunakan data manual
+      let totalCustomers = 0;
+      let activeCustomers = 0;
+      let inactiveCustomers = 0;
 
-          // Mengambil semua nasabah, termasuk sub-node jika ada
-          Object.keys(customers).forEach(key => {
-            const customer = customers[key];
-            if (customer) {
-              totalCustomers++;
-              if (customer.status === 'aktif') {
-                activeCustomers++;
-              } else {
-                inactiveCustomers++;
-              }
-
-              const row = document.createElement('tr');
-              row.innerHTML = `
-                <td><a href="#" class="customer-name-link">${customer.nama}</a></td>
-                <td>${customer.alamat || 'N/A'}</td>
-                <td>${customer.kota || 'N/A'}</td>
-                <td>${customer.email || 'N/A'}</td>
-                <td>${customer.telepon || 'N/A'}</td>
-                <td><span class="status ${customer.status === 'aktif' ? 'active' : 'inactive'}">${customer.status}</span></td>
-              `;
-              customersTableBody.appendChild(row);
-            }
-          });
-
-          // Update stats cards
-          document.getElementById('totalCustomers').textContent = totalCustomers;
-          document.getElementById('activeCustomers').textContent = activeCustomers;
-          document.getElementById('inactiveCustomers').textContent = inactiveCustomers;
-
+      // Menampilkan data nasabah manual
+      windowManualCustomers.forEach(customer => {
+        totalCustomers++;
+        if (customer.status === 'aktif') {
+          activeCustomers++;
         } else {
-          customersTableBody.innerHTML = '<tr><td colspan="6" class="text-center">Tidak ada data nasabah.</td></tr>';
+          inactiveCustomers++;
         }
-      }, (error) => {
-        console.error('Error loading customer data:', error);
-        customersTableBody.innerHTML = '<tr><td colspan="6" class="text-center text-red-500">Gagal memuat data.</td></tr>';
+
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td><a href="#" class="customer-name-link">${customer.nama}</a></td>
+          <td>${customer.alamat || 'N/A'}</td>
+          <td>${customer.kota || 'N/A'}</td>
+          <td>${customer.email || 'N/A'}</td>
+          <td>${customer.telepon || 'N/A'}</td>
+          <td><span class="status ${customer.status === 'aktif' ? 'active' : 'inactive'}">${customer.status}</span></td>
+        `;
+        customersTableBody.appendChild(row);
       });
+
+      // Update stats cards
+      document.getElementById('totalCustomers').textContent = totalCustomers;
+      document.getElementById('activeCustomers').textContent = activeCustomers;
+      document.getElementById('inactiveCustomers').textContent = inactiveCustomers;
+
+      // Jika tidak ada data, tampilkan pesan
+      if (windowManualCustomers.length === 0) {
+        customersTableBody.innerHTML = '<tr><td colspan="6" class="text-center">Tidak ada data nasabah.</td></tr>';
+      }
     };
 
     // Fungsi untuk toggle dropdown
@@ -809,12 +851,7 @@
           </tr>
         </thead>
         <tbody id="customersTableBody">
-          <tr>
-            <td colspan="6" class="loading-container">
-              <div class="spinner"></div>
-              <span style="margin-left: 10px;">Memuat data nasabah...</span>
-            </td>
-          </tr>
+          <!-- Data nasabah akan dimuat di sini -->
         </tbody>
       </table>
             </div>
@@ -823,58 +860,99 @@
   </div>
 
   <script>
-    // Fungsi untuk memuat data nasabah dari Firebase (perbaikan)
-    // Sisa fungsi lainnya dari file asli sudah benar, jadi tidak perlu diubah
+    // Data nasabah manual
+    const manualCustomers = [
+      {
+        nama: 'Wuliddah Tamsil',
+        alamat: 'Jl. Sudirman No. 123',
+        kota: 'Jakarta',
+        email: 'wuliddah.tamsil@email.com',
+        telepon: '081234567890',
+        status: 'aktif'
+      },
+      {
+        nama: 'Titing',
+        alamat: 'Jl. Thamrin No. 456',
+        kota: 'Jakarta',
+        email: 'titing@email.com',
+        telepon: '081234567891',
+        status: 'aktif'
+      },
+      {
+        nama: 'Santoso',
+        alamat: 'Jl. Gatot Subroto No. 789',
+        kota: 'Jakarta',
+        email: 'santoso@email.com',
+        telepon: '081234567892',
+        status: 'aktif'
+      },
+      {
+        nama: 'Dani Wardani',
+        alamat: 'Jl. Sudirman No. 321',
+        kota: 'Bandung',
+        email: 'dani.wardani@email.com',
+        telepon: '081234567893',
+        status: 'aktif'
+      },
+      {
+        nama: 'Jaka Nugraha',
+        alamat: 'Jl. Asia Afrika No. 654',
+        kota: 'Bandung',
+        email: 'jaka.nugraha@email.com',
+        telepon: '081234567894',
+        status: 'aktif'
+      },
+      {
+        nama: 'Farhanudin',
+        alamat: 'Jl. Merdeka No. 987',
+        kota: 'Surabaya',
+        email: 'farhanudin@email.com',
+        telepon: '081234567895',
+        status: 'aktif'
+      }
+    ];
+
+    // Fungsi untuk memuat data nasabah (menggunakan data manual)
     const loadCustomerData = () => {
       console.log('Loading customer data...');
-      const customersRef = ref(database, 'nasabah'); // Mengambil data dari koleksi 'nasabah'
-      
-      onValue(customersRef, (snapshot) => {
-        const customersTableBody = document.getElementById('customersTableBody');
-        customersTableBody.innerHTML = ''; // Hapus spinner atau data lama
+      const customersTableBody = document.getElementById('customersTableBody');
+      customersTableBody.innerHTML = ''; // Hapus spinner atau data lama
 
-        if (snapshot.exists()) {
-          const customers = snapshot.val();
-          let totalCustomers = 0;
-          let activeCustomers = 0;
-          let inactiveCustomers = 0;
+      // Menggunakan data manual
+      let totalCustomers = 0;
+      let activeCustomers = 0;
+      let inactiveCustomers = 0;
 
-          // Mengambil semua nasabah, termasuk sub-node jika ada
-          Object.keys(customers).forEach(key => {
-            const customer = customers[key];
-            if (customer) {
-              totalCustomers++;
-              if (customer.status === 'aktif') {
-                activeCustomers++;
-              } else {
-                inactiveCustomers++;
-              }
-
-              const row = document.createElement('tr');
-              row.innerHTML = `
-                <td><a href="#" class="customer-name-link">${customer.nama}</a></td>
-                <td>${customer.alamat || 'N/A'}</td>
-                <td>${customer.kota || 'N/A'}</td>
-                <td>${customer.email || 'N/A'}</td>
-                <td>${customer.telepon || 'N/A'}</td>
-                <td><span class="status ${customer.status === 'aktif' ? 'active' : 'inactive'}">${customer.status}</span></td>
-              `;
-              customersTableBody.appendChild(row);
-            }
-          });
-
-          // Update stats cards
-          document.getElementById('totalCustomers').textContent = totalCustomers;
-          document.getElementById('activeCustomers').textContent = activeCustomers;
-          document.getElementById('inactiveCustomers').textContent = inactiveCustomers;
-
+      // Menampilkan data nasabah manual
+      manualCustomers.forEach(customer => {
+        totalCustomers++;
+        if (customer.status === 'aktif') {
+          activeCustomers++;
         } else {
-          customersTableBody.innerHTML = '<tr><td colspan="6" class="text-center">Tidak ada data nasabah.</td></tr>';
+          inactiveCustomers++;
         }
-      }, (error) => {
-        console.error('Error loading customer data:', error);
-        customersTableBody.innerHTML = '<tr><td colspan="6" class="text-center text-red-500">Gagal memuat data.</td></tr>';
+
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td><a href="#" class="customer-name-link">${customer.nama}</a></td>
+          <td>${customer.alamat || 'N/A'}</td>
+          <td>${customer.kota || 'N/A'}</td>
+          <td>${customer.email || 'N/A'}</td>
+          <td>${customer.telepon || 'N/A'}</td>
+          <td><span class="status ${customer.status === 'aktif' ? 'active' : 'inactive'}">${customer.status}</span></td>
+        `;
+        customersTableBody.appendChild(row);
       });
+
+      // Update stats cards
+      document.getElementById('totalCustomers').textContent = totalCustomers;
+      document.getElementById('activeCustomers').textContent = activeCustomers;
+      document.getElementById('inactiveCustomers').textContent = inactiveCustomers;
+
+      // Jika tidak ada data, tampilkan pesan
+      if (manualCustomers.length === 0) {
+        customersTableBody.innerHTML = '<tr><td colspan="6" class="text-center">Tidak ada data nasabah.</td></tr>';
+      }
     };
 
     // Panggil fungsi ini saat DOM selesai dimuat

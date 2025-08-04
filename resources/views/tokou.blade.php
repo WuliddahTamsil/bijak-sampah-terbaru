@@ -281,122 +281,77 @@
     }
 </style>
 
-<div class="flex min-h-screen bg-gray-50" x-data="sidebarData">
+<div class="flex min-h-screen bg-gray-50" x-data="{ sidebarOpen: false }">
     {{-- Sidebar Overlay --}}
     <div class="sidebar-overlay" :class="{ 'active': sidebarOpen }" @click="sidebarOpen = false"></div>
 
     {{-- Sidebar --}}
-     {{-- Sidebar --}}
-     <aside 
-        class="fixed top-0 left-0 z-40 flex flex-col py-6 overflow-hidden shadow-2xl group sidebar-banksampah-gradient text-white"
-        :class="sidebarOpen ? 'w-[250px]' : 'w-16'"
-        style="transition: width 0.3s ease; height: 100vh; background: linear-gradient(135deg, #75E6DA 0%, #05445E 30%, #05445E 100%);"
+    <aside
+        x-data="{ open: false, active: 'marketplace' }"
+        x-ref="sidebar"
+        @mouseenter="open = true; $root.sidebarOpen = true"
+        @mouseleave="open = false; $root.sidebarOpen = false"
+        class="fixed top-0 left-0 z-50 flex flex-col py-6 sidebar-hover overflow-hidden shadow-2xl group sidebar-gradient"
+        :class="open ? 'w-64' : 'w-16'"
+        style="transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1); margin-top: 48px; height: calc(100vh - 48px);"
     >
         <div class="relative flex flex-col h-full w-full px-4">
-            
-            {{-- Logo Section with Toggle Button --}}
-            <div class="flex items-center justify-center mb-8 mt-14" :class="sidebarOpen ? 'justify-between' : 'justify-center'">
-                <div class="flex items-center justify-center gap-2" :class="sidebarOpen ? 'flex-1' : ''">
-                    <template x-if="sidebarOpen">
-                        <img class="w-32 h-auto" src="{{ asset('asset/img/logo1.png') }}" alt="Logo Penuh">
-                    </template>
-                    <template x-if="!sidebarOpen">
-                        <img class="sidebar-logo-small" src="{{ asset('asset/img/logo.png') }}" alt="Logo Kecil">
-                    </template>
-                    {{-- Toggle Button --}}
-                    <button 
-                        @click="sidebarOpen = !sidebarOpen"
-                        class="p-1 rounded-full bg-white/20 hover:bg-white/30 transition-colors duration-200 text-white z-50"
-                        :class="sidebarOpen ? 'rotate-180' : ''"
-                        style="transition: transform 0.3s ease;"
-                    >
-                        <i class="fas fa-chevron-left text-sm"></i>
-                    </button>
-                </div>
+            {{-- Logo Section --}}
+            <div class="flex items-center justify-center mb-8 mt-2 sidebar-logo">
+                <img x-show="open" class="w-32 h-auto" src="{{ asset('asset/img/logo1.png') }}" alt="Logo Penuh">
+                <img x-show="!open" class="w-6 h-6" src="{{ asset('asset/img/logo.png') }}" alt="Logo Ikon">
             </div>
             
             {{-- Navigation Menu --}}
-            <nav class="flex flex-col gap-2 w-full flex-1 overflow-y-auto">
-                <a 
-                    href="{{ route('nasabahdashboard') }}" 
-                    class="flex items-center p-3 font-medium rounded-lg whitespace-nowrap w-full transition-colors duration-200 hover:bg-white/10 hover:shadow-sm"
-                    :style="sidebarOpen ? 'gap: 12px;' : 'justify-content: center; padding-left: 0; padding-right: 0;'"
-                    @click="activeMenu = 'dashboard'"
-                >
+            <nav class="flex flex-col gap-2 w-full flex-1">
+                {{-- Dashboard Link --}}
+                <a href="{{ route('nasabahdashboard') }}" class="flex items-center gap-3 p-3 font-medium sidebar-nav-item whitespace-nowrap w-full" :class="open ? (active === 'dashboard' ? 'active text-white' : 'text-white') : (active === 'dashboard' ? 'active text-white justify-center' : 'text-white justify-center')">
                     <i class="fas fa-home text-lg"></i>
-                    <span x-show="sidebarOpen" class="text-sm font-medium">Dashboard</span>
+                    <span x-show="open" class="text-sm font-medium">Dashboard</span>
                 </a>
-
-                <a 
-                    href="{{ route('nasabahkomunitas') }}" 
-                    class="flex items-center p-3 font-medium rounded-lg whitespace-nowrap w-full transition-colors duration-200 hover:bg-white/10 hover:shadow-sm"
-                    :style="sidebarOpen ? 'gap: 12px;' : 'justify-content: center;'"
-                    @click="activeMenu = 'komunitas'"
-                >
+                
+                {{-- Komunitas Link --}}
+                <a href="{{ route('nasabahkomunitas') }}" class="flex items-center gap-3 p-3 rounded-lg sidebar-item-hover whitespace-nowrap w-full" :class="open ? (active === 'komunitas' ? 'bg-white/20 text-white shadow-lg' : 'hover:bg-white/20 text-white') : (active === 'komunitas' ? 'bg-white/20 text-white justify-center' : 'hover:bg-white/20 text-white justify-center')">
                     <i class="fas fa-users text-lg"></i>
-                    <span x-show="sidebarOpen" class="text-sm font-medium">Komunitas</span>
+                    <span x-show="open" class="text-sm font-medium">Komunitas</span>
                 </a>
-
-                <a 
-                    href="{{ route('sampahnasabah') }}" 
-                    class="flex items-center p-3 font-medium rounded-lg whitespace-nowrap w-full transition-colors duration-200 hover:bg-white/10 hover:shadow-sm"
-                    :style="sidebarOpen ? 'gap: 12px;' : 'justify-content: center;'"
-                    @click="activeMenu = 'penjemputan'"
-                >
+                
+                {{-- Penjemputan Sampah Link --}}
+                <a href="{{ route('sampahnasabah') }}" class="flex items-center gap-3 p-3 rounded-lg sidebar-item-hover whitespace-nowrap w-full" :class="open ? (active === 'penjemputan' ? 'bg-white/20 text-white shadow-lg' : 'hover:bg-white/20 text-white') : (active === 'penjemputan' ? 'bg-white/20 text-white justify-center' : 'hover:bg-white/20 text-white justify-center')">
                     <i class="fas fa-trash-alt text-lg"></i>
-                    <span x-show="sidebarOpen" class="text-sm font-medium">Penjemputan Sampah</span>
+                    <span x-show="open" class="text-sm font-medium">Penjemputan Sampah</span>
                 </a>
-
-                <a 
-                    href="{{ route('poin-nasabah') }}" 
-                    class="flex items-center p-3 font-medium rounded-lg whitespace-nowrap w-full transition-colors duration-200 hover:bg-white/10 hover:shadow-sm"
-                    :style="sidebarOpen ? 'gap: 12px;' : 'justify-content: center;'"
-                    @click="activeMenu = 'poin'"
-                >
+                
+                {{-- Poin Link --}}
+                <a href="{{ route('poin-nasabah') }}" class="flex items-center gap-3 p-3 rounded-lg sidebar-item-hover whitespace-nowrap w-full" :class="open ? (active === 'poin' ? 'bg-white/20 text-white shadow-lg' : 'hover:bg-white/20 text-white') : (active === 'poin' ? 'bg-white/20 text-white justify-center' : 'hover:bg-white/20 text-white justify-center')">
                     <i class="fas fa-coins text-lg"></i>
-                    <span x-show="sidebarOpen" class="text-sm font-medium">Poin Mu</span>
+                    <span x-show="open" class="text-sm font-medium">Poin Mu</span>
                 </a>
-
-                <a 
-                    href="{{ route('riwayattransaksinasabah') }}" 
-                    class="flex items-center p-3 font-medium rounded-lg whitespace-nowrap w-full transition-colors duration-200 bg-white/20 shadow-sm"
-                    :style="sidebarOpen ? 'gap: 12px;' : 'justify-content: center;'"
-                    @click="activeMenu = 'riwayat-transaksi'"
-                >
+                
+                {{-- Riwayat Transaksi Link --}}
+                <a href="{{ route('riwayattransaksinasabah') }}" class="flex items-center gap-3 p-3 rounded-lg sidebar-item-hover whitespace-nowrap w-full" :class="open ? (active === 'riwayat-transaksi' ? 'bg-white/20 text-white shadow-lg' : 'hover:bg-white/20 text-white') : (active === 'riwayat-transaksi' ? 'bg-white/20 text-white justify-center' : 'hover:bg-white/20 text-white justify-center')">
                     <i class="fas fa-history text-lg"></i>
-                    <span x-show="sidebarOpen" class="text-sm font-medium">Riwayat Transaksi</span>
+                    <span x-show="open" class="text-sm font-medium">Riwayat Transaksi</span>
                 </a>
-
-                <a 
-                    href="{{ route('tokou') }}" 
-                    class="flex items-center p-3 font-medium rounded-lg whitespace-nowrap w-full transition-colors duration-200 hover:bg-white/10 hover:shadow-sm"
-                    :style="sidebarOpen ? 'gap: 12px;' : 'justify-content: center;'"
-                    @click="activeMenu = 'marketplace'"
-                >
+                
+                {{-- Marketplace Link --}}
+                <a href="{{ route('tokou') }}" class="flex items-center gap-3 p-3 rounded-lg sidebar-item-hover whitespace-nowrap w-full" :class="open ? (active === 'marketplace' ? 'bg-white/20 text-white shadow-lg' : 'hover:bg-white/20 text-white') : (active === 'marketplace' ? 'bg-white/20 text-white justify-center' : 'hover:bg-white/20 text-white justify-center')">
                     <i class="fas fa-store text-lg"></i>
-                    <span x-show="sidebarOpen" class="text-sm font-medium">Marketplace</span>
+                    <span x-show="open" class="text-sm font-medium">Marketplace</span>
                 </a>
-
-                <a 
-                    href="{{ route('settings') }}" 
-                    class="flex items-center p-3 font-medium rounded-lg whitespace-nowrap w-full transition-colors duration-200 hover:bg-white/10 hover:shadow-sm"
-                    :style="sidebarOpen ? 'gap: 12px;' : 'justify-content: center;'"
-                    @click="activeMenu = 'settings'"
-                >
+                
+                {{-- Settings Link --}}
+                <a href="{{ route('settings') }}" class="flex items-center gap-3 p-3 rounded-lg sidebar-item-hover whitespace-nowrap w-full" :class="open ? (active === 'settings' ? 'bg-white/20 text-white shadow-lg' : 'hover:bg-white/20 text-white') : (active === 'settings' ? 'bg-white/20 text-white justify-center' : 'hover:bg-white/20 text-white justify-center')">
                     <i class="fas fa-cog text-lg"></i>
-                    <span x-show="sidebarOpen" class="text-sm font-medium">Settings</span>
+                    <span x-show="open" class="text-sm font-medium">Settings</span>
                 </a>
             </nav>
             
             {{-- Logout Section --}}
-            <div class="w-full flex items-center py-3 mt-auto border-t border-white/20">
-                <a 
-                    href="{{ route('logout') }}" 
-                    class="flex items-center p-3 rounded-lg hover:bg-white/10 hover:shadow-sm text-white transition-all duration-200 w-full whitespace-nowrap"
-                    :style="sidebarOpen ? 'gap: 12px;' : 'justify-content: center;'"
-                >
+            <div class="w-full flex items-center py-3 mt-auto">
+                <a href="{{ route('logout') }}" class="flex items-center gap-3 p-3 rounded-lg sidebar-item-hover text-white hover:text-red-300 transition-all duration-200 w-full whitespace-nowrap" :class="open ? (active === 'logout' ? 'bg-white/20 text-white shadow-lg' : 'hover:bg-white/20 text-white') : (active === 'logout' ? 'bg-white/20 text-white justify-center' : 'hover:bg-white/20 text-white justify-center')">
                     <i class="fas fa-sign-out-alt text-lg"></i>
-                    <span x-show="sidebarOpen" class="text-sm font-medium">Logout</span>
+                    <span x-show="open" class="text-sm font-medium">Logout</span>
                 </a>
             </div>
         </div>
@@ -404,26 +359,24 @@
 
     {{-- Main Content Area --}}
     <div class="main-content-wrapper">
-        {{-- Decorative Elements --}}
-        <div class="decorative-element top-right"></div>
-        <div class="decorative-element bottom-left"></div>
-        
         {{-- Top Header Bar --}}
         <div class="fixed-header">
             <h1 class="text-white font-semibold text-lg">BijakSampah</h1>
             <div class="flex items-center gap-4">
-                <a href="{{ route('notifikasi') }}" class="relative">
+                <button onclick="showDevelopmentModal('Notification')" class="relative hover:text-white/80 transition-colors">
                     <i class="far fa-bell text-white text-sm"></i>
                     <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center font-medium">2</span>
-                </a>
-                <button class="focus:outline-none">
+                </button>
+                <button onclick="showDevelopmentModal('Search')" class="focus:outline-none hover:text-white/80 transition-colors">
                     <i class="fas fa-search text-white text-sm"></i>
                 </button>
                 <div class="flex items-center gap-2">
-                    <a href="{{ route('profile') }}" class="w-8 h-8 rounded-full overflow-hidden flex items-center justify-center border-2 border-gray-300">
-                        <img src="{{ asset('asset/img/user_profile.jpg') }}" alt="Profile" class="w-full h-full object-cover">
-                    </a>
-                    <i class="fas fa-chevron-down text-white text-xs"></i>
+                    <button onclick="showDevelopmentModal('Profile')" class="w-8 h-8 rounded-full overflow-hidden flex items-center justify-center border-2 border-gray-300 cursor-pointer hover:border-white/50 transition-colors">
+                        <img src="https://ui-avatars.com/api/?name=Non+Nasabah&background=75E6DA&color=05445E" alt="Profile" class="w-full h-full object-cover">
+                    </button>
+                    <button onclick="showDevelopmentModal('Profile Menu')" class="hover:text-white/80 transition-colors">
+                        <i class="fas fa-chevron-down text-white text-xs"></i>
+                    </button>
                 </div>
             </div>
         </div>

@@ -1,27 +1,145 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Komunitas - Bijak Sampah</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
-    <script>
-        window.addEventListener('load', function() {
-            console.log('Window loaded, Chart.js available:', typeof Chart !== 'undefined');
-        });
-    </script>
-  <style>
-    body {
-        font-family: 'Inter', sans-serif;
-        background-color: #f8fafc;
+@extends('layouts.app')
+
+@section('content')
+<style>
+    html, body { 
+        overflow-x: hidden; 
+        margin: 0;
+        padding: 0;
+        scroll-behavior: smooth;
+    }
+    .sidebar-gradient { background: linear-gradient(135deg, #75E6DA 0%, #05445E 63%); }
+    .sidebar-hover { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+    .sidebar-item-hover { transition: all 0.2s ease-in-out; }
+    .sidebar-item-hover:hover { background-color: rgba(255, 255, 255, 0.2); }
+    .sidebar-logo { transition: all 0.3s ease-in-out; }
+    .sidebar-nav-item { transition: all 0.2s ease-in-out; border-radius: 8px; }
+    .sidebar-nav-item:hover { background-color: rgba(255, 255, 255, 0.1); }
+    .sidebar-nav-item.active { background-color: rgba(255, 255, 255, 0.2); box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); }
+    .fixed-header {
+        position: fixed; top: 0; left: 0; right: 0; height: 48px; z-index: 40;
+        display: flex; align-items: center; justify-content: space-between; 
+        padding: 0 1.5rem; background: linear-gradient(135deg, #75E6DA 0%, #05445E 63%);
+        transition: padding-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .main-content-wrapper {
+        min-height: 100vh;
+        background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #f1f5f9 100%);
+        padding-top: 60px; 
+        padding-left: 4rem; 
+        padding-right: 0;
+        transition: padding-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative; 
+        overflow-x: hidden;
+        width: 100%;
+        scroll-behavior: smooth;
+    }
+    .content-container { 
+        width: 100%; 
+        margin: 0; 
+        padding: 2rem; 
+        position: relative; 
+        z-index: 1; 
+        box-sizing: border-box;
+        scroll-behavior: smooth;
+    }
+    .sidebar-overlay {
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0, 0, 0, 0.5); z-index: 45; opacity: 0; visibility: hidden;
+        transition: all 0.3s ease;
+    }
+        .sidebar-overlay.active { opacity: 1; visibility: visible; }
+    
+    .text-highlight {
+        color: #75E6DA;
+    }
+    
+    .btn-primary {
+        background: linear-gradient(135deg, #10B981, #059669);
+        color: white;
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+    }
+    
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+    }
+    
+    .btn-secondary {
+        background: linear-gradient(135deg, #05445E, #043a4e);
+        color: white;
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+        box-shadow: 0 4px 12px rgba(5, 68, 94, 0.3);
+    }
+    
+    .btn-secondary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(5, 68, 94, 0.4);
+    }
+
+    .stat-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(15px);
+        border-radius: 16px;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+    }
+
+    .activity-card {
+        background: rgba(255, 255, 255, 0.9);
+        backdrop-filter: blur(10px);
+        border-radius: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        transition: all 0.3s ease;
+    }
+
+    .activity-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    }
+
+    .quick-action-btn {
+        background: linear-gradient(135deg, #75E6DA, #05445E);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        padding: 1rem;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        box-shadow: 0 4px 12px rgba(117, 230, 218, 0.3);
+    }
+
+    .quick-action-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(117, 230, 218, 0.4);
+    }
+
+    .progress-bar {
+        background: linear-gradient(90deg, #75E6DA, #05445E);
+        height: 8px;
+        border-radius: 4px;
+        transition: width 0.3s ease;
+    }
+
+    .chart-container {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(15px);
+        border-radius: 16px;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
     }
 
     /* Custom CSS untuk efek gradasi sidebar */
@@ -169,8 +287,6 @@
         opacity: 1;
     }
 
-
-
     /* Responsive Design */
     @media (max-width: 1024px) {
       .komunitas-container {
@@ -227,131 +343,100 @@
         font-size: 18px;
       }
     }
-  </style>
-</head>
-<body class="bg-gray-50">
 
-<div class="flex min-h-screen bg-gray-50" x-data="komunitasApp()" x-init="activeMenu = 'komunitas'">
+    /* Responsive fixes */
+    @media (max-width: 1024px) {
+        .main-content-wrapper { padding-left: 1rem; padding-right: 1rem; }
+        .content-container { padding: 1.5rem; }
+    }
+    @media (max-width: 768px) {
+        .main-content-wrapper { padding-left: 0.5rem; padding-right: 0.5rem; }
+        .content-container { padding: 1rem; }
+    }
+</style>
+
+<div class="flex min-h-screen bg-gray-50" x-data="komunitasApp()">
+    {{-- Sidebar Overlay --}}
+    <div class="sidebar-overlay" :class="{ 'active': sidebarOpen }" @click="sidebarOpen = false"></div>
+
     {{-- Sidebar --}}
-    {{-- Sidebar --}}
-    <aside 
-        class="fixed top-0 left-0 z-40 flex flex-col py-6 overflow-hidden shadow-2xl group sidebar-banksampah-gradient text-white"
-        :class="sidebarOpen ? 'w-[250px]' : 'w-16'"
-        style="transition: width 0.3s ease; height: 100vh; background: linear-gradient(135deg, #75E6DA 0%, #05445E 30%, #05445E 100%);"
+    <aside
+        x-data="{ open: false, active: 'komunitas' }"
+        x-ref="sidebar"
+        @mouseenter="open = true; $root.sidebarOpen = true"
+        @mouseleave="open = false; $root.sidebarOpen = false"
+        class="fixed top-0 left-0 z-50 flex flex-col py-6 sidebar-hover overflow-hidden shadow-2xl group sidebar-gradient"
+        :class="open ? 'w-64' : 'w-16'"
+        style="transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1); margin-top: 48px; height: calc(100vh - 48px);"
     >
         <div class="relative flex flex-col h-full w-full px-4">
-            
-            {{-- Logo Section with Toggle Button --}}
-            {{-- PASTIKAN FILE logo-icon.png ADA DI public/asset/img --}}
-            <div class="flex items-center justify-center mb-8 mt-14" :class="sidebarOpen ? 'justify-between' : 'justify-center'">
-                <div class="flex items-center justify-center gap-2" :class="sidebarOpen ? 'flex-1' : ''">
-                    <img x-show="sidebarOpen" class="w-32 h-auto" src="{{ asset('asset/img/logo1.png') }}" alt="Logo Penuh">
-                    <img x-show="!sidebarOpen" class="w-6 h-6" src="{{ asset('asset/img/logo.png') }}" alt="Logo Kecil">
-                    {{-- Toggle Button --}}
-                    <button 
-                        @click="sidebarOpen = !sidebarOpen"
-                        class="p-1 rounded-full bg-white/20 hover:bg-white/30 transition-colors duration-200 text-white"
-                        :class="sidebarOpen ? 'rotate-180' : ''"
-                        style="transition: transform 0.3s ease;"
-                    >
-                        <i class="fas fa-chevron-left text-sm"></i>
-                    </button>
-                </div>
+            {{-- Logo Section --}}
+            <div class="flex items-center justify-center mb-8 mt-2 sidebar-logo">
+                <img x-show="open" class="w-32 h-auto" src="{{ asset('asset/img/logo1.png') }}" alt="Logo Penuh">
+                <img x-show="!open" class="w-6 h-6" src="{{ asset('asset/img/logo.png') }}" alt="Logo Ikon">
             </div>
             
             {{-- Navigation Menu --}}
-            <nav class="flex flex-col gap-2 w-full flex-1 overflow-y-auto">
-                <a 
-                    href="{{ route('nasabahdashboard') }}" 
-                    class="flex items-center p-3 font-medium rounded-lg whitespace-nowrap w-full transition-colors duration-200 hover:bg-white/10 hover:shadow-sm"
-                    :style="sidebarOpen ? 'gap: 12px;' : 'justify-content: center; padding-left: 0; padding-right: 0;'"
-                    @click="activeMenu = 'dashboard'"
-                >
+            <nav class="flex flex-col gap-2 w-full flex-1">
+                {{-- Dashboard Link --}}
+                <a href="{{ route('nasabahdashboard') }}" class="flex items-center gap-3 p-3 font-medium sidebar-nav-item whitespace-nowrap w-full" :class="open ? (active === 'dashboard' ? 'active text-white' : 'text-white') : (active === 'dashboard' ? 'active text-white justify-center' : 'text-white justify-center')">
                     <i class="fas fa-home text-lg"></i>
-                    <span x-show="sidebarOpen" class="text-sm font-medium">Dashboard</span>
+                    <span x-show="open" class="text-sm font-medium">Dashboard</span>
                 </a>
-
-                <a 
-                    href="{{ route('nasabahkomunitas') }}" 
-                    class="flex items-center p-3 font-medium rounded-lg whitespace-nowrap w-full transition-colors duration-200 bg-white/20 shadow-sm"
-                    :style="sidebarOpen ? 'gap: 12px;' : 'justify-content: center;'"
-                    @click="activeMenu = 'komunitas'"
-                >
+                
+                {{-- Komunitas Link --}}
+                <a href="{{ route('nasabahkomunitas') }}" class="flex items-center gap-3 p-3 rounded-lg sidebar-item-hover whitespace-nowrap w-full" :class="open ? (active === 'komunitas' ? 'bg-white/20 text-white shadow-lg' : 'hover:bg-white/20 text-white') : (active === 'komunitas' ? 'bg-white/20 text-white justify-center' : 'hover:bg-white/20 text-white justify-center')">
                     <i class="fas fa-users text-lg"></i>
-                    <span x-show="sidebarOpen" class="text-sm font-medium">Komunitas</span>
+                    <span x-show="open" class="text-sm font-medium">Komunitas</span>
                 </a>
-
-                <a 
-                    href="{{ route('sampahnasabah') }}" 
-                    class="flex items-center p-3 font-medium rounded-lg whitespace-nowrap w-full transition-colors duration-200 hover:bg-white/10 hover:shadow-sm"
-                    :style="sidebarOpen ? 'gap: 12px;' : 'justify-content: center;'"
-                    @click="activeMenu = 'penjemputan'"
-                >
+                
+                {{-- Penjemputan Sampah Link --}}
+                <a href="{{ route('sampahnasabah') }}" class="flex items-center gap-3 p-3 rounded-lg sidebar-item-hover whitespace-nowrap w-full" :class="open ? (active === 'penjemputan' ? 'bg-white/20 text-white shadow-lg' : 'hover:bg-white/20 text-white') : (active === 'penjemputan' ? 'bg-white/20 text-white justify-center' : 'hover:bg-white/20 text-white justify-center')">
                     <i class="fas fa-trash-alt text-lg"></i>
-                    <span x-show="sidebarOpen" class="text-sm font-medium">Penjemputan Sampah</span>
+                    <span x-show="open" class="text-sm font-medium">Penjemputan Sampah</span>
                 </a>
-
-                <a 
-                    href="{{ route('poin-nasabah') }}" 
-                    class="flex items-center p-3 font-medium rounded-lg whitespace-nowrap w-full transition-colors duration-200 hover:bg-white/10 hover:shadow-sm"
-                    :style="sidebarOpen ? 'gap: 12px;' : 'justify-content: center;'"
-                    @click="activeMenu = 'poin'"
-                >
+                
+                {{-- Poin Link --}}
+                <a href="{{ route('poin-nasabah') }}" class="flex items-center gap-3 p-3 rounded-lg sidebar-item-hover whitespace-nowrap w-full" :class="open ? (active === 'poin' ? 'bg-white/20 text-white shadow-lg' : 'hover:bg-white/20 text-white') : (active === 'poin' ? 'bg-white/20 text-white justify-center' : 'hover:bg-white/20 text-white justify-center')">
                     <i class="fas fa-coins text-lg"></i>
-                    <span x-show="sidebarOpen" class="text-sm font-medium">Poin Mu</span>
+                    <span x-show="open" class="text-sm font-medium">Poin Mu</span>
                 </a>
-
-                <a 
-                    href="{{ route('riwayattransaksinasabah') }}" 
-                    class="flex items-center p-3 font-medium rounded-lg whitespace-nowrap w-full transition-colors duration-200 hover:bg-white/10 hover:shadow-sm"
-                    :style="sidebarOpen ? 'gap: 12px;' : 'justify-content: center;'"
-                    @click="activeMenu = 'riwayat-transaksi'"
-                >
+                
+                {{-- Riwayat Transaksi Link --}}
+                <a href="{{ route('riwayattransaksinasabah') }}" class="flex items-center gap-3 p-3 rounded-lg sidebar-item-hover whitespace-nowrap w-full" :class="open ? (active === 'riwayat-transaksi' ? 'bg-white/20 text-white shadow-lg' : 'hover:bg-white/20 text-white') : (active === 'riwayat-transaksi' ? 'bg-white/20 text-white justify-center' : 'hover:bg-white/20 text-white justify-center')">
                     <i class="fas fa-history text-lg"></i>
-                    <span x-show="sidebarOpen" class="text-sm font-medium">Riwayat Transaksi</span>
+                    <span x-show="open" class="text-sm font-medium">Riwayat Transaksi</span>
                 </a>
-
-                <a 
-                    href="{{ route('tokou') }}" 
-                    class="flex items-center p-3 font-medium rounded-lg whitespace-nowrap w-full transition-colors duration-200 hover:bg-white/10 hover:shadow-sm"
-                    :style="sidebarOpen ? 'gap: 12px;' : 'justify-content: center;'"
-                    @click="activeMenu = 'marketplace'"
-                >
+                
+                {{-- Marketplace Link --}}
+                <a href="{{ route('tokou') }}" class="flex items-center gap-3 p-3 rounded-lg sidebar-item-hover whitespace-nowrap w-full" :class="open ? (active === 'marketplace' ? 'bg-white/20 text-white shadow-lg' : 'hover:bg-white/20 text-white') : (active === 'marketplace' ? 'bg-white/20 text-white justify-center' : 'hover:bg-white/20 text-white justify-center')">
                     <i class="fas fa-store text-lg"></i>
-                    <span x-show="sidebarOpen" class="text-sm font-medium">Marketplace</span>
+                    <span x-show="open" class="text-sm font-medium">Marketplace</span>
                 </a>
-
-                <a 
-                    href="#" 
-                    class="flex items-center p-3 font-medium rounded-lg whitespace-nowrap w-full transition-colors duration-200 hover:bg-white/10 hover:shadow-sm"
-                    :style="sidebarOpen ? 'gap: 12px;' : 'justify-content: center;'"
-                    @click="showDevelopmentModal('Settings')"
-                >
+                
+                {{-- Settings Link --}}
+                <a href="{{ route('settings') }}" class="flex items-center gap-3 p-3 rounded-lg sidebar-item-hover whitespace-nowrap w-full" :class="open ? (active === 'settings' ? 'bg-white/20 text-white shadow-lg' : 'hover:bg-white/20 text-white') : (active === 'settings' ? 'bg-white/20 text-white justify-center' : 'hover:bg-white/20 text-white justify-center')">
                     <i class="fas fa-cog text-lg"></i>
-                    <span x-show="sidebarOpen" class="text-sm font-medium">Settings</span>
+                    <span x-show="open" class="text-sm font-medium">Settings</span>
                 </a>
             </nav>
             
             {{-- Logout Section --}}
-            <div class="w-full flex items-center py-3 mt-auto border-t border-white/20">
-                <a 
-                    href="{{ route('logout') }}" 
-                    class="flex items-center p-3 rounded-lg hover:bg-white/10 hover:shadow-sm text-white transition-all duration-200 w-full whitespace-nowrap"
-                    :style="sidebarOpen ? 'gap: 12px;' : 'justify-content: center;'"
-                >
+            <div class="w-full flex items-center py-3 mt-auto">
+                <a href="{{ route('logout') }}" class="flex items-center gap-3 p-3 rounded-lg sidebar-item-hover text-white hover:text-red-300 transition-all duration-200 w-full whitespace-nowrap" :class="open ? (active === 'logout' ? 'bg-white/20 text-white shadow-lg' : 'hover:bg-white/20 text-white') : (active === 'logout' ? 'bg-white/20 text-white justify-center' : 'hover:bg-white/20 text-white justify-center')">
                     <i class="fas fa-sign-out-alt text-lg"></i>
-                    <span x-show="sidebarOpen" class="text-sm font-medium">Logout</span>
+                    <span x-show="open" class="text-sm font-medium">Logout</span>
                 </a>
             </div>
         </div>
     </aside>
 
-    {{-- Main Content --}}
-    <div class="main-content" :class="sidebarOpen ? 'pl-24' : 'pl-24'" style="transition: padding-left 0.3s ease; width: 100%; margin-left: 0; margin-right: 0;">
+    {{-- Main Content Area --}}
+    <div class="main-content-wrapper">
         {{-- Top Header Bar --}}
-        <div class="fixed top-0 left-0 right-0 h-12 z-40 flex items-center justify-between px-6 text-white" :style="'padding-left:' + (sidebarOpen ? '16rem' : '4rem') + '; background: linear-gradient(135deg, #75E6DA 0%, #05445E 30%, #05445E 100%);'">
-            <h1 class="text-white font-semibold text-lg" style="position: absolute; left: 1.5rem;">BijakSampah</h1>
-            <div class="flex items-center gap-4" style="position: absolute; right: 1.5rem;">
+        <div class="fixed-header">
+            <h1 class="text-white font-semibold text-lg">BijakSampah</h1>
+            <div class="flex items-center gap-4">
                 <button onclick="showDevelopmentModal('Notification')" class="relative hover:text-white/80 transition-colors">
                     <i class="far fa-bell text-white text-sm"></i>
                     <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center font-medium">3</span>
@@ -369,8 +454,9 @@
                 </div>
             </div>
         </div>
-
-        <div class="p-8" style="padding-top: 20px; width: 100%; max-width: 100%;">
+        
+        {{-- Content Container --}}
+        <div class="content-container">
             {{-- Header Section --}}
             <div class="flex items-center justify-between mb-8">
                 <div>
@@ -677,6 +763,7 @@
                 </div>
             </div>
         </div>
+    </div>
 
     {{-- Create Post Modal --}}
     <div x-show="showCreatePost" x-transition class="fixed inset-0 bg-black bg-opacity-50 z-50">
@@ -845,7 +932,5 @@
         document.body.appendChild(modal);
     }
     </script>
-    </div>
 </div>
-</body>
-</html>
+@endsection

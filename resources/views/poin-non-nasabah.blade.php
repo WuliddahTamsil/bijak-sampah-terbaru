@@ -651,6 +651,16 @@
                 width: 100%;
             }
         }
+
+        /* Hide scrollbar for sidebar */
+        .sidebar-banksampah-gradient nav {
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* Internet Explorer 10+ */
+        }
+        
+        .sidebar-banksampah-gradient nav::-webkit-scrollbar {
+            display: none; /* Chrome, Safari, Opera */
+        }
     </style>
 </head>
 <body class="bg-gray-50">
@@ -682,7 +692,7 @@
             </div>
             
             {{-- Navigation Menu --}}
-            <nav class="flex flex-col gap-2 w-full flex-1 overflow-y-auto">
+            <nav class="flex flex-col gap-2 w-full flex-1">
                 <a 
                     href="{{ route('non-nasabah-dashboard') }}" 
                     class="flex items-center p-3 font-medium rounded-lg whitespace-nowrap w-full transition-colors duration-200 hover:bg-white/10 hover:shadow-sm"
