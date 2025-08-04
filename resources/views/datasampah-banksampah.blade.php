@@ -1,534 +1,371 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Data Setoran Sampah - Bijak Sampah</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
-  <script>
-    // Ensure ApexCharts is loaded before any chart operations
-    window.addEventListener('load', function() {
-      console.log('Window loaded, ApexCharts available:', typeof ApexCharts !== 'undefined');
-    });
-  </script>
-  <style>
-    :root {
-      --primary-color: #05445E;
-      --secondary-color: #75E6DA;
-      --accent-color: #f16728;
-      --success-color: #2b8a3e;
-      --danger-color: #c0392b;
-    }
-    
-    body {
-      font-family: 'Inter', sans-serif;
-      background-color: #f8fafc;
-    }
-    
-    /* Sidebar dari kode pertama (disesuaikan) */
-    .sidebar {
-      width: 80px;
-      background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 30%, var(--primary-color) 100%);
-      color: white;
-      padding: 20px 0;
-      min-height: 100vh;
-      transition: width 0.3s ease;
-      position: fixed;
-      left: 0;
-      top: 0;
-      overflow: hidden;
-      box-shadow: 2px 0 10px rgba(0,0,0,0.1);
-      z-index: 1000;
-    }
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Data Setoran Sampah - Bijak Sampah</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <script>
+        window.addEventListener('load', function() {
+            console.log('Window loaded, Chart.js available:', typeof Chart !== 'undefined');
+        });
+    </script>
+    <style>
+        :root {
+            --primary-color: #05445E;
+            --secondary-color: #75E6DA;
+            --accent-color: #f16728;
+            --success-color: #2b8a3e;
+            --danger-color: #c0392b;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
 
-    .sidebar:hover {
-      width: 250px;
-    }
+        /* Custom CSS untuk efek gradasi sidebar */
+        .sidebar-banksampah-gradient {
+            background: linear-gradient(135deg, #75E6DA 0%, #05445E 30%, #05445E 100%);
+        }
+        
+        /* Ensure seamless connection between topbar and sidebar */
+        .topbar-sidebar-seamless {
+            background: linear-gradient(135deg, #75E6DA 0%, #05445E 30%, #05445E 100%);
+            border: none;
+            box-shadow: none;
+        }
 
-    .sidebar.collapsed {
-      width: 80px;
-    }
+        /* Style untuk area main content */
+        .main-content {
+            padding-top: 64px; /* Menyesuaikan dengan tinggi top bar */
+            min-height: 100vh;
+        }
 
-    .logo-container {
-      padding: 0 20px;
-      margin-bottom: 30px;
-      display: flex;
-      align-items: center;
-      height: 60px;
-      justify-content: space-between;
-    }
+        /* Chart Container */
+        .chart-container {
+            position: relative;
+            height: 400px;
+            width: 100%;
+            min-height: 300px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 10px;
+            background: white;
+        }
+        
+        #trendChart, #compositionChart {
+            width: 100% !important;
+            height: 100% !important;
+            min-height: 300px;
+            display: block !important;
+        }
 
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      white-space: nowrap;
-    }
+        /* Custom Card Styles */
+        .custom-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
 
-    .logo img {
-      width: 200px;
-      height: 200px;
-      object-fit: contain;
-    }
+        .custom-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px rgba(0,0,0,0.1);
+        }
 
-    .logo-text {
-      font-size: 18px;
-      font-weight: bold;
-      color: white;
-      opacity: 0;
-      transition: opacity 0.3s ease;
-    }
+        /* Badge Styles */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 8px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
 
-    .sidebar:hover .logo-text {
-      opacity: 1;
-    }
+        .badge-primary {
+            background-color: #e1f0fa;
+            color: var(--primary-color);
+        }
 
-    .logo span {
-      color: #4ADE80;
-    }
+        .badge-success {
+            background-color: #e6f7ed;
+            color: var(--success-color);
+        }
 
-    .toggle-collapse {
-      background: none;
-      border: none;
-      color: white;
-      font-size: 18px;
-      cursor: pointer;
-      padding: 5px;
-      opacity: 0;
-      transition: opacity 0.3s ease;
-    }
+        .badge-warning {
+            background-color: #fff4e6;
+            color: #f97316;
+        }
 
-    .sidebar:hover .toggle-collapse {
-      opacity: 1;
-    }
+        /* Table Styles */
+        .data-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
 
-    .menu-items {
-      list-style: none;
-    }
+        .data-table thead th {
+            background-color: #f8fafc;
+            color: #64748b;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 12px;
+            padding: 12px 16px;
+            border-bottom: 1px solid #e2e8f0;
+        }
 
-    .menu-item {
-      padding: 12px 20px;
-      display: flex;
-      align-items: center;
-      cursor: pointer;
-      transition: all 0.3s;
-      white-space: nowrap;
-    }
+        .data-table tbody td {
+            padding: 14px 16px;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 14px;
+        }
 
-    .menu-item:hover {
-      background: rgba(255, 255, 255, 0.1);
-    }
+        .data-table tbody tr:last-child td {
+            border-bottom: none;
+        }
 
-    .menu-item.active {
-      background: rgba(255, 255, 255, 0.2);
-      border-left: 4px solid var(--accent-color);
-    }
+        .data-table tbody tr:hover td {
+            background-color: #f8fafc;
+        }
 
-    .sub-menu-item {
-      padding: 10px 20px 10px 50px;
-      display: flex;
-      align-items: center;
-      cursor: pointer;
-      transition: all 0.3s;
-      white-space: nowrap;
-      font-size: 14px;
-    }
+        /* Animation */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
 
-    .sub-menu-item:hover {
-      background: rgba(255, 255, 255, 0.1);
-    }
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-out forwards;
+        }
 
-    .sub-menu-item.active {
-      background: rgba(255, 255, 255, 0.15);
-    }
+        /* Tooltip */
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
 
-    .menu-icon {
-      width: 24px;
-      height: 24px;
-      margin-right: 15px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-    }
+        .tooltip .tooltip-text {
+            visibility: hidden;
+            width: 120px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 12px;
+        }
 
-    .menu-text {
-      font-size: 15px;
-      transition: opacity 0.3s ease;
-      opacity: 0;
-    }
-
-    .sidebar:hover .menu-text {
-      opacity: 1;
-    }
-
-    .sidebar.collapsed .menu-text {
-      opacity: 0;
-      width: 0;
-    }
-
-    .sidebar.collapsed .logo-text {
-      display: none;
-    }
-
-    .sidebar.collapsed .logo-icon {
-      font-size: 22px;
-    }
-      margin: 0;
-    }
-
-    .menu-item {
-      padding: 12px 20px;
-      display: flex;
-      align-items: center;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      white-space: nowrap;
-      position: relative;
-    }
-
-    .menu-item:hover {
-      background: rgba(255, 255, 255, 0.1);
-    }
-
-    .menu-item.active {
-      background: rgba(255, 255, 255, 0.2);
-      border-left: 4px solid var(--accent-color);
-    }
-
-    .menu-item.active .menu-icon {
-      color: var(--accent-color);
-    }
-
-    .sub-menu-item {
-      padding: 10px 20px 10px 50px;
-      display: flex;
-      align-items: center;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      white-space: nowrap;
-      font-size: 14px;
-      position: relative;
-    }
-
-    .sub-menu-item:hover {
-      background: rgba(255, 255, 255, 0.1);
-    }
-
-    .sub-menu-item.active {
-      background: rgba(255, 255, 255, 0.15);
-      font-weight: 500;
-    }
-
-    .menu-icon {
-      width: 24px;
-      height: 24px;
-      margin-right: 15px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-      transition: color 0.3s ease;
-    }
-
-    .sidebar-footer {
-      padding: 0;
-      border-top: 1px solid rgba(255,255,255,0.1);
-      margin-top: auto;
-      flex-shrink: 0;
-    }
-
-    /* Main Content Styles */
-    .main-content {
-      margin-left: 80px;
-      width: calc(100% - 80px);
-      padding: 30px;
-      transition: margin-left 0.3s ease, width 0.3s ease;
-    }
-
-    .sidebar:hover ~ .main-content {
-      margin-left: 250px;
-      width: calc(100% - 250px);
-    }
-
-    .sidebar.collapsed ~ .main-content {
-      margin-left: 80px;
-      width: calc(100% - 80px);
-    }
-
-    /* Chart Container */
-    .chart-container {
-      position: relative;
-      height: 400px;
-      width: 100%;
-      min-height: 300px;
-      border: 1px solid #e2e8f0;
-      border-radius: 8px;
-      padding: 10px;
-      background: white;
-    }
-    
-    #trendChart, #compositionChart {
-      width: 100% !important;
-      height: 100% !important;
-      min-height: 300px;
-      display: block !important;
-    }
-
-    /* Custom Card Styles */
-    .custom-card {
-      background: white;
-      border-radius: 12px;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-
-    .custom-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 15px rgba(0,0,0,0.1);
-    }
-
-    /* Badge Styles */
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      padding: 4px 8px;
-      border-radius: 20px;
-      font-size: 12px;
-      font-weight: 500;
-    }
-
-    .badge-primary {
-      background-color: #e1f0fa;
-      color: var(--primary-color);
-    }
-
-    .badge-success {
-      background-color: #e6f7ed;
-      color: var(--success-color);
-    }
-
-    .badge-warning {
-      background-color: #fff4e6;
-      color: #f97316;
-    }
-
-    /* Table Styles */
-    .data-table {
-      width: 100%;
-      border-collapse: separate;
-      border-spacing: 0;
-    }
-
-    .data-table thead th {
-      background-color: #f8fafc;
-      color: #64748b;
-      font-weight: 600;
-      text-transform: uppercase;
-      font-size: 12px;
-      padding: 12px 16px;
-      border-bottom: 1px solid #e2e8f0;
-    }
-
-    .data-table tbody td {
-      padding: 14px 16px;
-      border-bottom: 1px solid #e2e8f0;
-      font-size: 14px;
-    }
-
-    .data-table tbody tr:last-child td {
-      border-bottom: none;
-    }
-
-    .data-table tbody tr:hover td {
-      background-color: #f8fafc;
-    }
-
-    /* Responsive Styles */
-    @media (max-width: 1024px) {
-      .sidebar {
-        width: 240px;
-      }
-      .main-content {
-        margin-left: 240px;
-        width: calc(100% - 240px);
-      }
-    }
-
-    @media (max-width: 768px) {
-      .sidebar {
-        width: 80px;
-      }
-      .sidebar.collapsed {
-        width: 80px;
-      }
-      .main-content {
-        margin-left: 80px;
-        width: calc(100% - 80px);
-        padding: 20px 15px;
-      }
-      .menu-text, .logo-text {
-        display: none;
-      }
-      .logo-container {
-        justify-content: center;
-      }
-      .sub-menu-item {
-        padding-left: 20px;
-      }
-    }
-
-    /* Animation */
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .animate-fade-in {
-      animation: fadeIn 0.5s ease-out forwards;
-    }
-
-    /* Loading Spinner */
-    .loading-spinner {
-      display: inline-block;
-      width: 20px;
-      height: 20px;
-      border: 3px solid rgba(255,255,255,0.3);
-      border-radius: 50%;
-      border-top-color: #fff;
-      animation: spin 1s ease-in-out infinite;
-    }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-
-    /* Tooltip */
-    .tooltip {
-      position: relative;
-      display: inline-block;
-    }
-
-    .tooltip .tooltip-text {
-      visibility: hidden;
-      width: 120px;
-      background-color: #333;
-      color: #fff;
-      text-align: center;
-      border-radius: 6px;
-      padding: 5px;
-      position: absolute;
-      z-index: 1;
-      bottom: 125%;
-      left: 50%;
-      transform: translateX(-50%);
-      opacity: 0;
-      transition: opacity 0.3s;
-      font-size: 12px;
-    }
-
-    .tooltip:hover .tooltip-text {
-      visibility: visible;
-      opacity: 1;
-    }
-  </style>
+        .tooltip:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+    </style>
 </head>
 <body class="bg-gray-50">
 
-  <!-- Sidebar -->
-  <div class="sidebar">
-    <div class="logo-container">
-      <div class="logo">
-        <img src="{{ asset('asset/img/Logo Alternative_Dark (1).png') }}" alt="Bijak Sampah Logo">
-      </div>
-      <button class="toggle-collapse">
-        <i class="fas fa-chevron-left"></i>
-      </button>
-    </div>
-    
-    <div class="menu-container">
-      <ul class="menu-items">
-        <li class="menu-item">
-          <a href="{{ route('dashboard-banksampah') }}" style="text-decoration: none; color: inherit;">
-            <div class="menu-icon"><i class="fas fa-home"></i></div>
-            <span class="menu-text">Dashboard</span>
-          </a>
-        </li>
-        <li class="menu-item">
-          <div class="menu-icon"><i class="fas fa-users"></i></div>
-          <span class="menu-text">Nasabah</span>
-          <i class="fas fa-chevron-down ml-auto text-xs opacity-70"></i>
-        </li>
-        <li class="sub-menu-item">
-          <a href="{{ route('verifikasi-nasabah-banksampah') }}" style="text-decoration: none; color: inherit;">
-            <div class="menu-icon"><i class="fas fa-user-check"></i></div>
-            <span class="menu-text">Verifikasi Nasabah</span>
-          </a>
-        </li>
-        <li class="sub-menu-item">
-          <a href="{{ route('data-nasabah-banksampah') }}" style="text-decoration: none; color: inherit;">
-            <div class="menu-icon"><i class="fas fa-database"></i></div>
-            <span class="menu-text">Data Nasabah</span>
-          </a>
-        </li>
-        <li class="menu-item">
-          <a href="{{ route('penjemputan-sampah-banksampah') }}" style="text-decoration: none; color: inherit;">
-            <div class="menu-icon"><i class="fas fa-truck"></i></div>
-            <span class="menu-text">Penjemputan Sampah</span>
-          </a>
-        </li>
-        <li class="menu-item">
-          <a href="{{ route('penimbangansampah-banksampah') }}" style="text-decoration: none; color: inherit;">
-            <div class="menu-icon"><i class="fas fa-weight-hanging"></i></div>
-            <span class="menu-text">Penimbangan</span>
-            <i class="fas fa-chevron-down ml-auto text-xs opacity-70"></i>
-          </a>
-        </li>
-        <li class="sub-menu-item">
-          <div class="menu-icon"><i class="fas fa-plus-circle"></i></div>
-          <span class="menu-text">Input Setoran</span>
-        </li>
-        <li class="menu-item active">
-          <a href="{{ route('datasampah-banksampah') }}" style="text-decoration: none; color: inherit;">
-            <div class="menu-icon"><i class="fas fa-trash-alt"></i></div>
-            <span class="menu-text">Data Sampah</span>
-          </a>
-        </li>
-        <li class="menu-item">
-          <a href="{{ route('penjualansampah-banksampah') }}" style="text-decoration: none; color: inherit;">
-            <div class="menu-icon"><i class="fas fa-shopping-cart"></i></div>
-            <span class="menu-text">Penjualan Sampah</span>
-          </a>
-        </li>
-        <li class="menu-item">
-          <div class="menu-icon"><i class="fas fa-cog"></i></div>
-          <span class="menu-text">Pengaturan</span>
-        </li>
-      </ul>
-    </div>
+<div class="flex min-h-screen bg-gray-50" x-data="{ sidebarOpen: false, activeMenu: 'data-sampah' }" x-init="activeMenu = 'data-sampah'">
+    {{-- Sidebar --}}
+    <aside 
+        class="fixed top-0 left-0 z-40 flex flex-col py-6 overflow-hidden shadow-2xl group sidebar-banksampah-gradient text-white"
+        :class="sidebarOpen ? 'w-[250px]' : 'w-16'"
+        style="transition: width 0.3s ease; height: 100vh; background: linear-gradient(135deg, #75E6DA 0%, #05445E 30%, #05445E 100%);"
+    >
+        <div class="relative flex flex-col h-full w-full px-4">
+            
+            {{-- Logo Section with Toggle Button --}}
+            {{-- PASTIKAN FILE logo-icon.png ADA DI public/asset/img --}}
+            <div class="flex items-center justify-center mb-8 mt-14" :class="sidebarOpen ? 'justify-between' : 'justify-center'">
+                <div class="flex items-center justify-center gap-2" :class="sidebarOpen ? 'flex-1' : ''">
+                    <img x-show="sidebarOpen" class="w-32 h-auto" src="{{ asset('asset/img/logo1.png') }}" alt="Logo Penuh">
+                    <img x-show="!sidebarOpen" class="w-6 h-6" src="{{ asset('asset/img/logo.png') }}" alt="Logo Kecil">
+                    {{-- Toggle Button --}}
+                    <button 
+                        @click="sidebarOpen = !sidebarOpen"
+                        class="p-1 rounded-full bg-white/20 hover:bg-white/30 transition-colors duration-200 text-white"
+                        :class="sidebarOpen ? 'rotate-180' : ''"
+                        style="transition: transform 0.3s ease;"
+                    >
+                        <i class="fas fa-chevron-left text-sm"></i>
+                    </button>
+                </div>
+            </div>
+            
+            {{-- Navigation Menu --}}
+            <nav class="flex flex-col gap-2 w-full flex-1 overflow-y-auto">
+                <a 
+                    href="{{ route('dashboard-banksampah') }}" 
+                    class="flex items-center p-3 font-medium rounded-lg whitespace-nowrap w-full transition-colors duration-200 hover:bg-white/10 hover:shadow-sm"
+                    :style="sidebarOpen ? 'gap: 12px;' : 'justify-content: center; padding-left: 0; padding-right: 0;'"
+                    @click="activeMenu = 'dashboard'"
+                >
+                    <i class="fas fa-home text-lg"></i>
+                    <span x-show="sidebarOpen" class="text-sm font-medium">Dashboard</span>
+                </a>
 
-    <div class="sidebar-footer">
-      <div class="menu-item" id="logoutBtn">
-        <div class="menu-icon"><i class="fas fa-sign-out-alt"></i></div>
-        <span class="menu-text">Logout</span>
-      </div>
-    </div>
-  </div>
+                <div 
+                    class="group"
+                    x-data="{ expanded: false }"
+                    x-init="$watch('sidebarOpen', value => { if (!value) expanded = false })"
+                >
+                    <button 
+                        @click="expanded = !expanded" 
+                        class="flex items-center p-3 font-medium rounded-lg whitespace-nowrap w-full transition-colors duration-200 hover:bg-white/10 hover:shadow-sm"
+                        :style="sidebarOpen ? 'justify-between; gap: 12px;' : 'justify-content: center;'"
+                    >
+                        <div class="flex items-center" :style="sidebarOpen ? 'gap: 12px;' : 'justify-content: center;'">
+                            <i class="fas fa-users text-lg"></i>
+                            <span x-show="sidebarOpen" class="text-sm font-medium">Nasabah</span>
+                        </div>
+                        <i x-show="sidebarOpen" class="fas fa-chevron-down text-xs opacity-70 transition-transform duration-200" :class="expanded ? 'rotate-180' : ''"></i>
+                    </button>
+                    <div x-show="expanded && sidebarOpen" x-collapse.duration.300ms class="pl-6 pt-2 space-y-1">
+                        <a 
+                            href="{{ route('verifikasi-nasabah-banksampah') }}" 
+                            class="flex items-center gap-3 p-2 rounded-lg whitespace-nowrap w-full text-sm hover:bg-white/10 hover:shadow-sm transition-colors duration-200"
+                            @click="activeMenu = 'verifikasi-nasabah'"
+                        >
+                            <i class="fas fa-user-check"></i>
+                            <span x-show="sidebarOpen">Verifikasi Nasabah</span>
+                        </a>
+                        <a 
+                            href="{{ route('data-nasabah-banksampah') }}" 
+                            class="flex items-center gap-3 p-2 rounded-lg whitespace-nowrap w-full text-sm hover:bg-white/10 hover:shadow-sm transition-colors duration-200"
+                            @click="activeMenu = 'data-nasabah'"
+                        >
+                            <i class="fas fa-database"></i>
+                            <span x-show="sidebarOpen">Data Nasabah</span>
+                        </a>
+                    </div>
+                </div>
+
+                <a 
+                    href="{{ route('penjemputan-sampah-banksampah') }}" 
+                    class="flex items-center p-3 font-medium rounded-lg whitespace-nowrap w-full transition-colors duration-200"
+                    :class="activeMenu === 'penjemputan-sampah' ? 'bg-white/20 shadow-sm' : 'hover:bg-white/10 hover:shadow-sm'"
+                    :style="sidebarOpen ? 'gap: 12px;' : 'justify-content: center;'"
+                    @click="activeMenu = 'penjemputan-sampah'"
+                >
+                    <i class="fas fa-truck text-lg"></i>
+                    <span x-show="sidebarOpen" class="text-sm font-medium">Penjemputan Sampah</span>
+                </a>
+                
+                <div 
+                    class="group"
+                    x-data="{ expanded: false }"
+                    x-init="$watch('sidebarOpen', value => { if (!value) expanded = false })"
+                >
+                    <button 
+                        @click="expanded = !expanded" 
+                        class="flex items-center p-3 font-medium rounded-lg whitespace-nowrap w-full transition-colors duration-200 hover:bg-white/10 hover:shadow-sm"
+                        :style="sidebarOpen ? 'justify-between; gap: 12px;' : 'justify-content: center;'"
+                    >
+                        <div class="flex items-center" :style="sidebarOpen ? 'gap: 12px;' : 'justify-content: center;'">
+                            <i class="fas fa-weight-hanging text-lg"></i>
+                            <span x-show="sidebarOpen" class="text-sm font-medium">Penimbangan</span>
+                        </div>
+                        <i x-show="sidebarOpen" class="fas fa-chevron-down text-xs opacity-70 transition-transform duration-200" :class="expanded ? 'rotate-180' : ''"></i>
+                    </button>
+                    <div x-show="expanded && sidebarOpen" x-collapse.duration.300ms class="pl-6 pt-2 space-y-1">
+                        <a 
+                            href="{{ route('input-setoran') }}" 
+                            class="flex items-center gap-3 p-2 rounded-lg whitespace-nowrap w-full text-sm hover:bg-white/10 hover:shadow-sm transition-colors duration-200"
+                            @click="activeMenu = 'input-setoran'"
+                        >
+                            <i class="fas fa-plus-circle"></i>
+                            <span x-show="sidebarOpen">Input Setoran</span>
+                        </a>
+                    </div>
+                </div>
+
+                <a 
+                    href="{{ route('datasampah-banksampah') }}" 
+                    class="flex items-center p-3 font-medium rounded-lg whitespace-nowrap w-full transition-colors duration-200 bg-white/20 shadow-sm"
+                    :style="sidebarOpen ? 'gap: 12px;' : 'justify-content: center;'"
+                    @click="activeMenu = 'data-sampah'"
+                >
+                    <i class="fas fa-trash-alt text-lg"></i>
+                    <span x-show="sidebarOpen" class="text-sm font-medium">Data Sampah</span>
+                </a>
+                
+                <a 
+                    href="{{ route('penjualansampah-banksampah') }}" 
+                    class="flex items-center p-3 font-medium rounded-lg whitespace-nowrap w-full transition-colors duration-200"
+                    :class="activeMenu === 'penjualansampah' ? 'bg-white/20 shadow-sm' : 'hover:bg-white/10 hover:shadow-sm'"
+                    :style="sidebarOpen ? 'gap: 12px;' : 'justify-content: center;'"
+                    @click="activeMenu = 'penjualansampah'"
+                >
+                    <i class="fas fa-shopping-cart text-lg"></i>
+                    <span x-show="sidebarOpen" class="text-sm font-medium">Penjualan Sampah</span>
+                </a>
+                
+                <a 
+                    href="{{ route('settingsbank') }}" 
+                    class="flex items-center p-3 font-medium rounded-lg whitespace-nowrap w-full transition-colors duration-200 hover:bg-white/10 hover:shadow-sm"
+                    :style="sidebarOpen ? 'gap: 12px;' : 'justify-content: center;'"
+                    @click="activeMenu = 'pengaturan'"
+                >
+                    <i class="fas fa-cog text-lg"></i>
+                    <span x-show="sidebarOpen" class="text-sm font-medium">Pengaturan</span>
+                </a>
+            </nav>
+            
+            {{-- Logout Section --}}
+            <div class="w-full flex items-center py-3 mt-auto border-t border-white/20">
+                <a 
+                    href="{{ route('logout') }}" 
+                    class="flex items-center p-3 rounded-lg hover:bg-white/10 hover:shadow-sm text-white transition-all duration-200 w-full whitespace-nowrap"
+                    :style="sidebarOpen ? 'gap: 12px;' : 'justify-content: center;'"
+                >
+                    <i class="fas fa-sign-out-alt text-lg"></i>
+                    <span x-show="sidebarOpen" class="text-sm font-medium">Logout</span>
+                </a>
+            </div>
+        </div>
+    </aside>
 
   <!-- Main Content -->
-  <div class="main-content">
-    <!-- Header -->
-    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+  <div class="main-content" :class="sidebarOpen ? 'pl-24' : 'pl-24'" style="transition: padding-left 0.3s ease;">
+    {{-- Top Header Bar --}}
+    <div class="fixed top-0 left-0 right-0 h-12 z-40 flex items-center justify-between px-6 text-white" :style="'padding-left:' + (sidebarOpen ? '16rem' : '4rem') + '; background: linear-gradient(135deg, #75E6DA 0%, #05445E 30%, #05445E 100%);'">
+      <h1 class="text-white font-semibold text-lg" style="position: absolute; left: 1.5rem;">BijakSampah</h1>
+      <div class="flex items-center gap-4" style="position: absolute; right: 1.5rem;">
+        <a href="{{ route('notifikasibank') }}" class="relative">
+          <i class="far fa-bell text-white text-sm"></i>
+          <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center font-medium">3</span>
+        </a>
+        <button class="focus:outline-none">
+          <i class="fas fa-search text-white text-sm"></i>
+        </button>
+        <div class="flex items-center gap-2">
+          <a href="{{ route('profilebank') }}" class="w-8 h-8 rounded-full overflow-hidden flex items-center justify-center border-2 border-gray-300">
+            <img src="{{ asset('asset/img/user_profile.jpg') }}" alt="Profile" class="w-full h-full object-cover">
+          </a>
+          <i class="fas fa-chevron-down text-white text-xs"></i>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Content Header -->
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4" style="padding-top: 60px;">
       <div>
-        <h1 class="text-2xl font-bold text-gray-800">Data Setoran Sampah</h1>
+        <h2 class="text-2xl font-bold text-gray-800">Data Setoran Sampah</h2>
         <p class="text-sm text-gray-500">Pantau dan kelola data setoran sampah dari nasabah</p>
       </div>
       <div class="flex items-center space-x-4 w-full md:w-auto">
@@ -552,18 +389,6 @@
             <option value="12">Desember 2025</option>
           </select>
           <i class="fas fa-chevron-down absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-xs"></i>
-        </div>
-        <div class="relative tooltip">
-          <i class="fas fa-bell text-xl text-gray-600 cursor-pointer hover:text-blue-500"></i>
-          <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">3</span>
-          <span class="tooltip-text">Notifikasi</span>
-        </div>
-        <div class="relative tooltip">
-          <div class="flex items-center space-x-2 cursor-pointer">
-            <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="User" class="w-8 h-8 rounded-full object-cover">
-            <span class="hidden md:inline text-sm font-medium">Admin</span>
-          </div>
-          <span class="tooltip-text">Profil Pengguna</span>
         </div>
       </div>
     </div>
@@ -646,10 +471,10 @@
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
           <h2 class="text-xl font-semibold text-gray-800">Setoran Sampah Bulan <span id="currentMonth">April 2025</span></h2>
           <div class="flex space-x-3">
-            <button class="px-3 py-1 bg-blue-50 text-blue-600 rounded-full text-sm hover:bg-blue-100 transition-colors">
+            <button id="exportBtn" class="px-3 py-1 bg-blue-50 text-blue-600 rounded-full text-sm hover:bg-blue-100 transition-colors">
               <i class="fas fa-file-export mr-1"></i> Export
             </button>
-            <button class="px-3 py-1 bg-green-50 text-green-600 rounded-full text-sm hover:bg-green-100 transition-colors">
+            <button id="printBtn" class="px-3 py-1 bg-green-50 text-green-600 rounded-full text-sm hover:bg-green-100 transition-colors">
               <i class="fas fa-print mr-1"></i> Print
             </button>
           </div>
@@ -704,13 +529,10 @@
               <button class="px-2 py-1 text-xs rounded-md hover:bg-gray-100" id="toggleTimeRange">
                 <i class="fas fa-calendar-alt mr-1"></i>1 Tahun
               </button>
-              <button class="px-2 py-1 text-xs rounded-md bg-red-100 text-red-600" id="debugCharts">
-                <i class="fas fa-bug mr-1"></i>Debug Charts
-              </button>
             </div>
           </div>
           <div class="chart-container">
-            <div id="trendChart"></div>
+            <canvas id="trendChart" width="400" height="200"></canvas>
           </div>
         </div>
 
@@ -728,7 +550,7 @@
             </div>
           </div>
           <div class="chart-container">
-            <div id="compositionChart"></div>
+            <canvas id="compositionChart" width="400" height="200"></canvas>
           </div>
         </div>
 
@@ -964,7 +786,7 @@
     let trendChart, compositionChart;
     let currentChartType = 'line'; // 'line' or 'bar'
     let currentTimeRange = '6months'; // '6months' or '12months'
-    let currentCompositionView = 'pie'; // 'pie' or 'donut'
+    let currentCompositionView = 'pie'; // 'pie' or 'doughnut'
 
     // Initialize the page
     document.addEventListener('DOMContentLoaded', function() {
@@ -973,33 +795,16 @@
       // Load initial data (April)
       loadMonthData(4);
       
-      // Initialize charts with multiple attempts
-      let chartInitAttempts = 0;
-      const maxAttempts = 5;
-      
-      function attemptChartInit() {
-        chartInitAttempts++;
-        console.log(`Chart initialization attempt ${chartInitAttempts}/${maxAttempts}`);
-        
-        if (typeof ApexCharts !== 'undefined') {
-          setTimeout(() => {
-            initCharts();
-          }, 200);
-        } else if (chartInitAttempts < maxAttempts) {
-          console.log('ApexCharts not ready, retrying...');
-          setTimeout(attemptChartInit, 1000);
+      // Initialize charts with Chart.js - wait for Chart to be available
+      function initChartsWhenReady() {
+        if (typeof Chart !== 'undefined') {
+          initCharts();
         } else {
-          console.error('Failed to load ApexCharts after multiple attempts');
-          // Show fallback message
-          const chartContainers = document.querySelectorAll('.chart-container');
-          chartContainers.forEach(container => {
-            container.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 100%; color: #64748b; font-size: 14px;">Grafik tidak dapat dimuat. Silakan refresh halaman.</div>';
-          });
+          setTimeout(initChartsWhenReady, 100);
         }
       }
       
-      // Start chart initialization
-      attemptChartInit();
+      initChartsWhenReady();
       
       // Set up event listeners
       setupEventListeners();
@@ -1073,207 +878,118 @@
 
     function initCharts() {
       console.log('=== CHART INITIALIZATION START ===');
-      console.log('DOM ready state:', document.readyState);
-      console.log('ApexCharts available:', typeof ApexCharts !== 'undefined');
       
-      // Wait for ApexCharts to be available
-      if (typeof ApexCharts === 'undefined') {
-        console.error('ApexCharts is not loaded! Waiting...');
-        setTimeout(initCharts, 500);
+      // Check if Chart.js is available
+      if (typeof Chart === 'undefined') {
+        console.error('Chart.js is not loaded!');
+        // Show fallback message
+        showChartFallback();
         return;
       }
       
-      // Check if chart containers exist
-      const trendChartContainer = document.querySelector("#trendChart");
-      const compositionChartContainer = document.querySelector("#compositionChart");
+      // Get canvas elements
+      const trendCanvas = document.getElementById('trendChart');
+      const compositionCanvas = document.getElementById('compositionChart');
       
-      console.log('Trend chart container:', trendChartContainer);
-      console.log('Composition chart container:', compositionChartContainer);
-      
-      if (!trendChartContainer) {
-        console.error('Trend chart container not found!');
+      if (!trendCanvas || !compositionCanvas) {
+        console.error('Canvas elements not found!');
+        showChartFallback();
         return;
       }
       
-      if (!compositionChartContainer) {
-        console.error('Composition chart container not found!');
-        return;
-      }
+      console.log('Creating simple trend chart...');
       
-      // Check container dimensions
-      console.log('Trend container dimensions:', {
-        width: trendChartContainer.offsetWidth,
-        height: trendChartContainer.offsetHeight,
-        style: trendChartContainer.style.cssText
-      });
-      
-      console.log('Composition container dimensions:', {
-        width: compositionChartContainer.offsetWidth,
-        height: compositionChartContainer.offsetHeight,
-        style: compositionChartContainer.style.cssText
-      });
-      
-      console.log('Creating trend chart...');
-      
-      // Initialize trend chart with more explicit options
-      const trendOptions = {
-        series: [{
-          name: "Total Sampah",
-          data: [32, 45, 52, 43.2, 0, 0]
-        }],
-        chart: {
-          height: 350,
-          type: 'line',
-          toolbar: {
-            show: false
-          },
-          zoom: {
-            enabled: false
-          },
-          animations: {
-            enabled: true,
-            easing: 'easeinout',
-            speed: 800
-          }
+      // Create simple trend chart
+      const trendCtx = trendCanvas.getContext('2d');
+      trendChart = new Chart(trendCtx, {
+        type: 'line',
+        data: {
+          labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun'],
+          datasets: [{
+            label: 'Total Sampah (Kg)',
+            data: [32, 45, 52, 43.2, 38, 41],
+            borderColor: '#3b82f6',
+            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+            borderWidth: 2,
+            fill: false,
+            tension: 0.1
+          }]
         },
-        colors: ['#3b82f6'],
-        dataLabels: {
-          enabled: false
-        },
-        stroke: {
-          curve: 'smooth',
-          width: 3
-        },
-        grid: {
-          borderColor: '#e2e8f0',
-          strokeDashArray: 4,
-          padding: {
-            top: 10,
-            right: 10,
-            bottom: 0,
-            left: 10
-          }
-        },
-        xaxis: {
-          categories: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun'],
-          labels: {
-            style: {
-              colors: '#64748b',
-              fontSize: '12px'
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          animation: false, // Disable animations for better performance
+          plugins: {
+            legend: {
+              display: false
             }
           },
-          axisBorder: {
-            show: false
-          },
-          axisTicks: {
-            show: false
-          }
-        },
-        yaxis: {
-          labels: {
-            style: {
-              colors: '#64748b',
-              fontSize: '12px'
-            },
-            formatter: function(value) {
-              return value + ' Kg';
-            }
-          }
-        },
-        tooltip: {
-          y: {
-            formatter: function(value) {
-              return value + ' Kg';
-            }
-          }
-        }
-      };
-      
-      try {
-        trendChart = new ApexCharts(trendChartContainer, trendOptions);
-        console.log('Trend chart instance created');
-        
-        trendChart.render().then(() => {
-          console.log('Trend chart rendered successfully');
-        }).catch((error) => {
-          console.error('Error rendering trend chart:', error);
-        });
-      } catch (error) {
-        console.error('Error creating trend chart:', error);
-      }
-      
-      console.log('Creating composition chart...');
-      
-      // Initialize composition chart with more explicit options
-      const compositionOptions = {
-        series: [27.5, 13, 2, 6, 0.7],
-        chart: {
-          height: 350,
-          type: 'pie',
-          toolbar: {
-            show: false
-          },
-          animations: {
-            enabled: true,
-            easing: 'easeinout',
-            speed: 800
-          }
-        },
-        labels: ['Plastik Botol', 'Plastik Gelas', 'Kertas', 'Minyak Jelantah', 'Lainnya'],
-        colors: ['#3b82f6', '#60a5fa', '#93c5fd', '#f59e0b', '#10b981'],
-        legend: {
-          position: 'right',
-          fontSize: '14px',
-          fontFamily: 'Inter, sans-serif',
-          labels: {
-            colors: '#64748b'
-          }
-        },
-        dataLabels: {
-          enabled: true,
-          style: {
-            fontSize: '12px',
-            fontFamily: 'Inter, sans-serif'
-          },
-          formatter: function(val, opts) {
-            return opts.w.config.series[opts.seriesIndex].toFixed(1) + ' Kg';
-          }
-        },
-        plotOptions: {
-          pie: {
-            donut: {
-              labels: {
-                show: false
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: {
+                callback: function(value) {
+                  return value + ' Kg';
+                }
               }
             }
           }
+        }
+      });
+      
+      console.log('Creating simple composition chart...');
+      
+      // Create simple composition chart
+      const compositionCtx = compositionCanvas.getContext('2d');
+      compositionChart = new Chart(compositionCtx, {
+        type: 'pie',
+        data: {
+          labels: ['Plastik', 'Kertas', 'Logam', 'Lainnya'],
+          datasets: [{
+            data: [27.5, 13, 2, 6],
+            backgroundColor: [
+              '#3b82f6',
+              '#f59e0b',
+              '#10b981',
+              '#8b5cf6'
+            ],
+            borderWidth: 1,
+            borderColor: '#ffffff'
+          }]
         },
-        tooltip: {
-          y: {
-            formatter: function(value) {
-              return value + ' Kg';
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          animation: false, // Disable animations for better performance
+          plugins: {
+            legend: {
+              position: 'bottom',
+              labels: {
+                padding: 10,
+                usePointStyle: false
+              }
+            },
+            tooltip: {
+              callbacks: {
+                label: function(context) {
+                  return context.label + ': ' + context.parsed + ' Kg';
+                }
+              }
             }
           }
         }
-      };
-      
-      try {
-        compositionChart = new ApexCharts(compositionChartContainer, compositionOptions);
-        console.log('Composition chart instance created');
-        
-        compositionChart.render().then(() => {
-          console.log('Composition chart rendered successfully');
-        }).catch((error) => {
-          console.error('Error rendering composition chart:', error);
-        });
-      } catch (error) {
-        console.error('Error creating composition chart:', error);
-      }
+      });
       
       console.log('=== CHART INITIALIZATION COMPLETE ===');
     }
 
     function updateCharts(month) {
+      // Check if charts are initialized
+      if (!trendChart || !compositionChart) {
+        console.log('Charts not yet initialized, skipping update');
+        return;
+      }
+      
       // Update trend chart data
       const monthsToShow = currentTimeRange === '6months' ? 6 : 12;
       const labels = [];
@@ -1291,59 +1007,20 @@
         }
       }
       
-      trendChart.updateOptions({
-        xaxis: {
-          categories: labels
-        },
-        series: [{
-          data: data
-        }]
-      });
+      // Update trend chart - simplified
+      trendChart.data.labels = labels;
+      trendChart.data.datasets[0].data = data;
+      trendChart.update('none'); // Disable animation
       
-      // Update composition chart based on current month's data
-      const monthData = monthlyData[month];
-      let categoryTotals = {
-        'plastik': 0,
-        'kertas': 0,
-        'logam': 0,
-        'kaca': 0,
-        'organik': 0,
-        'lainnya': 0
-      };
+      // Update composition chart - simplified with static data
+      const simpleData = [27.5, 13, 2, 6];
+      const simpleLabels = ['Plastik', 'Kertas', 'Logam', 'Lainnya'];
+      const simpleColors = ['#3b82f6', '#f59e0b', '#10b981', '#8b5cf6'];
       
-      monthData.wastes.forEach(waste => {
-        // Convert all to Kg for comparison
-        let amount = waste.amount;
-        if (waste.unit === 'Liter') {
-          amount = waste.amount * 0.9; // Approximate conversion
-        } else if (waste.unit === 'Unit') {
-          amount = waste.amount * 0.5; // Approximate conversion
-        }
-        
-        categoryTotals[waste.category] += amount;
-      });
-      
-      // Filter out categories with 0 amount
-      const categories = [];
-      const amounts = [];
-      const colors = ['#3b82f6', '#60a5fa', '#f59e0b', '#10b981', '#8b5cf6', '#ec4899'];
-      let colorIndex = 0;
-      
-      Object.keys(categoryTotals).forEach(category => {
-        if (categoryTotals[category] > 0) {
-          categories.push(category.charAt(0).toUpperCase() + category.slice(1));
-          amounts.push(parseFloat(categoryTotals[category].toFixed(1)));
-        }
-      });
-      
-      compositionChart.updateOptions({
-        series: amounts,
-        labels: categories,
-        colors: colors.slice(0, categories.length),
-        chart: {
-          type: currentCompositionView
-        }
-      });
+      compositionChart.data.labels = simpleLabels;
+      compositionChart.data.datasets[0].data = simpleData;
+      compositionChart.data.datasets[0].backgroundColor = simpleColors;
+      compositionChart.update('none'); // Disable animation
     }
 
     function setupEventListeners() {
@@ -1353,28 +1030,24 @@
         loadMonthData(selectedMonth);
       });
       
-      // Toggle chart type (line/bar)
+      // Toggle chart type (line/bar) - simplified
       document.getElementById('toggleChartType').addEventListener('click', function() {
+        if (!trendChart) return;
+        
         if (currentChartType === 'line') {
           currentChartType = 'bar';
           this.innerHTML = '<i class="fas fa-chart-bar mr-1"></i>Batang';
-          trendChart.updateOptions({
-            chart: {
-              type: 'bar'
-            }
-          });
+          trendChart.config.type = 'bar';
+          trendChart.update('none'); // Disable animation
         } else {
           currentChartType = 'line';
           this.innerHTML = '<i class="fas fa-chart-line mr-1"></i>Garis';
-          trendChart.updateOptions({
-            chart: {
-              type: 'line'
-            }
-          });
+          trendChart.config.type = 'line';
+          trendChart.update('none'); // Disable animation
         }
       });
       
-      // Toggle time range (6 months/12 months)
+      // Toggle time range (6 months/12 months) - simplified
       document.getElementById('toggleTimeRange').addEventListener('click', function() {
         if (currentTimeRange === '6months') {
           currentTimeRange = '12months';
@@ -1389,58 +1062,39 @@
         updateCharts(selectedMonth);
       });
       
-      // Toggle composition chart view (pie/donut)
+      // Toggle composition chart view (pie/doughnut) - simplified
       document.getElementById('toggleChartView').addEventListener('click', function() {
+        if (!compositionChart) return;
+        
         if (currentCompositionView === 'pie') {
-          currentCompositionView = 'donut';
+          currentCompositionView = 'doughnut';
           this.innerHTML = '<i class="fas fa-chart-pie mr-1"></i>Pie';
-          compositionChart.updateOptions({
-            chart: {
-              type: 'donut'
-            },
-            plotOptions: {
-              pie: {
-                donut: {
-                  labels: {
-                    show: true,
-                    total: {
-                      show: true,
-                      label: 'Total',
-                      formatter: function(w) {
-                        return w.globals.seriesTotals.reduce((a, b) => a + b, 0).toFixed(1) + ' Kg';
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          });
+          compositionChart.config.type = 'doughnut';
+          compositionChart.update('none'); // Disable animation
         } else {
           currentCompositionView = 'pie';
           this.innerHTML = '<i class="fas fa-chart-donut mr-1"></i>Donat';
-          compositionChart.updateOptions({
-            chart: {
-              type: 'pie'
-            },
-            plotOptions: {
-              pie: {
-                donut: {
-                  labels: {
-                    show: false
-                  }
-                }
-              }
-            }
-          });
+          compositionChart.config.type = 'pie';
+          compositionChart.update('none'); // Disable animation
         }
       });
       
       // Export chart
       document.getElementById('exportChart').addEventListener('click', function() {
-        compositionChart.export({
-          type: 'png',
-          filename: 'komposisi-sampah-' + document.getElementById('currentMonth').textContent.toLowerCase().replace(' ', '-')
-        });
+        const link = document.createElement('a');
+        link.download = 'komposisi-sampah-' + document.getElementById('currentMonth').textContent.toLowerCase().replace(' ', '-') + '.png';
+        link.href = compositionChart.toBase64Image();
+        link.click();
+      });
+      
+      // Export data to CSV
+      document.getElementById('exportBtn').addEventListener('click', function() {
+        exportToCSV();
+      });
+      
+      // Print data
+      document.getElementById('printBtn').addEventListener('click', function() {
+        printData();
       });
       
       // Refresh top contributors
@@ -1479,24 +1133,7 @@
         document.getElementById('wasteDetailModal').classList.add('hidden');
       });
       
-      // Sidebar toggle functionality
-      document.querySelector('.toggle-collapse').addEventListener('click', function() {
-        const sidebar = document.querySelector('.sidebar');
-        sidebar.classList.toggle('collapsed');
-        const icon = this.querySelector('i');
-        
-        if (sidebar.classList.contains('collapsed')) {
-          icon.classList.remove('fa-chevron-left');
-          icon.classList.add('fa-chevron-right');
-          document.querySelector('.main-content').style.marginLeft = '80px';
-          document.querySelector('.main-content').style.width = 'calc(100% - 80px)';
-        } else {
-          icon.classList.remove('fa-chevron-right');
-          icon.classList.add('fa-chevron-left');
-          document.querySelector('.main-content').style.marginLeft = '280px';
-          document.querySelector('.main-content').style.width = 'calc(100% - 280px)';
-        }
-      });
+
       
       // Logout functionality
       document.getElementById('logoutBtn').addEventListener('click', function() {
@@ -1512,16 +1149,149 @@
         }
       });
 
-      // Debug charts button
-      document.getElementById('debugCharts').addEventListener('click', function() {
-        console.log('Debugging charts...');
-        console.log('Current Chart Type:', currentChartType);
-        console.log('Current Time Range:', currentTimeRange);
-        console.log('Current Composition View:', currentCompositionView);
-        console.log('Trend Chart Instance:', trendChart);
-        console.log('Composition Chart Instance:', compositionChart);
-        alert('Debugging charts. Check console for details.');
+
+    }
+    
+    // Function to export data to CSV
+    function exportToCSV() {
+      const currentMonth = document.getElementById('currentMonth').textContent;
+      const tableBody = document.getElementById('wasteTableBody');
+      const rows = tableBody.querySelectorAll('tr');
+      
+      let csvContent = "data:text/csv;charset=utf-8,";
+      csvContent += "No,Jenis Sampah,Kategori,Satuan,Jumlah\n";
+      
+      rows.forEach((row, index) => {
+        const cells = row.querySelectorAll('td');
+        if (cells.length >= 5) {
+          const no = cells[0].textContent.trim();
+          const jenis = cells[1].textContent.trim();
+          const kategori = cells[2].textContent.trim();
+          const satuan = cells[3].textContent.trim();
+          const jumlah = cells[4].textContent.trim();
+          
+          csvContent += `"${no}","${jenis}","${kategori}","${satuan}","${jumlah}"\n`;
+        }
       });
+      
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement('a');
+      link.setAttribute('href', encodedUri);
+      link.setAttribute('download', `data-setoran-sampah-${currentMonth.toLowerCase().replace(' ', '-')}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      // Show success message
+      showNotification('Data berhasil diexport ke CSV!', 'success');
+    }
+    
+    // Function to print data
+    function printData() {
+      const currentMonth = document.getElementById('currentMonth').textContent;
+      const tableBody = document.getElementById('wasteTableBody');
+      
+      // Create print window content
+      let printContent = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <title>Data Setoran Sampah - ${currentMonth}</title>
+          <style>
+            body { font-family: Arial, sans-serif; margin: 20px; }
+            table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+            th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+            th { background-color: #f2f2f2; }
+            h1 { color: #333; }
+            .header { text-align: center; margin-bottom: 30px; }
+            .stats { margin-bottom: 20px; }
+            @media print {
+              .no-print { display: none; }
+            }
+          </style>
+        </head>
+        <body>
+          <div class="header">
+            <h1>Data Setoran Sampah</h1>
+            <h2>Bulan: ${currentMonth}</h2>
+            <p>Tanggal Cetak: ${new Date().toLocaleDateString('id-ID')}</p>
+          </div>
+          
+          <div class="stats">
+            <p><strong>Total Setoran:</strong> ${document.getElementById('totalDepositMonth').textContent}</p>
+            <p><strong>Total Nasabah Aktif:</strong> ${document.getElementById('totalActiveUsers').textContent}</p>
+          </div>
+          
+          <table>
+            <thead>
+              <tr>
+                <th>No</th>
+                <th>Jenis Sampah</th>
+                <th>Kategori</th>
+                <th>Satuan</th>
+                <th>Jumlah</th>
+              </tr>
+            </thead>
+            <tbody>
+      `;
+      
+      // Add table rows
+      const rows = tableBody.querySelectorAll('tr');
+      rows.forEach(row => {
+        const cells = row.querySelectorAll('td');
+        if (cells.length >= 5) {
+          printContent += `
+            <tr>
+              <td>${cells[0].textContent.trim()}</td>
+              <td>${cells[1].textContent.trim()}</td>
+              <td>${cells[2].textContent.trim()}</td>
+              <td>${cells[3].textContent.trim()}</td>
+              <td>${cells[4].textContent.trim()}</td>
+            </tr>
+          `;
+        }
+      });
+      
+      printContent += `
+            </tbody>
+          </table>
+        </body>
+        </html>
+      `;
+      
+      // Open print window
+      const printWindow = window.open('', '_blank');
+      printWindow.document.write(printContent);
+      printWindow.document.close();
+      
+      // Wait for content to load then print
+      printWindow.onload = function() {
+        printWindow.print();
+        printWindow.close();
+      };
+      
+      // Show success message
+      showNotification('Data berhasil dicetak!', 'success');
+    }
+    
+    // Function to show notification
+    function showNotification(message, type = 'info') {
+      // Create notification element
+      const notification = document.createElement('div');
+      notification.className = `fixed top-4 right-4 px-4 py-2 rounded-md text-white z-50 ${
+        type === 'success' ? 'bg-green-500' : 'bg-blue-500'
+      }`;
+      notification.textContent = message;
+      
+      // Add to page
+      document.body.appendChild(notification);
+      
+      // Remove after 3 seconds
+      setTimeout(() => {
+        if (notification.parentNode) {
+          notification.parentNode.removeChild(notification);
+        }
+      }, 3000);
     }
   </script>
 </body>

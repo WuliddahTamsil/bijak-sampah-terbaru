@@ -228,6 +228,9 @@
         -webkit-overflow-scrolling: touch;
     }
     
+    /* Alpine.js x-cloak */
+    [x-cloak] { display: none !important; }
+    
     /* Custom scrollbar */
     ::-webkit-scrollbar {
         width: 8px;
@@ -242,6 +245,25 @@
     }
     ::-webkit-scrollbar-thumb:hover {
         background: linear-gradient(135deg, #05445E, #75E6DA);
+    }
+    
+    /* Sidebar Logo Fixes */
+    .sidebar-logo-small {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        width: 32px !important;
+        height: 32px !important;
+        object-fit: contain;
+        position: relative !important;
+        z-index: 10 !important;
+    }
+    
+    /* Ensure logo is visible when sidebar is collapsed */
+    aside.w-16 .sidebar-logo-small {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
     }
     
     /* Responsive fixes */
@@ -259,77 +281,122 @@
     }
 </style>
 
-<div class="flex min-h-screen bg-gray-50" x-data="{ sidebarOpen: false }">
+<div class="flex min-h-screen bg-gray-50" x-data="sidebarData">
     {{-- Sidebar Overlay --}}
     <div class="sidebar-overlay" :class="{ 'active': sidebarOpen }" @click="sidebarOpen = false"></div>
 
     {{-- Sidebar --}}
-    <aside 
-        x-data="{ open: false, active: 'toko' }" 
-        x-ref="sidebar"
-        @mouseenter="open = true; $root.sidebarOpen = true"
-        @mouseleave="open = false; $root.sidebarOpen = false"
-        class="fixed top-0 left-0 z-50 flex flex-col py-6 sidebar-hover overflow-hidden shadow-2xl group sidebar-gradient"
-        :class="open ? 'w-64' : 'w-16'"
-        style="transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1); margin-top: 48px; height: calc(100vh - 48px);"
+     {{-- Sidebar --}}
+     <aside 
+        class="fixed top-0 left-0 z-40 flex flex-col py-6 overflow-hidden shadow-2xl group sidebar-banksampah-gradient text-white"
+        :class="sidebarOpen ? 'w-[250px]' : 'w-16'"
+        style="transition: width 0.3s ease; height: 100vh; background: linear-gradient(135deg, #75E6DA 0%, #05445E 30%, #05445E 100%);"
     >
         <div class="relative flex flex-col h-full w-full px-4">
-            {{-- Logo Section --}}
-            <div class="flex items-center justify-center mb-8 mt-2 sidebar-logo">
-                <img x-show="open" class="w-16 h-auto" src="{{ asset('asset/img/logo.png') }}" alt="Logo Penuh">
-                <img x-show="!open" class="w-6 h-6" src="{{ asset('asset/img/logo.png') }}" alt="Logo Ikon">
+            
+            {{-- Logo Section with Toggle Button --}}
+            <div class="flex items-center justify-center mb-8 mt-14" :class="sidebarOpen ? 'justify-between' : 'justify-center'">
+                <div class="flex items-center justify-center gap-2" :class="sidebarOpen ? 'flex-1' : ''">
+                    <template x-if="sidebarOpen">
+                        <img class="w-32 h-auto" src="{{ asset('asset/img/logo1.png') }}" alt="Logo Penuh">
+                    </template>
+                    <template x-if="!sidebarOpen">
+                        <img class="sidebar-logo-small" src="{{ asset('asset/img/logo.png') }}" alt="Logo Kecil">
+                    </template>
+                    {{-- Toggle Button --}}
+                    <button 
+                        @click="sidebarOpen = !sidebarOpen"
+                        class="p-1 rounded-full bg-white/20 hover:bg-white/30 transition-colors duration-200 text-white z-50"
+                        :class="sidebarOpen ? 'rotate-180' : ''"
+                        style="transition: transform 0.3s ease;"
+                    >
+                        <i class="fas fa-chevron-left text-sm"></i>
+                    </button>
+                </div>
             </div>
             
             {{-- Navigation Menu --}}
-            <nav class="flex flex-col gap-2 w-full flex-1">
-                {{-- Dashboard Link --}}
-                <a href="{{ route('nasabahdashboard') }}" class="flex items-center gap-3 p-3 font-medium sidebar-nav-item whitespace-nowrap w-full" :class="open ? (active === 'dashboard' ? 'active text-white' : 'text-white') : (active === 'dashboard' ? 'active text-white justify-center' : 'text-white justify-center')">
+            <nav class="flex flex-col gap-2 w-full flex-1 overflow-y-auto">
+                <a 
+                    href="{{ route('nasabahdashboard') }}" 
+                    class="flex items-center p-3 font-medium rounded-lg whitespace-nowrap w-full transition-colors duration-200 hover:bg-white/10 hover:shadow-sm"
+                    :style="sidebarOpen ? 'gap: 12px;' : 'justify-content: center; padding-left: 0; padding-right: 0;'"
+                    @click="activeMenu = 'dashboard'"
+                >
                     <i class="fas fa-home text-lg"></i>
-                    <span x-show="open" class="text-sm font-medium">Dashboard</span>
+                    <span x-show="sidebarOpen" class="text-sm font-medium">Dashboard</span>
                 </a>
-                
-                {{-- Komunitas Link --}}
-                <a href="{{ route('nasabahkomunitas') }}" class="flex items-center gap-3 p-3 rounded-lg sidebar-item-hover whitespace-nowrap w-full" :class="open ? (active === 'komunitas' ? 'bg-white/20 text-white shadow-lg' : 'hover:bg-white/20 text-white') : (active === 'komunitas' ? 'bg-white/20 text-white justify-center' : 'hover:bg-white/20 text-white justify-center')">
+
+                <a 
+                    href="{{ route('nasabahkomunitas') }}" 
+                    class="flex items-center p-3 font-medium rounded-lg whitespace-nowrap w-full transition-colors duration-200 hover:bg-white/10 hover:shadow-sm"
+                    :style="sidebarOpen ? 'gap: 12px;' : 'justify-content: center;'"
+                    @click="activeMenu = 'komunitas'"
+                >
                     <i class="fas fa-users text-lg"></i>
-                    <span x-show="open" class="text-sm font-medium">Komunitas</span>
+                    <span x-show="sidebarOpen" class="text-sm font-medium">Komunitas</span>
                 </a>
-                
-                {{-- Riwayat Sampah Link --}}
-                <a href="{{ route('sampahnasabah') }}" class="flex items-center gap-3 p-3 rounded-lg sidebar-item-hover whitespace-nowrap w-full" :class="open ? (active === 'sampah' ? 'bg-white/20 text-white shadow-lg' : 'hover:bg-white/20 text-white') : (active === 'sampah' ? 'bg-white/20 text-white justify-center' : 'hover:bg-white/20 text-white justify-center')">
+
+                <a 
+                    href="{{ route('sampahnasabah') }}" 
+                    class="flex items-center p-3 font-medium rounded-lg whitespace-nowrap w-full transition-colors duration-200 hover:bg-white/10 hover:shadow-sm"
+                    :style="sidebarOpen ? 'gap: 12px;' : 'justify-content: center;'"
+                    @click="activeMenu = 'penjemputan'"
+                >
                     <i class="fas fa-trash-alt text-lg"></i>
-                    <span x-show="open" class="text-sm font-medium">Riwayat Sampah</span>
+                    <span x-show="sidebarOpen" class="text-sm font-medium">Penjemputan Sampah</span>
                 </a>
-                
-                {{-- Poin Mu Link --}}
-                <a href="{{ route('poin-nasabah') }}" class="flex items-center gap-3 p-3 rounded-lg sidebar-item-hover whitespace-nowrap w-full" :class="open ? (active === 'poin' ? 'bg-white/20 text-white shadow-lg' : 'hover:bg-white/20 text-white') : (active === 'poin' ? 'bg-white/20 text-white justify-center' : 'hover:bg-white/20 text-white justify-center')">
+
+                <a 
+                    href="{{ route('poin-nasabah') }}" 
+                    class="flex items-center p-3 font-medium rounded-lg whitespace-nowrap w-full transition-colors duration-200 hover:bg-white/10 hover:shadow-sm"
+                    :style="sidebarOpen ? 'gap: 12px;' : 'justify-content: center;'"
+                    @click="activeMenu = 'poin'"
+                >
                     <i class="fas fa-coins text-lg"></i>
-                    <span x-show="open" class="text-sm font-medium">Poin Mu</span>
+                    <span x-show="sidebarOpen" class="text-sm font-medium">Poin Mu</span>
                 </a>
-                
-                {{-- Riwayat Transaksi Link --}}
-                <a href="{{ route('riwayattransaksinasabah') }}" class="flex items-center gap-3 p-3 rounded-lg sidebar-item-hover whitespace-nowrap w-full" :class="open ? (active === 'transaksi' ? 'bg-white/20 text-white shadow-lg' : 'hover:bg-white/20 text-white') : (active === 'transaksi' ? 'bg-white/20 text-white justify-center' : 'hover:bg-white/20 text-white justify-center')">
+
+                <a 
+                    href="{{ route('riwayattransaksinasabah') }}" 
+                    class="flex items-center p-3 font-medium rounded-lg whitespace-nowrap w-full transition-colors duration-200 bg-white/20 shadow-sm"
+                    :style="sidebarOpen ? 'gap: 12px;' : 'justify-content: center;'"
+                    @click="activeMenu = 'riwayat-transaksi'"
+                >
                     <i class="fas fa-history text-lg"></i>
-                    <span x-show="open" class="text-sm font-medium">Riwayat Transaksi</span>
+                    <span x-show="sidebarOpen" class="text-sm font-medium">Riwayat Transaksi</span>
                 </a>
-                
-                {{-- Marketplace Link --}}
-                <a href="{{ route('tokou') }}" class="flex items-center gap-3 p-3 rounded-lg sidebar-item-hover whitespace-nowrap w-full" :class="open ? (active === 'marketplace' ? 'bg-white/20 text-white shadow-lg' : 'hover:bg-white/20 text-white') : (active === 'marketplace' ? 'bg-white/20 text-white justify-center' : 'hover:bg-white/20 text-white justify-center')">
+
+                <a 
+                    href="{{ route('tokou') }}" 
+                    class="flex items-center p-3 font-medium rounded-lg whitespace-nowrap w-full transition-colors duration-200 hover:bg-white/10 hover:shadow-sm"
+                    :style="sidebarOpen ? 'gap: 12px;' : 'justify-content: center;'"
+                    @click="activeMenu = 'marketplace'"
+                >
                     <i class="fas fa-store text-lg"></i>
-                    <span x-show="open" class="text-sm font-medium">Marketplace</span>
+                    <span x-show="sidebarOpen" class="text-sm font-medium">Marketplace</span>
                 </a>
-                
-                {{-- Settings Link --}}
-                <a href="{{ route('settings') }}" class="flex items-center gap-3 p-3 rounded-lg sidebar-item-hover whitespace-nowrap w-full" :class="open ? (active === 'settings' ? 'bg-white/20 text-white shadow-lg' : 'hover:bg-white/20 text-white') : (active === 'settings' ? 'bg-white/20 text-white justify-center' : 'hover:bg-white/20 text-white justify-center')">
+
+                <a 
+                    href="{{ route('settings') }}" 
+                    class="flex items-center p-3 font-medium rounded-lg whitespace-nowrap w-full transition-colors duration-200 hover:bg-white/10 hover:shadow-sm"
+                    :style="sidebarOpen ? 'gap: 12px;' : 'justify-content: center;'"
+                    @click="activeMenu = 'settings'"
+                >
                     <i class="fas fa-cog text-lg"></i>
-                    <span x-show="open" class="text-sm font-medium">Settings</span>
+                    <span x-show="sidebarOpen" class="text-sm font-medium">Settings</span>
                 </a>
             </nav>
             
             {{-- Logout Section --}}
-            <div class="w-full flex items-center py-3 mt-auto">
-                <a href="{{ route('logout') }}" class="flex items-center gap-3 p-3 rounded-lg sidebar-item-hover text-white hover:text-red-300 transition-all duration-200 w-full whitespace-nowrap" :class="open ? (active === 'logout' ? 'bg-white/20 text-white shadow-lg' : 'hover:bg-white/20 text-white') : (active === 'logout' ? 'bg-white/20 text-white justify-center' : 'hover:bg-white/20 text-white justify-center')">
+            <div class="w-full flex items-center py-3 mt-auto border-t border-white/20">
+                <a 
+                    href="{{ route('logout') }}" 
+                    class="flex items-center p-3 rounded-lg hover:bg-white/10 hover:shadow-sm text-white transition-all duration-200 w-full whitespace-nowrap"
+                    :style="sidebarOpen ? 'gap: 12px;' : 'justify-content: center;'"
+                >
                     <i class="fas fa-sign-out-alt text-lg"></i>
-                    <span x-show="open" class="text-sm font-medium">Logout</span>
+                    <span x-show="sidebarOpen" class="text-sm font-medium">Logout</span>
                 </a>
             </div>
         </div>
@@ -627,21 +694,155 @@
                     <i class="fas fa-times text-xl"></i>
                 </button>
             </div>
-            <div id="cartItems" class="space-y-3 mb-4">
+            <div id="cartItems" class="space-y-3 mb-4 max-h-64 overflow-y-auto">
                 <!-- Cart items will be populated here -->
             </div>
             <div class="border-t pt-4">
                 <div class="flex justify-between items-center mb-4">
                     <span class="font-semibold">Total:</span>
                     <span class="font-bold text-lg" id="cartTotal">Rp75.000</span>
-                </button>
+                </div>
             </div>
             <div class="flex gap-3">
                 <button onclick="closeCart()" class="flex-1 bg-gray-200 text-gray-800 py-2 px-4 rounded-lg font-semibold hover:bg-gray-300 transition-colors">
                     Lanjut Belanja
                 </button>
-                <button onclick="checkout()" class="flex-1 bg-green-600 text-white py-2 px-4 rounded-lg font-semibold hover:bg-green-700 transition-colors">
+                <button onclick="openCheckout()" class="flex-1 bg-green-600 text-white py-2 px-4 rounded-lg font-semibold hover:bg-green-700 transition-colors">
                     Checkout
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Checkout Modal -->
+<div id="checkoutModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden">
+    <div class="flex items-center justify-center min-h-screen p-4">
+        <div class="bg-white rounded-2xl p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-bold text-gray-900">Checkout</h3>
+                <button onclick="closeCheckout()" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            
+            <!-- Order Summary -->
+            <div class="bg-gray-50 rounded-xl p-4 mb-6">
+                <h4 class="font-bold text-lg mb-3">Ringkasan Pesanan</h4>
+                <div id="checkoutItems" class="space-y-2">
+                    <!-- Items will be populated here -->
+                </div>
+                <div class="border-t pt-3 mt-3">
+                    <div class="flex justify-between items-center">
+                        <span class="font-semibold">Total:</span>
+                        <span class="font-bold text-xl text-green-600" id="checkoutTotal">Rp75.000</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Shipping Information -->
+            <div class="mb-6">
+                <h4 class="font-bold text-lg mb-3">Informasi Pengiriman</h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Nama Lengkap</label>
+                        <input type="text" id="fullName" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500" placeholder="Masukkan nama lengkap">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Nomor Telepon</label>
+                        <input type="tel" id="phoneNumber" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500" placeholder="Masukkan nomor telepon">
+                    </div>
+                    <div class="md:col-span-2">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Alamat Lengkap</label>
+                        <textarea id="address" rows="3" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500" placeholder="Masukkan alamat lengkap"></textarea>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Payment Method -->
+            <div class="mb-6">
+                <h4 class="font-bold text-lg mb-3">Metode Pembayaran</h4>
+                <div class="space-y-3">
+                    <label class="flex items-center p-3 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50">
+                        <input type="radio" name="paymentMethod" value="cod" class="mr-3" checked>
+                        <div class="flex items-center">
+                            <i class="fas fa-money-bill-wave text-green-600 mr-2"></i>
+                            <span>Cash on Delivery (COD)</span>
+                        </div>
+                    </label>
+                    <label class="flex items-center p-3 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50">
+                        <input type="radio" name="paymentMethod" value="transfer" class="mr-3">
+                        <div class="flex items-center">
+                            <i class="fas fa-university text-blue-600 mr-2"></i>
+                            <span>Transfer Bank</span>
+                        </div>
+                    </label>
+                    <label class="flex items-center p-3 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50">
+                        <input type="radio" name="paymentMethod" value="ewallet" class="mr-3">
+                        <div class="flex items-center">
+                            <i class="fas fa-wallet text-purple-600 mr-2"></i>
+                            <span>E-Wallet</span>
+                        </div>
+                    </label>
+                </div>
+            </div>
+            
+            <!-- Shipping Method -->
+            <div class="mb-6">
+                <h4 class="font-bold text-lg mb-3">Metode Pengiriman</h4>
+                <div class="space-y-3">
+                    <label class="flex items-center justify-between p-3 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50">
+                        <div class="flex items-center">
+                            <input type="radio" name="shippingMethod" value="regular" class="mr-3" checked>
+                            <div>
+                                <span class="font-medium">Regular (3-5 hari)</span>
+                                <p class="text-sm text-gray-600">Gratis ongkir</p>
+                            </div>
+                        </div>
+                        <span class="font-bold text-green-600">Gratis</span>
+                    </label>
+                    <label class="flex items-center justify-between p-3 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50">
+                        <div class="flex items-center">
+                            <input type="radio" name="shippingMethod" value="express" class="mr-3">
+                            <div>
+                                <span class="font-medium">Express (1-2 hari)</span>
+                                <p class="text-sm text-gray-600">Pengiriman cepat</p>
+                            </div>
+                        </div>
+                        <span class="font-bold text-blue-600">+Rp15.000</span>
+                    </label>
+                </div>
+            </div>
+            
+            <!-- Order Total -->
+            <div class="bg-gray-50 rounded-xl p-4 mb-6">
+                <h4 class="font-bold text-lg mb-3">Total Pembayaran</h4>
+                <div class="space-y-2">
+                    <div class="flex justify-between">
+                        <span>Subtotal</span>
+                        <span id="subtotal">Rp75.000</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>Ongkos Kirim</span>
+                        <span id="shippingCost">Gratis</span>
+                    </div>
+                    <div class="border-t pt-2">
+                        <div class="flex justify-between font-bold text-lg">
+                            <span>Total</span>
+                            <span id="finalTotal" class="text-green-600">Rp75.000</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Action Buttons -->
+            <div class="flex gap-3">
+                <button onclick="closeCheckout()" class="flex-1 bg-gray-200 text-gray-800 py-3 px-4 rounded-lg font-semibold hover:bg-gray-300 transition-colors">
+                    Kembali
+                </button>
+                <button onclick="processCheckout()" class="flex-1 bg-green-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-green-700 transition-colors">
+                    <i class="fas fa-credit-card mr-2"></i>
+                    Bayar Sekarang
                 </button>
             </div>
         </div>
@@ -679,6 +880,14 @@ document.addEventListener('DOMContentLoaded', function() {
     loadCart();
     loadWishlist();
     updateCartDisplay();
+    
+    // Fix sidebar logo visibility
+    const sidebarLogoSmall = document.querySelector('.sidebar-logo-small');
+    if (sidebarLogoSmall) {
+        sidebarLogoSmall.style.display = 'block';
+        sidebarLogoSmall.style.visibility = 'visible';
+        sidebarLogoSmall.style.opacity = '1';
+    }
 });
 
 function addToCart(productId, productName, price, image) {
@@ -769,16 +978,120 @@ function closeCart() {
     document.getElementById('cartModal').classList.add('hidden');
 }
 
-function checkout() {
+function openCheckout() {
     if (cart.length === 0) {
         showNotification('Keranjang belanja kosong!', 'error');
         return;
     }
     
-    showNotification('Redirecting ke halaman checkout...', 'success');
+    // Populate checkout items
+    const checkoutItems = document.getElementById('checkoutItems');
+    const checkoutTotal = document.getElementById('checkoutTotal');
+    const subtotal = document.getElementById('subtotal');
+    const finalTotal = document.getElementById('finalTotal');
+    
+    checkoutItems.innerHTML = '';
+    let total = 0;
+    
+    cart.forEach(item => {
+        const itemTotal = item.price * item.quantity;
+        total += itemTotal;
+        
+        checkoutItems.innerHTML += `
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <img src="${item.image}" alt="${item.name}" class="w-10 h-10 object-cover rounded-lg">
+                    <div>
+                        <h5 class="font-semibold">${item.name}</h5>
+                        <p class="text-sm text-gray-600">Qty: ${item.quantity}</p>
+                    </div>
+                </div>
+                <span class="font-semibold">Rp${itemTotal.toLocaleString()}</span>
+            </div>
+        `;
+    });
+    
+    checkoutTotal.textContent = `Rp${total.toLocaleString()}`;
+    subtotal.textContent = `Rp${total.toLocaleString()}`;
+    finalTotal.textContent = `Rp${total.toLocaleString()}`;
+    
+    // Close cart modal and open checkout modal
+    closeCart();
+    document.getElementById('checkoutModal').classList.remove('hidden');
+}
+
+function closeCheckout() {
+    document.getElementById('checkoutModal').classList.add('hidden');
+}
+
+function processCheckout() {
+    // Get form values
+    const fullName = document.getElementById('fullName').value;
+    const phoneNumber = document.getElementById('phoneNumber').value;
+    const address = document.getElementById('address').value;
+    const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
+    const shippingMethod = document.querySelector('input[name="shippingMethod"]:checked').value;
+    
+    // Validate form
+    if (!fullName || !phoneNumber || !address) {
+        showNotification('Mohon lengkapi semua data pengiriman!', 'error');
+        return;
+    }
+    
+    // Calculate shipping cost
+    let shippingCost = 0;
+    if (shippingMethod === 'express') {
+        shippingCost = 15000;
+    }
+    
+    const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    const finalTotal = subtotal + shippingCost;
+    
+    // Show success notification
+    showNotification('Pesanan berhasil dibuat! Terima kasih telah berbelanja.', 'success');
+    
+    // Clear cart
+    cart = [];
+    saveCart();
+    updateCartDisplay();
+    
+    // Close checkout modal
+    closeCheckout();
+    
+    // Reset form
+    document.getElementById('fullName').value = '';
+    document.getElementById('phoneNumber').value = '';
+    document.getElementById('address').value = '';
+    document.querySelector('input[name="paymentMethod"][value="cod"]').checked = true;
+    document.querySelector('input[name="shippingMethod"][value="regular"]').checked = true;
+    
+    // Show order details (optional)
     setTimeout(() => {
-        window.location.href = '/checkout';
+        showOrderConfirmation(fullName, finalTotal);
     }, 1000);
+}
+
+function showOrderConfirmation(customerName, total) {
+    const modal = document.createElement('div');
+    modal.className = 'fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center';
+    modal.innerHTML = `
+        <div class="bg-white rounded-2xl p-8 max-w-md mx-4 text-center">
+            <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-check text-green-600 text-2xl"></i>
+            </div>
+            <h3 class="text-xl font-bold text-gray-900 mb-2">Pesanan Berhasil!</h3>
+            <p class="text-gray-600 mb-4">Terima kasih ${customerName}, pesanan Anda telah kami terima.</p>
+            <div class="bg-gray-50 rounded-lg p-4 mb-6">
+                <p class="text-sm text-gray-600">Total Pembayaran</p>
+                <p class="text-2xl font-bold text-green-600">Rp${total.toLocaleString()}</p>
+            </div>
+            <p class="text-sm text-gray-600 mb-6">Tim kami akan menghubungi Anda segera untuk konfirmasi pesanan.</p>
+            <button onclick="this.parentElement.parentElement.remove()" class="bg-green-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-green-700 transition-colors">
+                Tutup
+            </button>
+        </div>
+    `;
+    document.body.appendChild(modal);
 }
 
 // Wishlist Functionality
@@ -909,6 +1222,7 @@ function loadWishlist() {
 document.addEventListener('click', function(event) {
     const cartModal = document.getElementById('cartModal');
     const searchModal = document.getElementById('searchModal');
+    const checkoutModal = document.getElementById('checkoutModal');
     
     if (event.target === cartModal) {
         closeCart();
@@ -917,7 +1231,59 @@ document.addEventListener('click', function(event) {
     if (event.target === searchModal) {
         closeSearch();
     }
+    
+    if (event.target === checkoutModal) {
+        closeCheckout();
+    }
 });
+
+// Update shipping cost when shipping method changes
+document.addEventListener('change', function(event) {
+    if (event.target.name === 'shippingMethod') {
+        updateShippingCost();
+    }
+});
+
+// Fix sidebar logo visibility when sidebar state changes
+document.addEventListener('alpine:init', () => {
+    Alpine.data('sidebarData', () => ({
+        sidebarOpen: false,
+        init() {
+            this.$watch('sidebarOpen', (value) => {
+                const logoSmall = document.querySelector('.sidebar-logo-small');
+                if (logoSmall) {
+                    if (!value) {
+                        // Sidebar collapsed - ensure logo is visible
+                        logoSmall.style.display = 'block';
+                        logoSmall.style.visibility = 'visible';
+                        logoSmall.style.opacity = '1';
+                    }
+                }
+            });
+        }
+    }));
+});
+
+function updateShippingCost() {
+    const shippingMethod = document.querySelector('input[name="shippingMethod"]:checked').value;
+    const shippingCostElement = document.getElementById('shippingCost');
+    const finalTotalElement = document.getElementById('finalTotal');
+    const subtotalElement = document.getElementById('subtotal');
+    
+    let shippingCost = 0;
+    if (shippingMethod === 'express') {
+        shippingCost = 15000;
+        shippingCostElement.textContent = 'Rp15.000';
+    } else {
+        shippingCostElement.textContent = 'Gratis';
+    }
+    
+    // Get subtotal from cart
+    const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    const finalTotal = subtotal + shippingCost;
+    
+    finalTotalElement.textContent = `Rp${finalTotal.toLocaleString()}`;
+}
 
 // Search functionality
 function searchProducts(query) {

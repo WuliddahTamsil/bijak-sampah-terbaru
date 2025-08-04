@@ -253,7 +253,7 @@
         <div class="relative flex flex-col h-full w-full px-4">
             {{-- Logo Section --}}
             <div class="flex items-center justify-center mb-8 mt-2 sidebar-logo">
-                <img x-show="open" class="w-16 h-auto" src="{{ asset('asset/img/logo.png') }}" alt="Logo Penuh">
+                <img x-show="open" class="w-32 h-auto" src="{{ asset('asset/img/logo1.png') }}" alt="Logo Penuh">
                 <img x-show="!open" class="w-6 h-6" src="{{ asset('asset/img/logo.png') }}" alt="Logo Ikon">
             </div>
             
@@ -514,8 +514,8 @@
                     <div class="product-card overflow-hidden animate-fade-in-up" style="animation-delay: 1.1s;">
                         <img class="w-full h-48 object-cover product-image" src="https://via.placeholder.com/300x200/75E6DA/ffffff?text=Makanan+Tradisional" alt="Produk 3">
                         <div class="p-6">
-                            <h3 class="font-bold text-gray-900 mb-2 text-lg">Makanan Tradisional</h3>
-                            <p class="text-gray-600 text-sm mb-4 leading-relaxed">Makanan tradisional dengan cita rasa asli dan bahan berkualitas</p>
+                            <h3 class="font-bold text-gray-900 mb-2 text-lg">Tas Kreasi</h3>
+                            <p class="text-gray-600 text-sm mb-4 leading-relaxed">Tas Kreasi dengan bahan berkualitas</p>
                             <div class="flex justify-between items-center mb-3">
                                 <span class="price-tag">Rp 75.000</span>
                                 <div class="flex space-x-2">

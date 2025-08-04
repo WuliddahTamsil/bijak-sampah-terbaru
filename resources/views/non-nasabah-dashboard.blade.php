@@ -1,206 +1,183 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Dashboard Non-Nasabah - Bijak Sampah</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <script>
+        window.addEventListener('load', function() {
+            console.log('Window loaded, Chart.js available:', typeof Chart !== 'undefined');
+        });
+    </script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Inter', sans-serif;
+        :root {
+            --primary-color: #05445E;
+            --secondary-color: #75E6DA;
+            --accent-color: #f16728;
+            --success-color: #2b8a3e;
+            --danger-color: #c0392b;
         }
-
+        
         body {
-            background-color: #f8f9fc;
-            display: flex;
-            min-height: 100vh;
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
         }
 
-        /* Sidebar yang disederhanakan */
-        .sidebar {
-            width: 250px;
+        /* Custom CSS untuk efek gradasi sidebar */
+        .sidebar-banksampah-gradient {
             background: linear-gradient(135deg, #75E6DA 0%, #05445E 30%, #05445E 100%);
-            color: white;
-            padding: 20px 0;
-            min-height: 100vh;
-            transition: width 0.3s;
-            position: fixed;
-            left: 0;
-            top: 0;
-            overflow: hidden;
-            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
         }
-
-        .sidebar.collapsed {
-            width: 80px;
-        }
-
-        .logo-container {
-            padding: 0 20px;
-            margin-bottom: 30px;
-            display: flex;
-            align-items: center;
-            height: 60px;
-            justify-content: space-between;
-        }
-
-        .logo {
-            font-size: 22px;
-            font-weight: bold;
-            color: white;
-            white-space: nowrap;
-        }
-
-        .logo span {
-            color: #4ADE80;
-        }
-
-        .toggle-collapse {
-            background: none;
+        
+        /* Ensure seamless connection between topbar and sidebar */
+        .topbar-sidebar-seamless {
+            background: linear-gradient(135deg, #75E6DA 0%, #05445E 30%, #05445E 100%);
             border: none;
-            color: white;
-            font-size: 18px;
-            cursor: pointer;
-            padding: 5px;
+            box-shadow: none;
         }
 
-        .menu-items {
-            list-style: none;
-        }
-
-        .menu-item {
-            padding: 12px 20px;
-            display: flex;
-            align-items: center;
-            cursor: pointer;
-            transition: all 0.3s;
-            white-space: nowrap;
-        }
-
-        .menu-item:hover {
-            background: rgba(255, 255, 255, 0.1);
-        }
-
-        .menu-item.active {
-            background: rgba(255, 255, 255, 0.2);
-            border-left: 4px solid #f16728;
-        }
-
-        .menu-icon {
-            width: 24px;
-            height: 24px;
-            margin-right: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .menu-text {
-            font-size: 15px;
-            transition: opacity 0.3s;
-        }
-
-        .sidebar.collapsed .menu-text {
-            opacity: 0;
-            width: 0;
-        }
-
-        .sidebar.collapsed .logo-text {
-            display: none;
-        }
-
-        .sidebar.collapsed .logo-icon {
-            font-size: 22px;
-        }
-
-        /* Main Content */
+        /* Style untuk area main content */
         .main-content {
-            margin-left: 250px;
-            width: calc(100% - 250px);
-            padding: 30px;
-            transition: margin-left 0.3s, width 0.3s;
+            padding-top: 64px; /* Menyesuaikan dengan tinggi top bar */
+            min-height: 100vh;
+            width: 100%;
+            margin-left: 0;
+            margin-right: 0;
         }
 
-        .sidebar.collapsed ~ .main-content {
-            margin-left: 80px;
-            width: calc(100% - 80px);
-        }
-
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-        }
-
-        .page-title {
-            font-size: 28px;
-            color: #0A3A60;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .profile-actions {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .profile-icon {
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: white;
-            border-radius: 50%;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            cursor: pointer;
+        /* Chart Container */
+        .chart-container {
             position: relative;
-            transition: all 0.3s;
+            height: 400px;
+            width: 100%;
+            min-height: 300px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 10px;
+            background: white;
+        }
+        
+        #trendChart, #compositionChart {
+            width: 100% !important;
+            height: 100% !important;
+            min-height: 300px;
+            display: block !important;
         }
 
-        .profile-icon:hover {
+        /* Custom Card Styles */
+        .custom-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .custom-card:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 10px 15px rgba(0,0,0,0.1);
         }
 
-        .profile-icon.notif::after {
-            content: '';
+        /* Badge Styles */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 8px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .badge-primary {
+            background-color: #e1f0fa;
+            color: var(--primary-color);
+        }
+
+        .badge-success {
+            background-color: #e6f7ed;
+            color: var(--success-color);
+        }
+
+        .badge-warning {
+            background-color: #fff4e6;
+            color: #f97316;
+        }
+
+        /* Table Styles */
+        .data-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        .data-table thead th {
+            background-color: #f8fafc;
+            color: #64748b;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 12px;
+            padding: 12px 16px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .data-table tbody td {
+            padding: 14px 16px;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 14px;
+        }
+
+        .data-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .data-table tbody tr:hover td {
+            background-color: #f8fafc;
+        }
+
+        /* Animation */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+
+        /* Tooltip */
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+
+        .tooltip .tooltip-text {
+            visibility: hidden;
+            width: 120px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px;
             position: absolute;
-            top: 5px;
-            right: 5px;
-            width: 8px;
-            height: 8px;
-            background: #FF5A5F;
-            border-radius: 50%;
-            border: 2px solid white;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 12px;
         }
 
-        .profile-icon i {
-            color: #05445E;
-            font-size: 18px;
-        }
-
-        .avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid #05445E;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .avatar:hover {
-            transform: scale(1.05);
-            box-shadow: 0 4px 12px rgba(5, 68, 94, 0.2);
+        .tooltip:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
         }
 
         /* Notifikasi Cards - Diperbagus */
@@ -209,6 +186,7 @@
             grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
             gap: 25px;
             margin-bottom: 40px;
+            width: 100%;
         }
 
         .card {
@@ -293,8 +271,18 @@
             background: rgba(5, 68, 94, 0.1);
         }
 
+        .card-btn.delete {
+            background: none;
+            border: none;
+            padding: 4px;
+            border-radius: 4px;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
         .card-btn.delete:hover {
-            color: #FF5A5F;
+            background: rgba(239, 68, 68, 0.1);
+            transform: scale(1.1);
         }
 
         .card-btn.buy {
@@ -314,6 +302,7 @@
             border-radius: 16px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.05);
             margin-bottom: 30px;
+            width: 100%;
         }
 
         .chart-title {
@@ -380,6 +369,10 @@
             transform-origin: bottom;
             animation: grow-scale 1.5s ease-out forwards;
             animation-delay: calc(var(--order) * 0.2s);
+        }
+
+        .bar.green {
+            background: linear-gradient(to top, #10B981, #059669); /* Warna hijau untuk bar tertinggi */
         }
 
         @keyframes grow-scale {
@@ -568,6 +561,21 @@
             color: #05445E;
         }
 
+        /* Loading Spinner */
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
         /* Responsive Design */
         @media (max-width: 992px) {
             .notif-cards {
@@ -576,117 +584,199 @@
         }
 
         @media (max-width: 768px) {
-            .sidebar {
-                width: 80px;
-            }
-            
-            .sidebar .menu-text,
-            .sidebar .logo-text {
-                display: none;
-            }
-            
-            .sidebar .logo-icon {
-                font-size: 22px;
-            }
-            
-            .main-content {
-                margin-left: 80px;
-                width: calc(100% - 80px);
-                padding: 20px;
-            }
-
             .notif-cards {
                 grid-template-columns: 1fr;
             }
+        }
 
-            .header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 15px;
+        /* Full width adjustments */
+        @media (min-width: 1200px) {
+            .main-content {
+                padding-left: 6rem !important;
             }
+        }
 
-            .profile-actions {
-                width: 100%;
-                justify-content: flex-end;
+        @media (max-width: 1199px) {
+            .main-content {
+                padding-left: 4rem !important;
             }
         }
     </style>
 </head>
-<body>
+<body class="bg-gray-50">
 
-    <div class="sidebar" id="sidebar">
-        <div class="logo-container">
-                                          <div class="logo">
-                            <img src="{{ asset('asset/img/Logo Alternative_Dark (1).png') }}" alt="Bijak Sampah Logo" style="width: 200px; height: 200px; object-fit: contain;">
-                        </div>
-            <button class="toggle-collapse" id="toggleCollapse">
-                <i class="fas fa-chevron-left"></i>
-            </button>
+<div class="flex min-h-screen bg-gray-50" x-data="{ sidebarOpen: false, activeMenu: 'dashboard' }" x-init="activeMenu = 'dashboard'">
+    {{-- Sidebar --}}
+    <aside 
+        class="fixed top-0 left-0 z-40 flex flex-col py-6 overflow-hidden shadow-2xl group sidebar-banksampah-gradient text-white"
+        :class="sidebarOpen ? 'w-[250px]' : 'w-16'"
+        style="transition: width 0.3s ease; height: 100vh; background: linear-gradient(135deg, #75E6DA 0%, #05445E 30%, #05445E 100%);"
+    >
+        <div class="relative flex flex-col h-full w-full px-4">
+            
+            {{-- Logo Section with Toggle Button --}}
+            {{-- PASTIKAN FILE logo-icon.png ADA DI public/asset/img --}}
+            <div class="flex items-center justify-center mb-8 mt-14" :class="sidebarOpen ? 'justify-between' : 'justify-center'">
+                <div class="flex items-center justify-center gap-2" :class="sidebarOpen ? 'flex-1' : ''">
+                    <img x-show="sidebarOpen" class="w-32 h-auto" src="{{ asset('asset/img/logo1.png') }}" alt="Logo Penuh">
+                    <img x-show="!sidebarOpen" class="w-6 h-6" src="{{ asset('asset/img/logo.png') }}" alt="Logo Kecil">
+                    {{-- Toggle Button --}}
+                    <button 
+                        @click="sidebarOpen = !sidebarOpen"
+                        class="p-1 rounded-full bg-white/20 hover:bg-white/30 transition-colors duration-200 text-white"
+                        :class="sidebarOpen ? 'rotate-180' : ''"
+                        style="transition: transform 0.3s ease;"
+                    >
+                        <i class="fas fa-chevron-left text-sm"></i>
+                    </button>
+            </div>
         </div>
         
-        <ul class="menu-items">
-            <li class="menu-item active">
-                <a href="{{ route('non-nasabah-dashboard') }}" style="text-decoration: none; color: inherit; display: flex; align-items: center; width: 100%;">
-                    <div class="menu-icon"><i class="fas fa-home"></i></div>
-                    <span class="menu-text">Dashboard</span>
+            {{-- Navigation Menu --}}
+            <nav class="flex flex-col gap-2 w-full flex-1 overflow-y-auto">
+                <a 
+                    href="{{ route('non-nasabah-dashboard') }}" 
+                    class="flex items-center p-3 font-medium rounded-lg whitespace-nowrap w-full transition-colors duration-200 bg-white/20 shadow-sm"
+                    :style="sidebarOpen ? 'gap: 12px;' : 'justify-content: center; padding-left: 0; padding-right: 0;'"
+                    @click="activeMenu = 'dashboard'"
+                >
+                    <i class="fas fa-home text-lg"></i>
+                    <span x-show="sidebarOpen" class="text-sm font-medium">Dashboard</span>
                 </a>
-            </li>
-            <li class="menu-item">
-                <a href="{{ route('poin-non-nasabah') }}" style="text-decoration: none; color: inherit; display: flex; align-items: center; width: 100%;">
-                    <div class="menu-icon"><i class="fas fa-coins"></i></div>
-                    <span class="menu-text">Poin Mu</span>
+
+                <a 
+                    href="{{ route('poin-non-nasabah') }}" 
+                    class="flex items-center p-3 font-medium rounded-lg whitespace-nowrap w-full transition-colors duration-200 hover:bg-white/10 hover:shadow-sm"
+                    :style="sidebarOpen ? 'gap: 12px;' : 'justify-content: center;'"
+                    @click="activeMenu = 'poin'"
+                >
+                    <i class="fas fa-coins text-lg"></i>
+                    <span x-show="sidebarOpen" class="text-sm font-medium">Poin Mu</span>
                 </a>
-            </li>
-            <li class="menu-item">
-                <a href="{{ route('non-nasabah-dashboard') }}" style="text-decoration: none; color: inherit; display: flex; align-items: center; width: 100%;">
-                    <div class="menu-icon"><i class="fas fa-history"></i></div>
-                    <span class="menu-text">Riwayat Transaksi</span>
+
+                <a 
+                    href="{{ route('tokou') }}" 
+                    class="flex items-center p-3 font-medium rounded-lg whitespace-nowrap w-full transition-colors duration-200 hover:bg-white/10 hover:shadow-sm"
+                    :style="sidebarOpen ? 'gap: 12px;' : 'justify-content: center;'"
+                    @click="activeMenu = 'marketplace'"
+                >
+                    <i class="fas fa-store text-lg"></i>
+                    <span x-show="sidebarOpen" class="text-sm font-medium">Marketplace</span>
                 </a>
-            </li>
-            <li class="menu-item">
-                <a href="{{ route('toko') }}" style="text-decoration: none; color: inherit; display: flex; align-items: center; width: 100%;">
-                    <div class="menu-icon"><i class="fas fa-store"></i></div>
-                    <span class="menu-text">Marketplace</span>
+
+                <button 
+                    onclick="showDevelopmentModal('Belanja')"
+                    class="flex items-center p-3 font-medium rounded-lg whitespace-nowrap w-full transition-colors duration-200 hover:bg-white/10 hover:shadow-sm"
+                    :style="sidebarOpen ? 'gap: 12px;' : 'justify-content: center;'"
+                    @click="activeMenu = 'belanja'"
+                >
+                    <i class="fas fa-shopping-bag text-lg"></i>
+                    <span x-show="sidebarOpen" class="text-sm font-medium">Belanja</span>
+                </button>
+
+                <button 
+                    onclick="showDevelopmentModal('Wishlist')"
+                    class="flex items-center p-3 font-medium rounded-lg whitespace-nowrap w-full transition-colors duration-200 hover:bg-white/10 hover:shadow-sm"
+                    :style="sidebarOpen ? 'gap: 12px;' : 'justify-content: center;'"
+                    @click="activeMenu = 'wishlist'"
+                >
+                    <i class="fas fa-heart text-lg"></i>
+                    <span x-show="sidebarOpen" class="text-sm font-medium">Wishlist</span>
+                </button>
+
+                <button 
+                    onclick="showDevelopmentModal('Riwayat')"
+                    class="flex items-center p-3 font-medium rounded-lg whitespace-nowrap w-full transition-colors duration-200 hover:bg-white/10 hover:shadow-sm"
+                    :style="sidebarOpen ? 'gap: 12px;' : 'justify-content: center;'"
+                    @click="activeMenu = 'riwayat'"
+                >
+                    <i class="fas fa-history text-lg"></i>
+                    <span x-show="sidebarOpen" class="text-sm font-medium">Riwayat</span>
+                </button>
+
+                <button 
+                    onclick="showDevelopmentModal('Settings')"
+                    class="flex items-center p-3 font-medium rounded-lg whitespace-nowrap w-full transition-colors duration-200 hover:bg-white/10 hover:shadow-sm"
+                    :style="sidebarOpen ? 'gap: 12px;' : 'justify-content: center;'"
+                    @click="activeMenu = 'settings'"
+                >
+                    <i class="fas fa-cog text-lg"></i>
+                    <span x-show="sidebarOpen" class="text-sm font-medium">Settings</span>
+                </button>
+            </nav>
+            
+            {{-- Logout Section --}}
+            <div class="w-full flex items-center py-3 mt-auto border-t border-white/20">
+                <a 
+                    href="{{ route('logout') }}" 
+                    class="flex items-center p-3 rounded-lg hover:bg-white/10 hover:shadow-sm text-white transition-all duration-200 w-full whitespace-nowrap"
+                    :style="sidebarOpen ? 'gap: 12px;' : 'justify-content: center;'"
+                >
+                    <i class="fas fa-sign-out-alt text-lg"></i>
+                    <span x-show="sidebarOpen" class="text-sm font-medium">Logout</span>
                 </a>
-            </li>
-            <li class="menu-item">
-                <a href="{{ route('settings') }}" style="text-decoration: none; color: inherit; display: flex; align-items: center; width: 100%;">
-                    <div class="menu-icon"><i class="fas fa-cog"></i></div>
-                    <span class="menu-text">Settings</span>
-                </a>
-            </li>
-            <li class="menu-item">
-                <a href="{{ route('logout') }}" style="text-decoration: none; color: inherit; display: flex; align-items: center; width: 100%;">
-                    <div class="menu-icon"><i class="fas fa-sign-out-alt"></i></div>
-                    <span class="menu-text">Logout</span>
-                </a>
-            </li>
-        </ul>
     </div>
+        </div>
+    </aside>
 
-    <div class="main-content">
-        <div class="header">
-            <h1 class="page-title"><i class="fas fa-bell"></i> Promo & Penawaran</h1>
-            <div class="profile-actions">
-                <div class="profile-icon notif" id="notifBtn" title="Notifikasi">
-                    <i class="fas fa-bell"></i>
+    {{-- Main Content --}}
+    <div class="main-content" :class="sidebarOpen ? 'pl-24' : 'pl-24'" style="transition: padding-left 0.3s ease; width: 100%; margin-left: 0; margin-right: 0;">
+        {{-- Top Header Bar --}}
+        <div class="fixed top-0 left-0 right-0 h-12 z-40 flex items-center justify-between px-6 text-white" :style="'padding-left:' + (sidebarOpen ? '16rem' : '4rem') + '; background: linear-gradient(135deg, #75E6DA 0%, #05445E 30%, #05445E 100%);'">
+            <h1 class="text-white font-semibold text-lg" style="position: absolute; left: 1.5rem;">BijakSampah</h1>
+            <div class="flex items-center gap-4" style="position: absolute; right: 1.5rem;">
+                <button onclick="showDevelopmentModal('Sign In')" class="bg-white/20 hover:bg-white/30 text-white px-4 py-1 rounded-full text-sm font-medium transition-colors duration-200">Sign in</button>
+                <button onclick="showDevelopmentModal('Notification')" class="relative hover:text-white/80 transition-colors">
+                    <i class="far fa-bell text-white text-sm"></i>
+                    <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center font-medium">2</span>
+                </button>
+                <button onclick="showDevelopmentModal('Search')" class="focus:outline-none hover:text-white/80 transition-colors">
+                    <i class="fas fa-search text-white text-sm"></i>
+                </button>
+                <div class="flex items-center gap-2">
+                    <button onclick="showDevelopmentModal('Profile')" class="w-8 h-8 rounded-full overflow-hidden flex items-center justify-center border-2 border-gray-300 cursor-pointer hover:border-white/50 transition-colors">
+                        <img src="https://ui-avatars.com/api/?name=Non+Nasabah&background=75E6DA&color=05445E" alt="Profile" class="w-full h-full object-cover">
+                    </button>
+                    <button onclick="showDevelopmentModal('Profile Menu')" class="hover:text-white/80 transition-colors">
+                        <i class="fas fa-chevron-down text-white text-xs"></i>
+                    </button>
+            </div>
                 </div>
-                <div class="profile-icon" id="searchBtn" title="Cari">
-                    <i class="fas fa-search"></i>
                 </div>
-                <img class="avatar" src="https://ui-avatars.com/api/?name=Non+Nasabah&background=75E6DA&color=05445E" alt="Profile" id="profileBtn">
+
+        <div class="p-6" style="padding-top: 20px; width: 100%; max-width: 100%;">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4" style="width: 100%;">
+                <div style="width: 100%;">
+                    <h1 class="text-2xl font-bold text-gray-800">Dashboard - User Biasa</h1>
+                    <p class="text-sm text-gray-500">Selamat datang di marketplace daur ulang</p>
             </div>
         </div>
 
-        <div class="notif-cards" id="notifContainer">
+            {{-- Notifikasi Section --}}
+            <div class="mb-8" style="width: 100%;">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4">Notifikasi</h2>
+                <div class="notif-cards" id="notifContainer" style="width: 100%;">
             <!-- Notifikasi akan dimuat di sini -->
+                </div>
         </div>
 
+            {{-- Aktivitas Section --}}
         <div class="chart-section">
-            <div class="chart-title">
-                <i class="fas fa-chart-line"></i> Tren Produk Daur Ulang
+                <div class="flex justify-between items-center mb-4">
+                    <div>
+                        <h2 class="text-2xl font-bold text-gray-800 mb-2">Aktivitasmu</h2>
+                        <p class="text-sm text-gray-500">Minggu Lalu</p>
             </div>
-            <div class="chart-sub">Minggu Ini</div>
+                    <div class="flex items-center gap-4">
+                        <div class="bg-green-100 text-green-800 px-4 py-2 rounded-full text-sm font-semibold">
+                            Hurraaahhh! Super Productive
+                        </div>
+                        <div class="text-2xl font-bold text-green-600">97%</div>
+                        <button class="bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+                            Bulan <i class="fas fa-chevron-down ml-1"></i>
+                        </button>
+                    </div>
+                </div>
 
             <div class="chart-content" id="chart-content">
                 <!-- Grafik akan dimuat di sini -->
@@ -695,6 +785,8 @@
 
         <div class="footer">
             Created by <strong>TEK(G)</strong> | All Right Reserved!
+            </div>
+        </div>
         </div>
     </div>
 
@@ -769,74 +861,72 @@
         </div>
     </div>
 
+    {{-- Modal untuk menu dalam pengembangan --}}
+    <div class="modal" id="developmentModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Fitur Dalam Pengembangan</h3>
+                <button class="close-modal" id="closeDevelopmentModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div style="text-align: center; padding: 20px;">
+                    <i class="fas fa-tools" style="font-size: 48px; color: #05445E; margin-bottom: 20px;"></i>
+                    <h4 style="color: #05445E; font-size: 18px; margin-bottom: 10px;">Fitur Sedang Dikembangkan</h4>
+                    <p style="color: #666; font-size: 14px; line-height: 1.6;">
+                        Fitur ini sedang dalam tahap pengembangan. 
+                        Tim kami sedang bekerja keras untuk menghadirkan pengalaman terbaik untuk Anda.
+                    </p>
+                    <div style="margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 8px;">
+                        <p style="color: #05445E; font-size: 12px; margin: 0;">
+                            <i class="fas fa-clock"></i> Estimasi rilis: 2-3 minggu ke depan
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" id="closeDevModal">Mengerti</button>
+            </div>
+        </div>
+    </div>
+
     <script>
-        // Data Notifikasi yang difokuskan pada penawaran marketplace
+        // Data Notifikasi sesuai gambar
         let notifications = [
             { 
                 id: 1,
-                title: "Tas Daur Ulang Baru!",
+                title: "Koleksi Tas Daur Ulang Lucu",
                 icon: "fas fa-shopping-bag",
-                message: "Tas cantik dari bahan daur ulang kini tersedia di marketplace kami. Dapatkan sekarang dengan harga spesial!",
+                message: "Ramah lingkungan & stylish. Cek di Marketplace BijakSampah! ❤️",
                 date: "22 Juni 2025",
                 time: "20:45",
-                hasBuyButton: true
+                priority: "Urgent",
+                timeTag: "Kemarin"
             },
             { 
                 id: 2,
-                title: "Dompet Daur Ulang Eksklusif",
+                title: "Dompet daur ulang unik tersedia!",
                 icon: "fas fa-wallet",
-                message: "Hasil kerajinan dompet daur ulang dengan desain elegan tersedia terbatas. Segera miliki sebelum kehabisan!",
+                message: "Anti air & ramah lingkungan. Cek di Marketplace BijakSampah! ❤️❤️❤️",
                 date: "23 Juni 2025",
                 time: "14:14",
-                hasBuyButton: true
-            },
-            { 
-                id: 3,
-                title: "Diskon Spesial Guci Keramik",
-                icon: "fas fa-tag",
-                message: "Diskon 30% untuk semua produk guci dari tanah liat dan keramik daur ulang. Berlaku hingga akhir bulan ini!",
-                date: "23 Juni 2025",
-                time: "16:14",
-                hasBuyButton: true
-            },
-            { 
-                id: 4,
-                title: "Pot Tanaman dari Botol Plastik",
-                icon: "fas fa-seedling",
-                message: "Koleksi terbaru pot tanaman ramah lingkungan dari botol plastik daur ulang. Tersedia berbagai ukuran!",
-                date: "24 Juni 2025",
-                time: "10:30",
-                hasBuyButton: true
-            },
-            { 
-                id: 5,
-                title: "Voucher Belanja Gratis",
-                icon: "fas fa-ticket-alt",
-                message: "Dapatkan voucher belanja senilai Rp 50.000 untuk pembelian pertama di marketplace kami. Klaim sekarang!",
-                date: "25 Juni 2025",
-                time: "09:15",
-                hasBuyButton: true
+                priority: "Medium",
+                timeTag: "2 jam yang lalu"
+            
             }
         ];
 
-        // Data untuk grafik tren produk
+        // Data untuk grafik aktivitas sesuai gambar
         const chartData = [
-            { height: 30, value: '30%', label: 'Tas' }, 
-            { height: 75, value: '75%', label: 'Dompet' }, 
-            { height: 97, value: '97%', label: 'Guci' },
-            { height: 65, value: '65%', label: 'Pot Tanaman' }, 
-            { height: 40, value: '40%', label: 'Aksesoris' }, 
-            { height: 68, value: '68%', label: 'Furnitur' }, 
-            { height: 70, value: '70%', label: 'Kerajinan' }  
+            { height: 60, value: '60%', label: '16 Jun' }, 
+            { height: 45, value: '45%', label: '17 Jun' }, 
+            { height: 97, value: '97%', label: '18 Jun' },
+            { height: 75, value: '75%', label: '19 Jun' }, 
+            { height: 80, value: '80%', label: '20 Jun' }, 
+            { height: 65, value: '65%', label: '21 Jun' }, 
+            { height: 70, value: '70%', label: '22 Jun' }  
         ];
 
         // DOM Elements
-        const sidebar = document.getElementById('sidebar');
-        const toggleCollapse = document.getElementById('toggleCollapse');
-        const mainContent = document.querySelector('.main-content');
-        const notifBtn = document.getElementById('notifBtn');
-        const searchBtn = document.getElementById('searchBtn');
-        const profileBtn = document.getElementById('profileBtn');
         const notifModal = document.getElementById('notifModal');
         const searchModal = document.getElementById('searchModal');
         const profileModal = document.getElementById('profileModal');
@@ -850,55 +940,59 @@
         const saveProfile = document.getElementById('saveProfile');
         const chartContent = document.getElementById('chart-content');
 
-        // Toggle Sidebar
-        toggleCollapse.addEventListener('click', function() {
-            sidebar.classList.toggle('collapsed');
-            mainContent.classList.toggle('collapsed');
-            const icon = toggleCollapse.querySelector('i');
-            if (sidebar.classList.contains('collapsed')) {
-                icon.classList.remove('fa-chevron-left');
-                icon.classList.add('fa-chevron-right');
-            } else {
-                icon.classList.remove('fa-chevron-right');
-                icon.classList.add('fa-chevron-left');
-            }
-        });
-
         // Load Notifications
         function loadNotifications() {
+            console.log('Loading notifications, count:', notifications.length);
             notifContainer.innerHTML = '';
+            
+            if (notifications.length === 0) {
+                notifContainer.innerHTML = `
+                    <div class="col-span-full text-center py-8">
+                        <i class="fas fa-bell-slash text-4xl text-gray-300 mb-4"></i>
+                        <p class="text-gray-500">Tidak ada notifikasi</p>
+                    </div>
+                `;
+                return;
+            }
+            
             notifications.forEach(notif => {
                 const card = document.createElement('div');
                 card.className = 'card';
                 
-                let buttons = '';
-                if (notif.hasBuyButton) {
-                    buttons = `
-                        <div class="card-actions">
-                            <button class="card-btn buy" data-id="${notif.id}"><i class="fas fa-shopping-cart"></i> Beli Sekarang</button>
-                        </div>
-                    `;
+                // Priority badge color
+                let priorityClass = '';
+                if (notif.priority === 'Urgent') {
+                    priorityClass = 'bg-red-100 text-red-800';
+                } else if (notif.priority === 'Medium') {
+                    priorityClass = 'bg-green-100 text-green-800';
                 }
                 
                 card.innerHTML = `
+                    <div class="flex justify-between items-start mb-3">
+                        <span class="badge badge-primary">${notif.timeTag}</span>
+                        <div class="flex items-center gap-2">
+                            <span class="badge ${priorityClass}">${notif.priority}</span>
+                            <button class="card-btn delete" data-id="${notif.id}" onclick="deleteNotification(${notif.id})">
+                                <i class="fas fa-trash text-red-500 hover:text-red-700"></i>
+                            </button>
+                        </div>
+                    </div>
                     <h4><i class="${notif.icon}"></i> ${notif.title}</h4>
                     <p>${notif.message}</p>
                     <div class="card-footer">
-                        <span>${notif.date} • ${notif.time}</span>
-                        ${buttons}
+                        <div class="flex items-center gap-2">
+                            <i class="fas fa-calendar text-gray-400 text-xs"></i>
+                            <span class="text-xs text-gray-500">${notif.date}</span>
+                            <i class="fas fa-clock text-gray-400 text-xs"></i>
+                            <span class="text-xs text-gray-500">${notif.time}</span>
+                        </div>
                     </div>
                 `;
                 notifContainer.appendChild(card);
             });
 
-            // Add event listeners for buy buttons
-            document.querySelectorAll('.card-btn.buy').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const id = parseInt(this.getAttribute('data-id'));
-                    const notif = notifications.find(n => n.id === id);
-                    alert(`Anda akan membeli produk dari notifikasi: "${notif.title}"`);
-                });
-            });
+            // Update notification count
+            updateNotificationCount();
         }
 
         // Load Notifications in Modal
@@ -930,17 +1024,24 @@
             });
         }
 
-        // Generate Chart for product trends
+        // Generate Chart for activity trends
         function generateChart() {
             chartContent.innerHTML = '';
             
-            // Generate bars for each product category
+            // Generate bars for each day
             chartData.forEach((data, index) => {
                 const chartBarItem = document.createElement('div');
                 chartBarItem.className = 'chart-bar-item';
                 chartBarItem.style.setProperty('--height', `${data.height}%`);
+                
+                // Add green color for the highest bar (18 Jun - 97%)
+                let barClass = 'bar';
+                if (data.height === 97) {
+                    barClass = 'bar green';
+                }
+                
                 chartBarItem.innerHTML = `
-                    <div class="bar" style="--order: ${index + 1};">
+                    <div class="${barClass}" style="--order: ${index + 1};">
                         <span class="bar-label">${data.value} ${data.label}</span>
                     </div>
                     <div class="day">${data.label}</div>
@@ -949,19 +1050,26 @@
             });
         }
 
-        // Modal Toggles
-        notifBtn.addEventListener('click', function() {
+        // Update Notification Count in Topbar
+        function updateNotificationCount() {
+            const countElement = document.querySelector('.absolute.-top-1.-right-1');
+            if (countElement) {
+                countElement.textContent = notifications.length;
+                if (notifications.length === 0) {
+                    countElement.style.display = 'none';
+                } else {
+                    countElement.style.display = 'flex';
+                }
+            }
+        }
+
+        // Show Notification Modal
+        function showNotifModal() {
             loadNotifModal();
             notifModal.style.display = 'flex';
-        });
+        }
 
-        searchBtn.addEventListener('click', function() {
-            searchModal.style.display = 'flex';
-        });
-
-        profileBtn.addEventListener('click', function() {
-            profileModal.style.display = 'flex';
-        });
+        // Modal Toggles - Removed unused event listeners
 
         // Close Modals
         document.getElementById('closeNotifModal').addEventListener('click', function() {
@@ -1006,19 +1114,31 @@
                 const date = now.toLocaleDateString('id-ID', options);
                 const time = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
                 
+                // Determine time tag
+                let timeTag = 'Baru saja';
+                const minutesAgo = Math.floor((Date.now() - now.getTime()) / (1000 * 60));
+                if (minutesAgo > 60) {
+                    timeTag = `${Math.floor(minutesAgo / 60)} jam yang lalu`;
+                } else if (minutesAgo > 0) {
+                    timeTag = `${minutesAgo}m yang lalu`;
+                }
+                
                 notifications.unshift({
                     id: newId,
-                    title: "Promo Baru",
-                    icon: "fas fa-tag",
+                    title: "Notifikasi Baru",
+                    icon: "fas fa-bell",
                     message: notifInput.value.trim(),
                     date: date,
                     time: time,
-                    hasBuyButton: true
+                    priority: "Medium",
+                    timeTag: timeTag
                 });
                 
                 notifInput.value = '';
                 loadNotifications();
                 loadNotifModal();
+                showToast('Notifikasi berhasil ditambahkan!', 'success');
+                updateNotificationCount();
             }
         });
 
@@ -1046,9 +1166,89 @@
             profileModal.style.display = 'none';
         });
 
-        // Initialize
+        // Delete Notification
+        function deleteNotification(id) {
+            console.log('Deleting notification with ID:', id);
+            
+            if (confirm('Apakah Anda yakin ingin menghapus notifikasi ini?')) {
+                // Remove from notifications array
+                const initialLength = notifications.length;
+                notifications = notifications.filter(notif => notif.id !== id);
+                
+                console.log('Notifications before:', initialLength, 'after:', notifications.length);
+                
+                // Reload notifications display
+                loadNotifications();
+                
+                // Show success message
+                showToast('Notifikasi berhasil dihapus!', 'success');
+                
+                // Update notification count in topbar
+                updateNotificationCount();
+            }
+        }
+
+        // Show Toast Message
+        function showToast(message, type = 'success') {
+            // Create toast element
+            const toast = document.createElement('div');
+            toast.className = `fixed top-4 right-4 z-50 px-6 py-3 rounded-lg text-white font-medium transition-all duration-300 transform translate-x-full`;
+            
+            if (type === 'success') {
+                toast.className += ' bg-green-500';
+            } else if (type === 'error') {
+                toast.className += ' bg-red-500';
+            }
+            
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            // Animate in
+            setTimeout(() => {
+                toast.classList.remove('translate-x-full');
+            }, 100);
+            
+            // Remove after 3 seconds
+            setTimeout(() => {
+                toast.classList.add('translate-x-full');
+                setTimeout(() => {
+                    document.body.removeChild(toast);
+                }, 300);
+            }, 3000);
+        }
+
+        // Show Development Modal
+        function showDevelopmentModal(featureName) {
+            const modal = document.getElementById('developmentModal');
+            const title = modal.querySelector('.modal-title');
+            title.textContent = `${featureName} - Fitur Dalam Pengembangan`;
+            modal.style.display = 'flex';
+        }
+
+        // Close Development Modal
+        document.getElementById('closeDevelopmentModal').addEventListener('click', function() {
+            document.getElementById('developmentModal').style.display = 'none';
+        });
+
+        document.getElementById('closeDevModal').addEventListener('click', function() {
+            document.getElementById('developmentModal').style.display = 'none';
+        });
+
+        // Close modal when clicking outside
+        window.addEventListener('click', function(event) {
+            const developmentModal = document.getElementById('developmentModal');
+            if (event.target === developmentModal) {
+                developmentModal.style.display = 'none';
+            }
+        });
+
+        // Initialize when DOM is ready
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded, initializing...');
         loadNotifications();
         generateChart();
+            updateNotificationCount();
+        });
     </script>
 </body>
 </html>

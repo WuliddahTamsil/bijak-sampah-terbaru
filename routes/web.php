@@ -137,6 +137,18 @@ Route::get('/poin-non-nasabah', function () {
     return view('poin-non-nasabah');
 })->name('poin-non-nasabah');
 
+Route::get('/settingsbank', function () {
+    return view('settingsbank');
+})->name('settingsbank');
+
+Route::get('/profilebank', function () {
+    return view('profilebank');
+})->name('profilebank');
+
+Route::get('/notifikasibank', function () {
+    return view('notifikasibank');
+})->name('notifikasibank');
+
 Route::get('/pilihan-login', function () {
     return view('pilihan-login');
 })->name('pilihan-login');
@@ -149,9 +161,9 @@ Route::get('/data-nasabah-banksampah', function () {
     return view('data-nasabah-banksampah');
 })->name('data-nasabah-banksampah');
 
-Route::get('/profile-nasabah', function () {
-    return view('profile-nasabah');
-})->name('profile-nasabah');
+Route::get('/profil', function () {
+    return view('profil');
+})->name('profil');
 
 Route::get('/penjemputan-sampah-banksampah', function () {
     return view('penjemputan-sampah-banksampah');
@@ -197,6 +209,11 @@ Route::get('/penjualansampah-banksampah', function () {
 Route::get('/verifikasi-nasabah-banksampah', function () {
     return view('verifikasi-nasabah-banksampah');
 })->name('verifikasi-nasabah-banksampah');
+
+// Route baru yang ditambahkan untuk mengatasi error
+Route::get('/input-setoran', function () {
+    return view('input-setoran');
+})->name('input-setoran');
 
 Route::post('/send-verification-email', function (Request $request) {
     // Validasi input

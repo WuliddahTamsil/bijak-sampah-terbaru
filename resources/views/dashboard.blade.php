@@ -170,7 +170,7 @@
         <div class="relative flex flex-col h-full w-full px-4">
             {{-- Logo Section --}}
             <div class="flex items-center justify-center mb-8 mt-2 sidebar-logo">
-                <img x-show="open" class="w-16 h-auto" src="{{ asset('asset/img/logo.png') }}" alt="Logo Penuh">
+                <img x-show="open" class="w-32 h-auto" src="{{ asset('asset/img/logo1.png') }}" alt="Logo Penuh">
                 <img x-show="!open" class="w-6 h-6" src="{{ asset('asset/img/logo.png') }}" alt="Logo Ikon">
             </div>
             
@@ -324,8 +324,8 @@
                         <img src="{{ asset('asset/img/bijak2.jpg') }}" class="rounded-xl w-full h-[160px] object-cover shadow-lg" alt="Woven Baskets">
                         <img src="{{ asset('asset/img/bijak3.jpg') }}" class="rounded-xl w-full h-[160px] object-cover shadow-lg" alt="Hand with Sunflower">
                         <img src="{{ asset('asset/img/bijak4.jpg') }}" class="rounded-xl w-full h-[160px] object-cover shadow-lg" alt="Circular Art Pieces">
-                        <img src="{{ asset('asset/img/formal (2).jpg') }}" class="rounded-xl w-full h-[160px] object-cover shadow-lg" alt="Shop Display">
-                        <img src="{{ asset('asset/img/wuwu ft.jpg') }}" class="rounded-xl w-full h-[160px] object-cover shadow-lg" alt="More Crafts">
+                        <img src="{{ asset('asset/img/bijak1.jpg') }}" class="rounded-xl w-full h-[160px] object-cover shadow-lg" alt="Shop Display">
+                        <img src="{{ asset('asset/img/bijak4.jpg') }}" class="rounded-xl w-full h-[160px] object-cover shadow-lg" alt="More Crafts">
                     </div>
                     <img src="{{ asset('asset/img/hero.png') }}" class="rounded-xl w-full h-full object-cover shadow-lg" alt="Fashion Model">
                 </div>

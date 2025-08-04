@@ -1,174 +1,176 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Dashboard Nasabah - Bijak Sampah</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <script>
+        window.addEventListener('load', function() {
+            console.log('Window loaded, Chart.js available:', typeof Chart !== 'undefined');
+        });
+    </script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Inter', sans-serif;
-        }
-
         body {
-            background-color: #f8f9fc;
-            display: flex;
-            min-height: 100vh;
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
         }
 
-        /* Sidebar dari kode pertama (disesuaikan) */
-        .sidebar {
-            width: 80px;
+        /* Custom CSS untuk efek gradasi sidebar */
+        .sidebar-banksampah-gradient {
             background: linear-gradient(135deg, #75E6DA 0%, #05445E 30%, #05445E 100%);
-            color: white;
-            padding: 20px 0;
-            min-height: 100vh;
-            transition: width 0.3s ease;
-            position: fixed;
-            left: 0;
-            top: 0;
-            overflow: hidden;
-            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
-            z-index: 1000;
         }
-
-        .sidebar:hover {
-            width: 250px;
-        }
-
-        .sidebar.collapsed {
-            width: 80px;
-        }
-
-        .logo-container {
-            padding: 0 20px;
-            margin-bottom: 30px;
-            display: flex;
-            align-items: center;
-            height: 60px;
-            justify-content: space-between;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            white-space: nowrap;
-        }
-
-        .logo img {
-            width: 40px;
-            height: 40px;
-            object-fit: contain;
-        }
-
-        .logo-text {
-            font-size: 18px;
-            font-weight: bold;
-            color: white;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .sidebar:hover .logo-text {
-            opacity: 1;
-        }
-
-        .logo span {
-            color: #4ADE80;
-        }
-
-        .toggle-collapse {
-            background: none;
+        
+        /* Ensure seamless connection between topbar and sidebar */
+        .topbar-sidebar-seamless {
+            background: linear-gradient(135deg, #75E6DA 0%, #05445E 30%, #05445E 100%);
             border: none;
-            color: white;
-            font-size: 18px;
-            cursor: pointer;
-            padding: 5px;
-            opacity: 0;
-            transition: opacity 0.3s ease;
+            box-shadow: none;
         }
 
-        .sidebar:hover .toggle-collapse {
-            opacity: 1;
-        }
-
-        .menu-items {
-            list-style: none;
-        }
-
-        .menu-item {
-            padding: 12px 20px;
-            display: flex;
-            align-items: center;
-            cursor: pointer;
-            transition: all 0.3s;
-            white-space: nowrap;
-        }
-
-        .menu-item:hover {
-            background: rgba(255, 255, 255, 0.1);
-        }
-
-        .menu-item.active {
-            background: rgba(255, 255, 255, 0.2);
-            border-left: 4px solid #f16728;
-        }
-
-        .menu-icon {
-            width: 24px;
-            height: 24px;
-            margin-right: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-        }
-
-        .menu-text {
-            font-size: 15px;
-            transition: opacity 0.3s ease;
-            opacity: 0;
-        }
-
-        .sidebar:hover .menu-text {
-            opacity: 1;
-        }
-
-        .sidebar.collapsed .menu-text {
-            opacity: 0;
-            width: 0;
-        }
-
-        .sidebar.collapsed .logo-text {
-            display: none;
-        }
-
-        .sidebar.collapsed .logo-icon {
-            font-size: 22px;
-        }
-
-        /* Main Content */
+        /* Style untuk area main content */
         .main-content {
-            margin-left: 80px;
-            width: calc(100% - 80px);
-            padding: 30px;
-            transition: margin-left 0.3s ease, width 0.3s ease;
+            padding-top: 64px; /* Menyesuaikan dengan tinggi top bar */
+            min-height: 100vh;
         }
 
-        .sidebar:hover ~ .main-content {
-            margin-left: 250px;
-            width: calc(100% - 250px);
+        /* Chart Container */
+        .chart-container {
+            position: relative;
+            height: 400px;
+            width: 100%;
+            min-height: 300px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 10px;
+            background: white;
+        }
+        
+        #trendChart, #compositionChart {
+            width: 100% !important;
+            height: 100% !important;
+            min-height: 300px;
+            display: block !important;
         }
 
-        .sidebar.collapsed ~ .main-content {
-            margin-left: 80px;
-            width: calc(100% - 80px);
+        /* Custom Card Styles */
+        .custom-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
+
+        .custom-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px rgba(0,0,0,0.1);
+        }
+
+        /* Badge Styles */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 8px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .badge-primary {
+            background-color: #e1f0fa;
+            color: var(--primary-color);
+        }
+
+        .badge-success {
+            background-color: #e6f7ed;
+            color: var(--success-color);
+        }
+
+        .badge-warning {
+            background-color: #fff4e6;
+            color: #f97316;
+        }
+
+        /* Table Styles */
+        .data-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        .data-table thead th {
+            background-color: #f8fafc;
+            color: #64748b;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 12px;
+            padding: 12px 16px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .data-table tbody td {
+            padding: 14px 16px;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 14px;
+        }
+
+        .data-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .data-table tbody tr:hover td {
+            background-color: #f8fafc;
+        }
+
+        /* Animation */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+
+        /* Tooltip */
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+
+        .tooltip .tooltip-text {
+            visibility: hidden;
+            width: 120px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 12px;
+        }
+
+        .tooltip:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        /* Header Styles */
+
 
         .header {
             display: flex;
@@ -649,99 +651,191 @@
         }
     </style>
 </head>
-<body>
+<body class="bg-gray-50">
 
-    <div class="sidebar collapsed" id="sidebar">
-        <div class="logo-container">
-            <div class="logo">
-                <img src="{{ asset('asset/img/Logo Alternative_Dark (1).png') }}" alt="Bijak Sampah Logo" style="width: 200px; height: 200px; object-fit: contain;">
-            </div>
-            <button class="toggle-collapse" id="toggleCollapse">
-                <i class="fas fa-chevron-left"></i>
-            </button>
-        </div>
-        
-        <ul class="menu-items">
-            <li class="menu-item active">
-                <a href="{{ route('nasabahdashboard') }}" style="text-decoration: none; color: inherit; display: flex; align-items: center; width: 100%;">
-                    <div class="menu-icon"><i class="fas fa-home"></i></div>
-                    <span class="menu-text">Dashboard</span>
-                </a>
-            </li>
-            <li class="menu-item">
-                <a href="{{ route('nasabahkomunitas') }}" style="text-decoration: none; color: inherit; display: flex; align-items: center; width: 100%;">
-                    <div class="menu-icon"><i class="fas fa-users"></i></div>
-                    <span class="menu-text">Komunitas</span>
-                </a>
-            </li>
-            <li class="menu-item">
-                <a href="{{ route('sampahnasabah') }}" style="text-decoration: none; color: inherit; display: flex; align-items: center; width: 100%;">
-                    <div class="menu-icon"><i class="fas fa-trash-alt"></i></div>
-                    <span class="menu-text">Riwayat Sampah</span>
-                </a>
-            </li>
-            <li class="menu-item">
-                <a href="{{ route('poin-nasabah') }}" style="text-decoration: none; color: inherit; display: flex; align-items: center; width: 100%;">
-                    <div class="menu-icon"><i class="fas fa-coins"></i></div>
-                    <span class="menu-text">Poin Mu</span>
-                </a>
-            </li>
-            <li class="menu-item">
-                <a href="{{ route('riwayattransaksinasabah') }}" style="text-decoration: none; color: inherit; display: flex; align-items: center; width: 100%;">
-                    <div class="menu-icon"><i class="fas fa-history"></i></div>
-                    <span class="menu-text">Riwayat Transaksi</span>
-                </a>
-            </li>
-            <li class="menu-item">
-                <a href="{{ route('tokou') }}" style="text-decoration: none; color: inherit; display: flex; align-items: center; width: 100%;">
-                    <div class="menu-icon"><i class="fas fa-store"></i></div>
-                    <span class="menu-text">Marketplace</span>
-                </a>
-            </li>
-            <li class="menu-item">
-                <a href="{{ route('settings') }}" style="text-decoration: none; color: inherit; display: flex; align-items: center; width: 100%;">
-                    <div class="menu-icon"><i class="fas fa-cog"></i></div>
-                    <span class="menu-text">Settings</span>
-                </a>
-            </li>
-            <li class="menu-item">
-                <a href="{{ route('logout') }}" style="text-decoration: none; color: inherit; display: flex; align-items: center; width: 100%;">
-                    <div class="menu-icon"><i class="fas fa-sign-out-alt"></i></div>
-                    <span class="menu-text">Logout</span>
-                </a>
-            </li>
-        </ul>
-    </div>
-
-    <div class="main-content collapsed">
-        <div class="header">
-            <h1 class="page-title"><i class="fas fa-bell"></i> Notifikasi</h1>
-            <div class="profile-actions">
-                <div class="profile-icon notif" id="notifBtn" title="Notifikasi">
-                    <i class="fas fa-bell"></i>
+<div class="flex min-h-screen bg-gray-50" x-data="{ sidebarOpen: false, activeMenu: 'dashboard' }" x-init="activeMenu = 'dashboard'">
+    {{-- Sidebar --}}
+     {{-- Sidebar --}}
+     <aside 
+        class="fixed top-0 left-0 z-40 flex flex-col py-6 overflow-hidden shadow-2xl group sidebar-banksampah-gradient text-white"
+        :class="sidebarOpen ? 'w-[250px]' : 'w-16'"
+        style="transition: width 0.3s ease; height: 100vh; background: linear-gradient(135deg, #75E6DA 0%, #05445E 30%, #05445E 100%);"
+    >
+        <div class="relative flex flex-col h-full w-full px-4">
+            
+            {{-- Logo Section with Toggle Button --}}
+            {{-- PASTIKAN FILE logo-icon.png ADA DI public/asset/img --}}
+            <div class="flex items-center justify-center mb-8 mt-14" :class="sidebarOpen ? 'justify-between' : 'justify-center'">
+                <div class="flex items-center justify-center gap-2" :class="sidebarOpen ? 'flex-1' : ''">
+                    <img x-show="sidebarOpen" class="w-32 h-auto" src="{{ asset('asset/img/logo1.png') }}" alt="Logo Penuh">
+                    <img x-show="!sidebarOpen" class="w-6 h-6" src="{{ asset('asset/img/logo.png') }}" alt="Logo Kecil">
+                    {{-- Toggle Button --}}
+                    <button 
+                        @click="sidebarOpen = !sidebarOpen"
+                        class="p-1 rounded-full bg-white/20 hover:bg-white/30 transition-colors duration-200 text-white"
+                        :class="sidebarOpen ? 'rotate-180' : ''"
+                        style="transition: transform 0.3s ease;"
+                    >
+                        <i class="fas fa-chevron-left text-sm"></i>
+                    </button>
                 </div>
-                <div class="profile-icon" id="searchBtn" title="Cari">
-                    <i class="fas fa-search"></i>
+            </div>
+            
+            {{-- Navigation Menu --}}
+            <nav class="flex flex-col gap-2 w-full flex-1 overflow-y-auto">
+                <a 
+                    href="{{ route('nasabahdashboard') }}" 
+                    class="flex items-center p-3 font-medium rounded-lg whitespace-nowrap w-full transition-colors duration-200 bg-white/20 shadow-sm"
+                    :style="sidebarOpen ? 'gap: 12px;' : 'justify-content: center; padding-left: 0; padding-right: 0;'"
+                    @click="activeMenu = 'dashboard'"
+                >
+                    <i class="fas fa-home text-lg"></i>
+                    <span x-show="sidebarOpen" class="text-sm font-medium">Dashboard</span>
+                </a>
+
+                <a 
+                    href="{{ route('nasabahkomunitas') }}" 
+                    class="flex items-center p-3 font-medium rounded-lg whitespace-nowrap w-full transition-colors duration-200 hover:bg-white/10 hover:shadow-sm"
+                    :style="sidebarOpen ? 'gap: 12px;' : 'justify-content: center;'"
+                    @click="activeMenu = 'komunitas'"
+                >
+                    <i class="fas fa-users text-lg"></i>
+                    <span x-show="sidebarOpen" class="text-sm font-medium">Komunitas</span>
+                </a>
+
+                <a 
+                    href="{{ route('sampahnasabah') }}" 
+                    class="flex items-center p-3 font-medium rounded-lg whitespace-nowrap w-full transition-colors duration-200 hover:bg-white/10 hover:shadow-sm"
+                    :style="sidebarOpen ? 'gap: 12px;' : 'justify-content: center;'"
+                    @click="activeMenu = 'penjemputan'"
+                >
+                    <i class="fas fa-trash-alt text-lg"></i>
+                    <span x-show="sidebarOpen" class="text-sm font-medium">Penjemputan Sampah</span>
+                </a>
+
+                <a 
+                    href="{{ route('poin-nasabah') }}" 
+                    class="flex items-center p-3 font-medium rounded-lg whitespace-nowrap w-full transition-colors duration-200 hover:bg-white/10 hover:shadow-sm"
+                    :style="sidebarOpen ? 'gap: 12px;' : 'justify-content: center;'"
+                    @click="activeMenu = 'poin'"
+                >
+                    <i class="fas fa-coins text-lg"></i>
+                    <span x-show="sidebarOpen" class="text-sm font-medium">Poin Mu</span>
+                </a>
+
+                <a 
+                    href="{{ route('riwayattransaksinasabah') }}" 
+                    class="flex items-center p-3 font-medium rounded-lg whitespace-nowrap w-full transition-colors duration-200 hover:bg-white/10 hover:shadow-sm"
+                    :style="sidebarOpen ? 'gap: 12px;' : 'justify-content: center;'"
+                    @click="activeMenu = 'riwayat-transaksi'"
+                >
+                    <i class="fas fa-history text-lg"></i>
+                    <span x-show="sidebarOpen" class="text-sm font-medium">Riwayat Transaksi</span>
+                </a>
+
+                <a 
+                    href="{{ route('tokou') }}" 
+                    class="flex items-center p-3 font-medium rounded-lg whitespace-nowrap w-full transition-colors duration-200 hover:bg-white/10 hover:shadow-sm"
+                    :style="sidebarOpen ? 'gap: 12px;' : 'justify-content: center;'"
+                    @click="activeMenu = 'marketplace'"
+                >
+                    <i class="fas fa-store text-lg"></i>
+                    <span x-show="sidebarOpen" class="text-sm font-medium">Marketplace</span>
+                </a>
+
+                <a 
+                    href="{{ route('settings') }}" 
+                    class="flex items-center p-3 font-medium rounded-lg whitespace-nowrap w-full transition-colors duration-200 hover:bg-white/10 hover:shadow-sm"
+                    :style="sidebarOpen ? 'gap: 12px;' : 'justify-content: center;'"
+                    @click="activeMenu = 'settings'"
+                >
+                    <i class="fas fa-cog text-lg"></i>
+                    <span x-show="sidebarOpen" class="text-sm font-medium">Settings</span>
+                </a>
+            </nav>
+            
+            {{-- Logout Section --}}
+            <div class="w-full flex items-center py-3 mt-auto border-t border-white/20">
+                <a 
+                    href="{{ route('logout') }}" 
+                    class="flex items-center p-3 rounded-lg hover:bg-white/10 hover:shadow-sm text-white transition-all duration-200 w-full whitespace-nowrap"
+                    :style="sidebarOpen ? 'gap: 12px;' : 'justify-content: center;'"
+                >
+                    <i class="fas fa-sign-out-alt text-lg"></i>
+                    <span x-show="sidebarOpen" class="text-sm font-medium">Logout</span>
+                </a>
+            </div>
+        </div>
+    </aside>
+
+   {{-- Main Content --}}
+   <div class="main-content" :class="sidebarOpen ? 'pl-24' : 'pl-24'" style="transition: padding-left 0.3s ease; width: 100%; margin-left: 0; margin-right: 0;">
+        {{-- Top Header Bar --}}
+        <div class="fixed top-0 left-0 right-0 h-12 z-40 flex items-center justify-between px-6 text-white" :style="'padding-left:' + (sidebarOpen ? '16rem' : '4rem') + '; background: linear-gradient(135deg, #75E6DA 0%, #05445E 30%, #05445E 100%);'">
+            <h1 class="text-white font-semibold text-lg" style="position: absolute; left: 1.5rem;">BijakSampah</h1>
+            <div class="flex items-center gap-4" style="position: absolute; right: 1.5rem;">
+                <button onclick="showDevelopmentModal('Sign In')" class="bg-white/20 hover:bg-white/30 text-white px-4 py-1 rounded-full text-sm font-medium transition-colors duration-200">Sign in</button>
+                <button onclick="showDevelopmentModal('Notification')" class="relative hover:text-white/80 transition-colors">
+                    <i class="far fa-bell text-white text-sm"></i>
+                    <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center font-medium">2</span>
+                </button>
+                <button onclick="showDevelopmentModal('Search')" class="focus:outline-none hover:text-white/80 transition-colors">
+                    <i class="fas fa-search text-white text-sm"></i>
+                </button>
+                <div class="flex items-center gap-2">
+                    <button onclick="showDevelopmentModal('Profile')" class="w-8 h-8 rounded-full overflow-hidden flex items-center justify-center border-2 border-gray-300 cursor-pointer hover:border-white/50 transition-colors">
+                        <img src="https://ui-avatars.com/api/?name=Non+Nasabah&background=75E6DA&color=05445E" alt="Profile" class="w-full h-full object-cover">
+                    </button>
+                    <button onclick="showDevelopmentModal('Profile Menu')" class="hover:text-white/80 transition-colors">
+                        <i class="fas fa-chevron-down text-white text-xs"></i>
+                    </button>
+            </div>
                 </div>
-                <img class="avatar" src="https://ui-avatars.com/api/?name=Nasabah&background=75E6DA&color=05445E" alt="Profile" id="profileBtn">
+                </div>
+
+        <div class="p-6" style="padding-top: 20px; width: 100%; max-width: 100%;">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4" style="width: 100%;">
+                <div style="width: 100%;">
+                    <h1 class="text-2xl font-bold text-gray-800">Dashboard - User Biasa</h1>
+                    <p class="text-sm text-gray-500">Selamat datang di marketplace daur ulang</p>
             </div>
         </div>
 
-        <div class="notif-cards" id="notifContainer">
-            </div>
+            {{-- Notifikasi Section --}}
+            <div class="mb-8" style="width: 100%;">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4">Notifikasi</h2>
+                <div class="notif-cards" id="notifContainer" style="width: 100%;">
+            <!-- Notifikasi akan dimuat di sini -->
+                </div>
+        </div>
 
+            {{-- Aktivitas Section --}}
         <div class="chart-section">
-            <div class="chart-title">
-                <i class="fas fa-chart-line"></i> Data Partisipasi Anda
+                <div class="flex justify-between items-center mb-4">
+                    <div>
+                        <h2 class="text-2xl font-bold text-gray-800 mb-2">Aktivitasmu</h2>
+                        <p class="text-sm text-gray-500">Minggu Lalu</p>
             </div>
-            <div class="chart-sub">Minggu Lalu</div>
+                    <div class="flex items-center gap-4">
+                        <div class="bg-green-100 text-green-800 px-4 py-2 rounded-full text-sm font-semibold">
+                            Hurraaahhh! Super Productive
+                        </div>
+                        <div class="text-2xl font-bold text-green-600">97%</div>
+                        <button class="bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+                            Bulan <i class="fas fa-chevron-down ml-1"></i>
+                        </button>
+                    </div>
+                </div>
 
             <div class="chart-content" id="chart-content">
-                </div>
+                <!-- Grafik akan dimuat di sini -->
+            </div>
         </div>
 
         <div class="footer">
             Created by <strong>TEK(G)</strong> | All Right Reserved!
+            </div>
+        </div>
         </div>
     </div>
 
@@ -757,7 +851,8 @@
                     <input type="text" id="notifInput" placeholder="Masukkan pesan notifikasi">
                 </div>
                 <div id="notifList">
-                    </div>
+                    <!-- Daftar notifikasi akan dimuat di sini -->
+                </div>
             </div>
             <div class="modal-footer">
                 <button class="btn btn-outline" id="cancelNotif">Batal</button>
@@ -769,7 +864,7 @@
     <div class="modal" id="searchModal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 class="modal-title">Cari</h3>
+                <h3 class="modal-title">Cari Produk</h3>
                 <button class="close-modal" id="closeSearchModal">&times;</button>
             </div>
             <div class="modal-body">
@@ -777,7 +872,8 @@
                     <input type="text" id="searchInput" placeholder="Masukkan kata kunci...">
                 </div>
                 <div id="searchResults">
-                    </div>
+                    <!-- Hasil pencarian akan dimuat di sini -->
+                </div>
             </div>
         </div>
     </div>
@@ -790,17 +886,17 @@
             </div>
             <div class="modal-body">
                 <div class="form-group" style="text-align: center;">
-                    <img id="profileImage" src="https://ui-avatars.com/api/?name=Nasabah&background=75E6DA&color=05445E" alt="Profile" style="width: 120px; height: 120px; border-radius: 50%; border: 4px solid #05445E; margin-bottom: 15px; cursor: pointer;">
+                    <img id="profileImage" src="https://ui-avatars.com/api/?name=Non+Nasabah&background=75E6DA&color=05445E" alt="Profile" style="width: 120px; height: 120px; border-radius: 50%; border: 4px solid #05445E; margin-bottom: 15px; cursor: pointer;">
                     <input type="file" id="profileUpload" accept="image/*" style="display: none;">
                     <button class="btn btn-outline" id="changeProfileBtn" style="margin-top: 10px;">Ganti Foto Profil</button>
                 </div>
                 <div class="form-group">
                     <label for="profileName">Nama Lengkap</label>
-                    <input type="text" id="profileName" value="Nasabah Bijak Sampah">
+                    <input type="text" id="profileName" value="Non Nasabah Bijak Sampah">
                 </div>
                 <div class="form-group">
                     <label for="profileEmail">Email</label>
-                    <input type="email" id="profileEmail" value="nasabah@bijaksampah.com">
+                    <input type="email" id="profileEmail" value="nonnasabah@bijaksampah.com">
                 </div>
                 <div class="form-group">
                     <label for="profilePhone">No. Telepon</label>
@@ -814,54 +910,72 @@
         </div>
     </div>
 
+    {{-- Modal untuk menu dalam pengembangan --}}
+    <div class="modal" id="developmentModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Fitur Dalam Pengembangan</h3>
+                <button class="close-modal" id="closeDevelopmentModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div style="text-align: center; padding: 20px;">
+                    <i class="fas fa-tools" style="font-size: 48px; color: #05445E; margin-bottom: 20px;"></i>
+                    <h4 style="color: #05445E; font-size: 18px; margin-bottom: 10px;">Fitur Sedang Dikembangkan</h4>
+                    <p style="color: #666; font-size: 14px; line-height: 1.6;">
+                        Fitur ini sedang dalam tahap pengembangan. 
+                        Tim kami sedang bekerja keras untuk menghadirkan pengalaman terbaik untuk Anda.
+                    </p>
+                    <div style="margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 8px;">
+                        <p style="color: #05445E; font-size: 12px; margin: 0;">
+                            <i class="fas fa-clock"></i> Estimasi rilis: 2-3 minggu ke depan
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" id="closeDevModal">Mengerti</button>
+            </div>
+        </div>
+    </div>
+
     <script>
-        // Data Notifikasi
+        // Data Notifikasi sesuai gambar
         let notifications = [
             { 
                 id: 1,
-                title: "Sampah Telah di Ambil",
-                icon: "fas fa-trash-restore",
-                message: "Sampah Anda telah diambil oleh petugas bank sampah. Terima kasih atas partisipasinya!",
+                title: "Koleksi Tas Daur Ulang Lucu",
+                icon: "fas fa-shopping-bag",
+                message: "Ramah lingkungan & stylish. Cek di Marketplace BijakSampah! ❤️",
                 date: "22 Juni 2025",
-                time: "20:45"
+                time: "20:45",
+                priority: "Urgent",
+                timeTag: "Kemarin"
             },
             { 
                 id: 2,
-                title: "Sampah akan di Ambil",
-                icon: "fas fa-truck",
-                message: "Petugas bank sampah akan menjemput sampah Anda hari ini. Mohon siapkan ya!",
+                title: "Dompet daur ulang unik tersedia!",
+                icon: "fas fa-wallet",
+                message: "Anti air & ramah lingkungan. Cek di Marketplace BijakSampah! ❤️❤️❤️",
                 date: "23 Juni 2025",
-                time: "14:14"
-            },
-            { 
-                id: 3,
-                title: "Sampah telah penuh",
-                icon: "fas fa-exclamation-circle",
-                message: "Tempat sampah Nasabah Rahimi telah penuh. Segera ambil sampah untuk penimbangan.",
-                date: "23 Juni 2025",
-                time: "16:14"
+                time: "14:14",
+                priority: "Medium",
+                timeTag: "2 jam yang lalu"
+            
             }
         ];
 
-        // Data untuk grafik
-        // Semua 'isGreen' diatur menjadi 'true' agar semua batang grafik berwarna
+        // Data untuk grafik aktivitas sesuai gambar
         const chartData = [
-            { height: 30, value: '30%', isGreen: true }, 
-            { height: 75, value: '75%', isGreen: true }, 
-            { height: 97, value: '97%', isGreen: true },
-            { height: 65, value: '65%', isGreen: true }, 
-            { height: 40, value: '40%', isGreen: true }, 
-            { height: 68, value: '68%', isGreen: true }, 
-            { height: 70, value: '70%', isGreen: true }  
+            { height: 60, value: '60%', label: '16 Jun' }, 
+            { height: 45, value: '45%', label: '17 Jun' }, 
+            { height: 97, value: '97%', label: '18 Jun' },
+            { height: 75, value: '75%', label: '19 Jun' }, 
+            { height: 80, value: '80%', label: '20 Jun' }, 
+            { height: 65, value: '65%', label: '21 Jun' }, 
+            { height: 70, value: '70%', label: '22 Jun' }  
         ];
 
         // DOM Elements
-        const sidebar = document.getElementById('sidebar');
-        const toggleCollapse = document.getElementById('toggleCollapse');
-        const mainContent = document.querySelector('.main-content');
-        const notifBtn = document.getElementById('notifBtn');
-        const searchBtn = document.getElementById('searchBtn');
-        const profileBtn = document.getElementById('profileBtn');
         const notifModal = document.getElementById('notifModal');
         const searchModal = document.getElementById('searchModal');
         const profileModal = document.getElementById('profileModal');
@@ -875,64 +989,59 @@
         const saveProfile = document.getElementById('saveProfile');
         const chartContent = document.getElementById('chart-content');
 
-        // Responsive Sidebar Hover Behavior
-        let hoverTimeout;
-        
-        sidebar.addEventListener('mouseenter', function() {
-            clearTimeout(hoverTimeout);
-            sidebar.classList.remove('collapsed');
-            mainContent.classList.remove('collapsed');
-        });
-        
-        sidebar.addEventListener('mouseleave', function() {
-            hoverTimeout = setTimeout(function() {
-                sidebar.classList.add('collapsed');
-                mainContent.classList.add('collapsed');
-            }, 300); // Small delay to prevent flickering
-        });
-        
-        // Keep toggle button for manual control
-        toggleCollapse.addEventListener('click', function() {
-            sidebar.classList.toggle('collapsed');
-            mainContent.classList.toggle('collapsed');
-            const icon = toggleCollapse.querySelector('i');
-            if (sidebar.classList.contains('collapsed')) {
-                icon.classList.remove('fa-chevron-left');
-                icon.classList.add('fa-chevron-right');
-            } else {
-                icon.classList.remove('fa-chevron-right');
-                icon.classList.add('fa-chevron-left');
-            }
-        });
-
         // Load Notifications
         function loadNotifications() {
+            console.log('Loading notifications, count:', notifications.length);
             notifContainer.innerHTML = '';
+            
+            if (notifications.length === 0) {
+                notifContainer.innerHTML = `
+                    <div class="col-span-full text-center py-8">
+                        <i class="fas fa-bell-slash text-4xl text-gray-300 mb-4"></i>
+                        <p class="text-gray-500">Tidak ada notifikasi</p>
+                    </div>
+                `;
+                return;
+            }
+            
             notifications.forEach(notif => {
                 const card = document.createElement('div');
                 card.className = 'card';
+                
+                // Priority badge color
+                let priorityClass = '';
+                if (notif.priority === 'Urgent') {
+                    priorityClass = 'bg-red-100 text-red-800';
+                } else if (notif.priority === 'Medium') {
+                    priorityClass = 'bg-green-100 text-green-800';
+                }
+                
                 card.innerHTML = `
+                    <div class="flex justify-between items-start mb-3">
+                        <span class="badge badge-primary">${notif.timeTag}</span>
+                        <div class="flex items-center gap-2">
+                            <span class="badge ${priorityClass}">${notif.priority}</span>
+                            <button class="card-btn delete" data-id="${notif.id}" onclick="deleteNotification(${notif.id})">
+                                <i class="fas fa-trash text-red-500 hover:text-red-700"></i>
+                            </button>
+                        </div>
+                    </div>
                     <h4><i class="${notif.icon}"></i> ${notif.title}</h4>
                     <p>${notif.message}</p>
                     <div class="card-footer">
-                        <span>${notif.date} • ${notif.time}</span>
-                        <div class="card-actions">
-                            <button class="card-btn delete" data-id="${notif.id}"><i class="fas fa-trash"></i></button>
+                        <div class="flex items-center gap-2">
+                            <i class="fas fa-calendar text-gray-400 text-xs"></i>
+                            <span class="text-xs text-gray-500">${notif.date}</span>
+                            <i class="fas fa-clock text-gray-400 text-xs"></i>
+                            <span class="text-xs text-gray-500">${notif.time}</span>
                         </div>
                     </div>
                 `;
                 notifContainer.appendChild(card);
             });
 
-            // Add delete event listeners
-            document.querySelectorAll('.card-btn.delete').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const id = parseInt(this.getAttribute('data-id'));
-                    notifications = notifications.filter(n => n.id !== id);
-                    loadNotifications();
-                    loadNotifModal();
-                });
-            });
+            // Update notification count
+            updateNotificationCount();
         }
 
         // Load Notifications in Modal
@@ -952,66 +1061,64 @@
                 `;
                 notifList.appendChild(item);
             });
+
+            // Add delete event listeners
+            document.querySelectorAll('.card-btn.delete').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const id = parseInt(this.getAttribute('data-id'));
+                    notifications = notifications.filter(n => n.id !== id);
+                    loadNotifications();
+                    loadNotifModal();
+                });
+            });
         }
 
-        // Generate Chart
+        // Generate Chart for activity trends
         function generateChart() {
             chartContent.innerHTML = '';
-            const dayNames = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
-            const monthNames = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
             
-            const today = new Date();
-            const currentDay = today.getDay(); // 0 (Minggu), 1 (Senin), ..., 6 (Sabtu)
-
-            // Hitung tanggal Senin pada minggu ini
-            // Jika hari ini Minggu (0), maka Senin minggu ini adalah 6 hari yang lalu
-            // Jika hari ini Senin (1), maka Senin minggu ini adalah 0 hari yang lalu
-            // dst.
-            const daysSinceMonday = currentDay === 0 ? 6 : currentDay - 1;
-            const thisMonday = new Date(today);
-            thisMonday.setDate(today.getDate() - daysSinceMonday);
-
-            // Hitung tanggal Senin pada MINGGU SEBELUMNYA
-            const lastMonday = new Date(thisMonday);
-            lastMonday.setDate(thisMonday.getDate() - 7);
-
-            // Generate tanggal untuk 7 hari dari Senin hingga Minggu pada MINGGU LALU
-            for (let i = 0; i < 7; i++) {
-                const date = new Date(lastMonday);
-                date.setDate(lastMonday.getDate() + i);
-
-                const dayOfWeek = dayNames[date.getDay()];
-                const dayOfMonth = date.getDate();
-                const month = monthNames[date.getMonth()];
-                const year = date.getFullYear();
-
-                const data = chartData[i];
+            // Generate bars for each day
+            chartData.forEach((data, index) => {
                 const chartBarItem = document.createElement('div');
                 chartBarItem.className = 'chart-bar-item';
-                chartBarItem.style.setProperty('--height', `${data.height}%`); // Set tinggi item
+                chartBarItem.style.setProperty('--height', `${data.height}%`);
+                
+                // Add green color for the highest bar (18 Jun - 97%)
+                let barClass = 'bar';
+                if (data.height === 97) {
+                    barClass = 'bar green';
+                }
+                
                 chartBarItem.innerHTML = `
-                    <div class="bar" style="--order: ${i + 1};">
-                        <span class="bar-label">${data.value}</span>
+                    <div class="${barClass}" style="--order: ${index + 1};">
+                        <span class="bar-label">${data.value} ${data.label}</span>
                     </div>
-                    <div class="day">${dayOfWeek}<br/>${dayOfMonth} ${month} ${year}</div>
+                    <div class="day">${data.label}</div>
                 `;
                 chartContent.appendChild(chartBarItem);
+            });
+        }
+
+        // Update Notification Count in Topbar
+        function updateNotificationCount() {
+            const countElement = document.querySelector('.absolute.-top-1.-right-1');
+            if (countElement) {
+                countElement.textContent = notifications.length;
+                if (notifications.length === 0) {
+                    countElement.style.display = 'none';
+                } else {
+                    countElement.style.display = 'flex';
+                }
             }
         }
 
-        // Modal Toggles
-        notifBtn.addEventListener('click', function() {
+        // Show Notification Modal
+        function showNotifModal() {
             loadNotifModal();
             notifModal.style.display = 'flex';
-        });
+        }
 
-        searchBtn.addEventListener('click', function() {
-            searchModal.style.display = 'flex';
-        });
-
-        profileBtn.addEventListener('click', function() {
-            profileModal.style.display = 'flex';
-        });
+        // Modal Toggles - Removed unused event listeners
 
         // Close Modals
         document.getElementById('closeNotifModal').addEventListener('click', function() {
@@ -1056,18 +1163,31 @@
                 const date = now.toLocaleDateString('id-ID', options);
                 const time = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
                 
+                // Determine time tag
+                let timeTag = 'Baru saja';
+                const minutesAgo = Math.floor((Date.now() - now.getTime()) / (1000 * 60));
+                if (minutesAgo > 60) {
+                    timeTag = `${Math.floor(minutesAgo / 60)} jam yang lalu`;
+                } else if (minutesAgo > 0) {
+                    timeTag = `${minutesAgo}m yang lalu`;
+                }
+                
                 notifications.unshift({
                     id: newId,
                     title: "Notifikasi Baru",
-                    icon: "fas fa-info-circle",
+                    icon: "fas fa-bell",
                     message: notifInput.value.trim(),
                     date: date,
-                    time: time
+                    time: time,
+                    priority: "Medium",
+                    timeTag: timeTag
                 });
                 
                 notifInput.value = '';
                 loadNotifications();
                 loadNotifModal();
+                showToast('Notifikasi berhasil ditambahkan!', 'success');
+                updateNotificationCount();
             }
         });
 
@@ -1095,9 +1215,89 @@
             profileModal.style.display = 'none';
         });
 
-        // Initialize
+        // Delete Notification
+        function deleteNotification(id) {
+            console.log('Deleting notification with ID:', id);
+            
+            if (confirm('Apakah Anda yakin ingin menghapus notifikasi ini?')) {
+                // Remove from notifications array
+                const initialLength = notifications.length;
+                notifications = notifications.filter(notif => notif.id !== id);
+                
+                console.log('Notifications before:', initialLength, 'after:', notifications.length);
+                
+                // Reload notifications display
+                loadNotifications();
+                
+                // Show success message
+                showToast('Notifikasi berhasil dihapus!', 'success');
+                
+                // Update notification count in topbar
+                updateNotificationCount();
+            }
+        }
+
+        // Show Toast Message
+        function showToast(message, type = 'success') {
+            // Create toast element
+            const toast = document.createElement('div');
+            toast.className = `fixed top-4 right-4 z-50 px-6 py-3 rounded-lg text-white font-medium transition-all duration-300 transform translate-x-full`;
+            
+            if (type === 'success') {
+                toast.className += ' bg-green-500';
+            } else if (type === 'error') {
+                toast.className += ' bg-red-500';
+            }
+            
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            // Animate in
+            setTimeout(() => {
+                toast.classList.remove('translate-x-full');
+            }, 100);
+            
+            // Remove after 3 seconds
+            setTimeout(() => {
+                toast.classList.add('translate-x-full');
+                setTimeout(() => {
+                    document.body.removeChild(toast);
+                }, 300);
+            }, 3000);
+        }
+
+        // Show Development Modal
+        function showDevelopmentModal(featureName) {
+            const modal = document.getElementById('developmentModal');
+            const title = modal.querySelector('.modal-title');
+            title.textContent = `${featureName} - Fitur Dalam Pengembangan`;
+            modal.style.display = 'flex';
+        }
+
+        // Close Development Modal
+        document.getElementById('closeDevelopmentModal').addEventListener('click', function() {
+            document.getElementById('developmentModal').style.display = 'none';
+        });
+
+        document.getElementById('closeDevModal').addEventListener('click', function() {
+            document.getElementById('developmentModal').style.display = 'none';
+        });
+
+        // Close modal when clicking outside
+        window.addEventListener('click', function(event) {
+            const developmentModal = document.getElementById('developmentModal');
+            if (event.target === developmentModal) {
+                developmentModal.style.display = 'none';
+            }
+        });
+
+        // Initialize when DOM is ready
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded, initializing...');
         loadNotifications();
         generateChart();
+            updateNotificationCount();
+        });
     </script>
 </body>
 </html>

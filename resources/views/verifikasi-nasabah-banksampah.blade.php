@@ -1,12 +1,30 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <meta name="csrf-token" content="{{ csrf_token() }}">
   <title>Verifikasi Nasabah - Bijak Sampah</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <script>
+        // Initialize Alpine.js with Collapse plugin
+        document.addEventListener('alpine:init', () => {
+            console.log('Alpine.js initialized with Collapse plugin');
+        });
+
+        window.addEventListener('load', function() {
+            console.log('Window loaded, Chart.js available:', typeof Chart !== 'undefined');
+        });
+    </script>
   <style>
     :root {
       --primary-color: #05445E;
@@ -16,208 +34,166 @@
       --danger-color: #c0392b;
     }
     
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
+        body {
       font-family: 'Inter', sans-serif;
-    }
-    
-    body {
-      background: #f8f9fc;
-      color: #333;
-      min-height: 100vh;
-      display: flex;
-    }
+            background-color: #f8fafc;
+        }
 
-    /* Sidebar dari kode pertama (disesuaikan) */
-    .sidebar {
-      width: 80px;
-      background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 30%, var(--primary-color) 100%);
-      color: white;
-      padding: 20px 0;
-      min-height: 100vh;
-      transition: width 0.3s ease;
-      position: fixed;
-      left: 0;
-      top: 0;
-      overflow: hidden;
-      box-shadow: 2px 0 10px rgba(0,0,0,0.1);
-      z-index: 1000;
-    }
+        /* Custom CSS untuk efek gradasi sidebar */
+        .sidebar-banksampah-gradient {
+            background: linear-gradient(135deg, #75E6DA 0%, #05445E 30%, #05445E 100%);
+        }
+        
+        /* Ensure seamless connection between topbar and sidebar */
+        .topbar-sidebar-seamless {
+            background: linear-gradient(135deg, #75E6DA 0%, #05445E 30%, #05445E 100%);
+            border: none;
+            box-shadow: none;
+        }
 
-    .sidebar:hover {
-      width: 250px;
-    }
+        /* Style untuk area main content */
+        .main-content {
+            padding-top: 64px; /* Menyesuaikan dengan tinggi top bar */
+            min-height: 100vh;
+            width: 100%;
+            margin-left: 0;
+            margin-right: 0;
+        }
 
-    .sidebar.collapsed {
-      width: 80px;
-    }
+        /* Chart Container */
+        .chart-container {
+            position: relative;
+            height: 400px;
+            width: 100%;
+            min-height: 300px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 10px;
+            background: white;
+        }
+        
+        #trendChart, #compositionChart {
+            width: 100% !important;
+            height: 100% !important;
+            min-height: 300px;
+            display: block !important;
+        }
 
-    .logo-container {
-      padding: 0 20px;
-      margin-bottom: 30px;
-      display: flex;
-      align-items: center;
-      height: 60px;
-      justify-content: space-between;
-    }
+        /* Custom Card Styles */
+        .custom-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
 
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      white-space: nowrap;
-    }
+        .custom-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px rgba(0,0,0,0.1);
+        }
 
-    .logo img {
-      width: 200px;
-      height: 200px;
-      object-fit: contain;
-    }
+        /* Badge Styles */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 8px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
 
-    .logo-text {
-      font-size: 18px;
-      font-weight: bold;
-      color: white;
+        .badge-primary {
+            background-color: #e1f0fa;
+            color: var(--primary-color);
+        }
+
+        .badge-success {
+            background-color: #e6f7ed;
+            color: var(--success-color);
+        }
+
+        .badge-warning {
+            background-color: #fff4e6;
+            color: #f97316;
+        }
+
+        /* Table Styles */
+        .data-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        .data-table thead th {
+            background-color: #f8fafc;
+            color: #64748b;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 12px;
+            padding: 12px 16px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .data-table tbody td {
+            padding: 14px 16px;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 14px;
+        }
+
+        .data-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .data-table tbody tr:hover td {
+            background-color: #f8fafc;
+        }
+
+        /* Animation */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+
+        /* Tooltip */
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+
+        .tooltip .tooltip-text {
+            visibility: hidden;
+            width: 120px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
       opacity: 0;
-      transition: opacity 0.3s ease;
+            transition: opacity 0.3s;
+            font-size: 12px;
     }
 
-    .sidebar:hover .logo-text {
+        .tooltip:hover .tooltip-text {
+            visibility: visible;
       opacity: 1;
     }
 
-    .logo span {
-      color: #4ADE80;
-    }
+        /* Alpine.js Collapse Animation */
+        [x-cloak] {
+            display: none !important;
+        }
 
-    .toggle-collapse {
-      background: none;
-      border: none;
-      color: white;
-      font-size: 18px;
-      cursor: pointer;
-      padding: 5px;
-      opacity: 0;
-      transition: opacity 0.3s ease;
-    }
-
-    .sidebar:hover .toggle-collapse {
-      opacity: 1;
-    }
-
-    .menu-items {
-      list-style: none;
-    }
-
-    .menu-item {
-      padding: 12px 20px;
-      display: flex;
-      align-items: center;
-      cursor: pointer;
-      transition: all 0.3s;
-      white-space: nowrap;
-    }
-
-    .menu-item:hover {
-      background: rgba(255, 255, 255, 0.1);
-    }
-
-    .menu-item.active {
-      background: rgba(255, 255, 255, 0.2);
-      border-left: 4px solid var(--accent-color);
-    }
-
-    .sub-menu-item {
-      padding: 10px 20px 10px 50px;
-      display: flex;
-      align-items: center;
-      cursor: pointer;
-      transition: all 0.3s;
-      white-space: nowrap;
-      font-size: 14px;
-      position: relative;
-    }
-
-    .sub-menu-item:hover {
-      background: rgba(255, 255, 255, 0.1);
-    }
-
-    .sub-menu-item.active {
-      background: rgba(255, 255, 255, 0.15);
-      font-weight: 500;
-    }
-
-    .menu-icon {
-      width: 24px;
-      height: 24px;
-      margin-right: 15px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-    }
-
-    .menu-text {
-      font-size: 15px;
-      transition: opacity 0.3s ease;
-      opacity: 0;
-    }
-
-    .sidebar:hover .menu-text {
-      opacity: 1;
-    }
-
-    .sidebar.collapsed .menu-text {
-      opacity: 0;
-      width: 0;
-    }
-
-    .sidebar.collapsed .logo-text {
-      display: none;
-    }
-
-    .sidebar.collapsed .logo-icon {
-      font-size: 22px;
-    }
-
-    .sidebar-footer {
-      padding: 0;
-      border-top: 1px solid rgba(255,255,255,0.1);
-      margin-top: auto;
-      flex-shrink: 0;
-    }
-
-    /* Main Content Styles */
-    .main-content {
-      margin-left: 80px;
-      width: calc(100% - 80px);
-      padding: 30px;
-      transition: margin-left 0.3s ease, width 0.3s ease;
-    }
-
-    .sidebar:hover ~ .main-content {
-      margin-left: 250px;
-      width: calc(100% - 250px);
-    }
-
-    .sidebar.collapsed ~ .main-content {
-      margin-left: 80px;
-      width: calc(100% - 80px);
-    }
-
-    /* Header Styles */
-    .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 30px;
-    }
-
-    .header h1 {
-      color: var(--primary-color);
-      font-size: 28px;
+        .collapse-transition {
+            transition: all 0.3s ease;
     }
 
     /* Table Styles */
@@ -226,6 +202,7 @@
       padding: 25px;
       border-radius: 12px;
       box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+            width: 100%;
     }
 
     .table-header {
@@ -233,11 +210,14 @@
       justify-content: space-between;
       align-items: center;
       margin-bottom: 20px;
+            width: 100%;
     }
 
     .search-sort {
       display: flex;
       gap: 15px;
+            width: 100%;
+            justify-content: flex-end;
     }
 
     .search {
@@ -249,6 +229,7 @@
       border: 1px solid #ddd;
       border-radius: 8px;
       width: 250px;
+            min-width: 200px;
     }
 
     .search i {
@@ -264,17 +245,22 @@
       border: 1px solid #ddd;
       border-radius: 8px;
       background-color: #fff;
+            min-width: 150px;
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
+            margin: 0;
+            padding: 0;
     }
 
     th, td {
       padding: 15px;
       text-align: left;
       border-bottom: 1px solid #eee;
+            word-wrap: break-word;
+            max-width: 200px;
     }
 
     th {
@@ -464,6 +450,48 @@
       background-color: #247532;
     }
 
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .main-content {
+                padding-left: 1rem !important;
+                padding-right: 1rem !important;
+            }
+            
+            .search-sort {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .search input {
+                width: 100%;
+                min-width: auto;
+            }
+            
+            .sort select {
+                width: 100%;
+                min-width: auto;
+            }
+            
+            .customers-container {
+                padding: 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .table-header {
+                flex-direction: column;
+                gap: 15px;
+                align-items: flex-start;
+            }
+            
+            .search-sort {
+                width: 100%;
+                justify-content: flex-start;
+            }
+        }
+
+
+
     /* Step Indicator */
     .step-indicator {
       display: flex;
@@ -551,89 +579,194 @@
     }
   </style>
 </head>
-<body>
-  <!-- Sidebar -->
-  <div class="sidebar">
-    <div class="logo-container">
-      <div class="logo">
-        <img src="{{ asset('asset/img/Logo Alternative_Dark (1).png') }}" alt="Bijak Sampah Logo">
-      </div>
-      <button class="toggle-collapse">
-        <i class="fas fa-chevron-left"></i>
+<body class="bg-gray-50">
+
+        <div class="flex min-h-screen bg-gray-50 w-full" x-data="{ sidebarOpen: false, activeMenu: 'verifikasi-nasabah' }" x-init="activeMenu = 'verifikasi-nasabah'">
+    {{-- Sidebar --}}
+    <aside 
+        class="fixed top-0 left-0 z-40 flex flex-col py-6 overflow-hidden shadow-2xl group sidebar-banksampah-gradient text-white"
+        :class="sidebarOpen ? 'w-[250px]' : 'w-16'"
+        style="transition: width 0.3s ease; height: 100vh; background: linear-gradient(135deg, #75E6DA 0%, #05445E 30%, #05445E 100%);"
+    >
+        <div class="relative flex flex-col h-full w-full px-4">
+            
+            {{-- Logo Section with Toggle Button --}}
+            {{-- PASTIKAN FILE logo-icon.png ADA DI public/asset/img --}}
+            <div class="flex items-center justify-center mb-8 mt-14" :class="sidebarOpen ? 'justify-between' : 'justify-center'">
+                <div class="flex items-center justify-center gap-2" :class="sidebarOpen ? 'flex-1' : ''">
+                    <img x-show="sidebarOpen" class="w-32 h-auto" src="{{ asset('asset/img/logo1.png') }}" alt="Logo Penuh">
+                    <img x-show="!sidebarOpen" class="w-6 h-6" src="{{ asset('asset/img/logo.png') }}" alt="Logo Kecil">
+                    {{-- Toggle Button --}}
+                    <button 
+                        @click="sidebarOpen = !sidebarOpen"
+                        class="p-1 rounded-full bg-white/20 hover:bg-white/30 transition-colors duration-200 text-white"
+                        :class="sidebarOpen ? 'rotate-180' : ''"
+                        style="transition: transform 0.3s ease;"
+                    >
+                        <i class="fas fa-chevron-left text-sm"></i>
       </button>
+                </div>
     </div>
     
-    <div class="menu-container">
-      <ul class="menu-items">
-        <li class="menu-item">
-          <a href="{{ route('dashboard-banksampah') }}" style="text-decoration: none; color: inherit;">
-            <div class="menu-icon"><i class="fas fa-home"></i></div>
-            <span class="menu-text">Dashboard</span>
-          </a>
-        </li>
-        <li class="menu-item active">
-          <div class="menu-icon"><i class="fas fa-users"></i></div>
-          <span class="menu-text">Nasabah</span>
-        </li>
-        <li class="sub-menu-item active">
-          <a href="{{ route('verifikasi-nasabah-banksampah') }}" style="text-decoration: none; color: inherit;">
-            <div class="menu-icon"><i class="fas fa-user-check"></i></div>
-            <span class="menu-text">Verifikasi Nasabah</span>
-          </a>
-        </li>
-        <li class="sub-menu-item">
-          <a href="{{ route('data-nasabah-banksampah') }}" style="text-decoration: none; color: inherit;">
-            <div class="menu-icon"><i class="fas fa-database"></i></div>
-            <span class="menu-text">Data Nasabah</span>
-          </a>
-        </li>
-        <li class="menu-item">
-          <a href="{{ route('penjemputan-sampah-banksampah') }}" style="text-decoration: none; color: inherit;">
-            <div class="menu-icon"><i class="fas fa-truck"></i></div>
-            <span class="menu-text">Penjemputan Sampah</span>
-          </a>
-        </li>
-        <li class="menu-item">
-          <a href="{{ route('penimbangansampah-banksampah') }}" style="text-decoration: none; color: inherit;">
-            <div class="menu-icon"><i class="fas fa-weight-hanging"></i></div>
-            <span class="menu-text">Penimbangan</span>
-          </a>
-        </li>
-        <li class="sub-menu-item">
-          <div class="menu-icon"><i class="fas fa-plus-circle"></i></div>
-          <span class="menu-text">Input Setoran</span>
-        </li>
-        <li class="menu-item">
-          <a href="{{ route('datasampah-banksampah') }}" style="text-decoration: none; color: inherit;">
-            <div class="menu-icon"><i class="fas fa-trash-alt"></i></div>
-            <span class="menu-text">Data Sampah</span>
-          </a>
-        </li>
-        <li class="menu-item">
-          <a href="{{ route('penjualansampah-banksampah') }}" style="text-decoration: none; color: inherit;">
-            <div class="menu-icon"><i class="fas fa-shopping-cart"></i></div>
-            <span class="menu-text">Penjualan Sampah</span>
-          </a>
-        </li>
-        <li class="menu-item">
-          <div class="menu-icon"><i class="fas fa-cog"></i></div>
-          <span class="menu-text">Setting</span>
-        </li>
-      </ul>
-    </div>
+            {{-- Navigation Menu --}}
+            <nav class="flex flex-col gap-2 w-full flex-1 overflow-y-auto">
+                <a 
+                    href="{{ route('dashboard-banksampah') }}" 
+                    class="flex items-center p-3 font-medium rounded-lg whitespace-nowrap w-full transition-colors duration-200 hover:bg-white/10 hover:shadow-sm"
+                    :style="sidebarOpen ? 'gap: 12px;' : 'justify-content: center; padding-left: 0; padding-right: 0;'"
+                    @click="activeMenu = 'dashboard'"
+                >
+                    <i class="fas fa-home text-lg"></i>
+                    <span x-show="sidebarOpen" class="text-sm font-medium">Dashboard</span>
+                </a>
 
-    <div class="sidebar-footer">
-      <div class="menu-item" id="logoutBtn">
-        <div class="menu-icon"><i class="fas fa-sign-out-alt"></i></div>
-        <span class="menu-text">Logout</span>
+                <div 
+                    class="group"
+                    x-data="{ expanded: false }"
+                    x-init="$watch('sidebarOpen', value => { if (!value) expanded = false })"
+                >
+                    <button 
+                        @click="expanded = !expanded" 
+                        class="flex items-center p-3 font-medium rounded-lg whitespace-nowrap w-full transition-colors duration-200 hover:bg-white/10 hover:shadow-sm"
+                        :style="sidebarOpen ? 'justify-between; gap: 12px;' : 'justify-content: center;'"
+                    >
+                        <div class="flex items-center" :style="sidebarOpen ? 'gap: 12px;' : 'justify-content: center;'">
+                            <i class="fas fa-users text-lg"></i>
+                            <span x-show="sidebarOpen" class="text-sm font-medium">Nasabah</span>
+                        </div>
+                        <i x-show="sidebarOpen" class="fas fa-chevron-down text-xs opacity-70 transition-transform duration-200" :class="expanded ? 'rotate-180' : ''"></i>
+                    </button>
+                    <div x-show="expanded && sidebarOpen" x-cloak x-collapse.duration.300ms class="pl-6 pt-2 space-y-1">
+                        <a 
+                            href="{{ route('verifikasi-nasabah-banksampah') }}" 
+                            class="flex items-center gap-3 p-2 rounded-lg whitespace-nowrap w-full text-sm hover:bg-white/10 hover:shadow-sm transition-colors duration-200 bg-white/20"
+                            @click="activeMenu = 'verifikasi-nasabah'"
+                        >
+                            <i class="fas fa-user-check"></i>
+                            <span x-show="sidebarOpen">Verifikasi Nasabah</span>
+                        </a>
+                        <a 
+                            href="{{ route('data-nasabah-banksampah') }}" 
+                            class="flex items-center gap-3 p-2 rounded-lg whitespace-nowrap w-full text-sm hover:bg-white/10 hover:shadow-sm transition-colors duration-200"
+                            @click="activeMenu = 'data-nasabah'"
+                        >
+                            <i class="fas fa-database"></i>
+                            <span x-show="sidebarOpen">Data Nasabah</span>
+                        </a>
+                    </div>
+                </div>
+
+                <a 
+                    href="{{ route('penjemputan-sampah-banksampah') }}" 
+                    class="flex items-center p-3 font-medium rounded-lg whitespace-nowrap w-full transition-colors duration-200 hover:bg-white/10 hover:shadow-sm"
+                    :style="sidebarOpen ? 'gap: 12px;' : 'justify-content: center;'"
+                    @click="activeMenu = 'penjemputan-sampah'"
+                >
+                    <i class="fas fa-truck text-lg"></i>
+                    <span x-show="sidebarOpen" class="text-sm font-medium">Penjemputan Sampah</span>
+                </a>
+                
+                <div 
+                    class="group"
+                    x-data="{ expanded: false }"
+                    x-init="$watch('sidebarOpen', value => { if (!value) expanded = false })"
+                >
+                    <button 
+                        @click="expanded = !expanded" 
+                        class="flex items-center p-3 font-medium rounded-lg whitespace-nowrap w-full transition-colors duration-200 hover:bg-white/10 hover:shadow-sm"
+                        :style="sidebarOpen ? 'justify-between; gap: 12px;' : 'justify-content: center;'"
+                    >
+                        <div class="flex items-center" :style="sidebarOpen ? 'gap: 12px;' : 'justify-content: center;'">
+                            <i class="fas fa-weight-hanging text-lg"></i>
+                            <span x-show="sidebarOpen" class="text-sm font-medium">Penimbangan</span>
+                        </div>
+                        <i x-show="sidebarOpen" class="fas fa-chevron-down text-xs opacity-70 transition-transform duration-200" :class="expanded ? 'rotate-180' : ''"></i>
+                    </button>
+                    <div x-show="expanded && sidebarOpen" x-cloak x-collapse.duration.300ms class="pl-6 pt-2 space-y-1">
+                        <a 
+                            href="{{ route('input-setoran') }}" 
+                            class="flex items-center gap-3 p-2 rounded-lg whitespace-nowrap w-full text-sm hover:bg-white/10 hover:shadow-sm transition-colors duration-200"
+                            @click="activeMenu = 'input-setoran'"
+                        >
+                            <i class="fas fa-plus-circle"></i>
+                            <span x-show="sidebarOpen">Input Setoran</span>
+                        </a>
+                    </div>
+                </div>
+
+                <a 
+                    href="{{ route('datasampah-banksampah') }}" 
+                    class="flex items-center p-3 font-medium rounded-lg whitespace-nowrap w-full transition-colors duration-200 hover:bg-white/10 hover:shadow-sm"
+                    :style="sidebarOpen ? 'gap: 12px;' : 'justify-content: center;'"
+                    @click="activeMenu = 'data-sampah'"
+                >
+                    <i class="fas fa-trash-alt text-lg"></i>
+                    <span x-show="sidebarOpen" class="text-sm font-medium">Data Sampah</span>
+                </a>
+                
+                <a 
+                    href="{{ route('penjualansampah-banksampah') }}" 
+                    class="flex items-center p-3 font-medium rounded-lg whitespace-nowrap w-full transition-colors duration-200 hover:bg-white/10 hover:shadow-sm"
+                    :style="sidebarOpen ? 'gap: 12px;' : 'justify-content: center;'"
+                    @click="activeMenu = 'penjualansampah'"
+                >
+                    <i class="fas fa-shopping-cart text-lg"></i>
+                    <span x-show="sidebarOpen" class="text-sm font-medium">Penjualan Sampah</span>
+                </a>
+                
+                <a 
+                    href="{{ route('settingsbank') }}" 
+                    class="flex items-center p-3 font-medium rounded-lg whitespace-nowrap w-full transition-colors duration-200 hover:bg-white/10 hover:shadow-sm"
+                    :style="sidebarOpen ? 'gap: 12px;' : 'justify-content: center;'"
+                    @click="activeMenu = 'pengaturan'"
+                >
+                    <i class="fas fa-cog text-lg"></i>
+                    <span x-show="sidebarOpen" class="text-sm font-medium">Pengaturan</span>
+                </a>
+            </nav>
+            
+            {{-- Logout Section --}}
+            <div class="w-full flex items-center py-3 mt-auto border-t border-white/20">
+                <a 
+                    href="{{ route('logout') }}" 
+                    class="flex items-center p-3 rounded-lg hover:bg-white/10 hover:shadow-sm text-white transition-all duration-200 w-full whitespace-nowrap"
+                    :style="sidebarOpen ? 'gap: 12px;' : 'justify-content: center;'"
+                >
+                    <i class="fas fa-sign-out-alt text-lg"></i>
+                    <span x-show="sidebarOpen" class="text-sm font-medium">Logout</span>
+                </a>
+    </div>
+        </div>
+    </aside>
+
+    {{-- Main Content --}}
+    <div class="main-content" :class="sidebarOpen ? 'pl-24' : 'pl-24'" style="transition: padding-left 0.3s ease; width: 100%;">
+        {{-- Top Header Bar --}}
+        <div class="fixed top-0 left-0 right-0 h-12 z-40 flex items-center justify-between px-6 text-white" :style="'padding-left:' + (sidebarOpen ? '16rem' : '4rem') + '; background: linear-gradient(135deg, #75E6DA 0%, #05445E 30%, #05445E 100%); width: 100%;'">
+            <h1 class="text-white font-semibold text-lg" style="position: absolute; left: 1.5rem;">BijakSampah</h1>
+            <div class="flex items-center gap-4" style="position: absolute; right: 1.5rem;">
+                <a href="{{ route('notifikasibank') }}" class="relative">
+                    <i class="far fa-bell text-white text-sm"></i>
+                    <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center font-medium">3</span>
+                </a>
+                <button class="focus:outline-none">
+                    <i class="fas fa-search text-white text-sm"></i>
+                </button>
+                <div class="flex items-center gap-2">
+                    <a href="{{ route('profilebank') }}" class="w-8 h-8 rounded-full overflow-hidden flex items-center justify-center border-2 border-gray-300">
+                        <img src="{{ asset('asset/img/user_profile.jpg') }}" alt="Profile" class="w-full h-full object-cover">
+                    </a>
+                    <i class="fas fa-chevron-down text-white text-xs"></i>
       </div>
     </div>
   </div>
 
-  <!-- Main Content -->
-  <div class="main-content">
-    <div class="header">
-      <h1>Verifikasi Nasabah</h1>
+        <div class="p-6" style="padding-top: 20px; width: 100%; max-width: 100%;">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+                <div>
+                    <h1 class="text-2xl font-bold text-gray-800">Verifikasi Nasabah</h1>
+                    <p class="text-sm text-gray-500">Kelola verifikasi data nasabah bank sampah</p>
+                </div>
       <div class="search-sort">
         <div class="search">
           <i class="fas fa-search"></i>
@@ -699,6 +832,8 @@
           <button class="pagination-btn active">1</button>
           <button class="pagination-btn">2</button>
           <button class="pagination-btn">&gt;</button>
+                    </div>
+                </div>
         </div>
       </div>
     </div>
@@ -851,9 +986,12 @@
     // Current customer data
     let currentCustomerData = null;
 
-    // Sidebar toggle functionality
-    document.querySelector('.toggle-collapse').addEventListener('click', function() {
+    // Sidebar toggle functionality - Check if element exists
+    const toggleCollapse = document.querySelector('.toggle-collapse');
+    if (toggleCollapse) {
+      toggleCollapse.addEventListener('click', function() {
       const sidebar = document.querySelector('.sidebar');
+        if (sidebar) {
       sidebar.classList.toggle('collapsed');
       const icon = this.querySelector('i');
       
@@ -863,15 +1001,20 @@
       } else {
         icon.classList.remove('fa-chevron-right');
         icon.classList.add('fa-chevron-left');
-      }
-    });
+          }
+        }
+      });
+    }
 
-    // Logout functionality
-    document.getElementById('logoutBtn').addEventListener('click', function() {
+    // Logout functionality - Check if element exists
+    const logoutBtn = document.getElementById('logoutBtn');
+    if (logoutBtn) {
+      logoutBtn.addEventListener('click', function() {
       // Add your logout logic here
       console.log('Logout clicked');
       // window.location.href = 'login.html';
     });
+    }
 
     // Show address verification modal
     function showVerificationModal(name, email, phone, address, rtRw, dob, gender, nik, kk, familyPosition) {
@@ -973,6 +1116,11 @@
        
        // Kirim email dengan informasi bak sampah
        sendVerificationEmail(currentCustomerData.email, currentCustomerData.name, accountNumber, idBak, jenisBak, noBak);
+       
+       // Tampilkan alert berhasil
+       alert('BERHASIL MENGIRIM KE EMAIL!');
+       
+
      }
 
      // Fungsi untuk mengirim email verifikasi
@@ -1020,12 +1168,15 @@
        });
      }
 
+
+
     // Close modal when clicking outside
     window.addEventListener('click', function(event) {
       const addressModal = document.getElementById('addressVerificationModal');
       const personalModal = document.getElementById('personalDataVerificationModal');
       const trashBinModal = document.getElementById('trashBinRegistrationModal');
       const successModal = document.getElementById('successModal');
+       
       
       if (event.target === addressModal || 
           event.target === personalModal || 
@@ -1033,6 +1184,8 @@
           event.target === successModal) {
         closeVerificationModal();
       }
+       
+       
     });
   </script>
 </body>

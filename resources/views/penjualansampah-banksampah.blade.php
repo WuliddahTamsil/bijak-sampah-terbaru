@@ -1,12 +1,23 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Marketplace Sampah - Bijak Sampah</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Penjualan Sampah - Bijak Sampah</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <script>
+        window.addEventListener('load', function() {
+            console.log('Window loaded, Chart.js available:', typeof Chart !== 'undefined');
+        });
+    </script>
     <style>
         :root {
             --primary-color: #05445E;
@@ -20,1191 +31,1055 @@
             font-family: 'Inter', sans-serif;
             background-color: #f8fafc;
         }
+
+        /* Custom CSS untuk efek gradasi sidebar */
+    .sidebar-banksampah-gradient {
+        background: linear-gradient(135deg, #75E6DA 0%, #05445E 30%, #05445E 100%);
+    }
         
-        /* Sidebar dari kode pertama (disesuaikan) */
-        .sidebar {
-            width: 80px;
-            background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 30%, var(--primary-color) 100%);
-            color: white;
-            padding: 20px 0;
-            min-height: 100vh;
-            transition: width 0.3s ease;
-            position: fixed;
-            left: 0;
-            top: 0;
-            overflow: hidden;
-            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
-            z-index: 1000;
+        /* Ensure seamless connection between topbar and sidebar */
+        .topbar-sidebar-seamless {
+            background: linear-gradient(135deg, #75E6DA 0%, #05445E 30%, #05445E 100%);
+            border: none;
+            box-shadow: none;
         }
 
-        .sidebar:hover {
-            width: 250px;
+    /* Style untuk area main content */
+    .main-content {
+        padding-top: 64px; /* Menyesuaikan dengan tinggi top bar */
+        min-height: 100vh;
+    }
+
+        /* Chart Container */
+        .chart-container {
+            position: relative;
+            height: 400px;
+            width: 100%;
+            min-height: 300px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 10px;
+            background: white;
+        }
+        
+        #trendChart, #compositionChart {
+            width: 100% !important;
+            height: 100% !important;
+            min-height: 300px;
+            display: block !important;
         }
 
-        .sidebar.collapsed {
-            width: 80px;
+        /* Custom Card Styles */
+        .custom-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
-        .logo-container {
-            padding: 0 20px;
-            margin-bottom: 30px;
-            display: flex;
+        .custom-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px rgba(0,0,0,0.1);
+        }
+
+        /* Badge Styles */
+        .badge {
+            display: inline-flex;
             align-items: center;
-            height: 60px;
-            justify-content: space-between;
+            padding: 4px 8px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
         }
 
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            white-space: nowrap;
+        .badge-primary {
+            background-color: #e1f0fa;
+            color: var(--primary-color);
         }
 
-        .logo img {
-            width: 200px;
-            height: 200px;
-            object-fit: contain;
+        .badge-success {
+            background-color: #e6f7ed;
+            color: var(--success-color);
         }
 
-        .logo-text {
-            font-size: 18px;
-            font-weight: bold;
-            color: white;
+        .badge-warning {
+            background-color: #fff4e6;
+            color: #f97316;
+        }
+
+        /* Table Styles */
+        .data-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        .data-table thead th {
+            background-color: #f8fafc;
+            color: #64748b;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 12px;
+            padding: 12px 16px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .data-table tbody td {
+            padding: 14px 16px;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 14px;
+        }
+
+        .data-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .data-table tbody tr:hover td {
+            background-color: #f8fafc;
+        }
+
+        /* Animation */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+
+        /* Tooltip */
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+
+        .tooltip .tooltip-text {
+            visibility: hidden;
+            width: 120px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
             opacity: 0;
-            transition: opacity 0.3s ease;
+            transition: opacity 0.3s;
+            font-size: 12px;
         }
 
-        .sidebar:hover .logo-text {
+        .tooltip:hover .tooltip-text {
+            visibility: visible;
             opacity: 1;
         }
+    
+    /* Styling tambahan dari file asli penjualansampah-banksampah */
+    .product-card {
+        transition: all 0.3s ease;
+        border: 1px solid #e2e8f0;
+    }
+    .product-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    }
+    .status-badge {
+        font-size: 12px;
+        padding: 4px 8px;
+        border-radius: 12px;
+    }
+    .status-pending { background-color: #fef3c7; color: #d97706; }
+    .status-processing { background-color: #dbeafe; color: #1d4ed8; }
+    .status-shipped { background-color: #e0f2fe; color: #0369a1; }
+    .status-completed { background-color: #dcfce7; color: #166534; }
+    .status-cancelled { background-color: #fee2e2; color: #b91c1c; }
 
-        .logo span {
-            color: #4ADE80;
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
         }
 
-        .toggle-collapse {
+        .modal-content {
+            background-color: white;
+            width: 90%;
+            max-width: 600px;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            animation: modalFadeIn 0.3s;
+        }
+
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .modal-header {
+            padding: 15px 20px;
+            background-color: var(--primary-color);
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h3 {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .modal-close {
             background: none;
             border: none;
             color: white;
-            font-size: 18px;
+            font-size: 20px;
             cursor: pointer;
-            padding: 5px;
-            opacity: 0;
-            transition: opacity 0.3s ease;
         }
 
-        .sidebar:hover .toggle-collapse {
-            opacity: 1;
+        .modal-body {
+            padding: 20px;
         }
 
-        .menu-items {
-            list-style: none;
+        .form-group {
+            margin-bottom: 15px;
         }
 
-        .menu-item {
-            padding: 12px 20px;
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #555;
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            background-color: #f9f9f9;
+        }
+
+        .modal-footer {
+            padding: 15px 20px;
+            background-color: #f5f5f5;
             display: flex;
-            align-items: center;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 500;
             cursor: pointer;
             transition: all 0.3s;
-            white-space: nowrap;
         }
 
-        .menu-item:hover {
-            background: rgba(255, 255, 255, 0.1);
+        .btn-secondary {
+            background-color: #e5e7eb;
+            color: #333;
+            border: none;
         }
 
-        .menu-item.active {
-            background: rgba(255, 255, 255, 0.2);
-            border-left: 4px solid var(--accent-color);
+        .btn-secondary:hover {
+            background-color: #d1d5db;
         }
 
-        .menu-item.active .menu-icon {
-            color: var(--accent-color);
+        .btn-success {
+            background-color: var(--success-color);
+            color: white;
+            border: none;
         }
 
-        .sub-menu-item {
-            padding: 10px 20px 10px 50px;
-            display: flex;
-            align-items: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            white-space: nowrap;
-            font-size: 14px;
-            position: relative;
+        .btn-success:hover {
+            background-color: #247532;
         }
 
-        .sub-menu-item:hover {
-            background: rgba(255, 255, 255, 0.1);
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
         }
 
-        .sub-menu-item.active {
-            background: rgba(255, 255, 255, 0.15);
+        .btn-primary:hover {
+            background-color: #04384e;
+        }
+
+        /* Tab Styles */
+        .tab-button {
+            padding: 8px 16px;
             font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            border-bottom: 2px solid transparent;
         }
 
-        .menu-icon {
-            width: 24px;
-            height: 24px;
-            margin-right: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            transition: color 0.3s ease;
+        .tab-button.active {
+            color: #3b82f6;
+            border-bottom-color: #3b82f6;
         }
 
-        .menu-text {
-            font-size: 15px;
-            transition: opacity 0.3s ease;
-            opacity: 0;
+        .tab-button:hover {
+            color: #3b82f6;
         }
 
-        .sidebar:hover .menu-text {
-            opacity: 1;
-        }
-
-        .sidebar.collapsed .menu-text {
-            opacity: 0;
-            width: 0;
-        }
-
-        .sidebar.collapsed .logo-text {
+        .tab-content {
             display: none;
         }
 
-        .sidebar.collapsed .logo-icon {
-            font-size: 22px;
+        .tab-content.active {
+            display: block;
         }
-
-        .sidebar-footer {
-            padding: 0;
-            border-top: 1px solid rgba(255,255,255,0.1);
-            margin-top: auto;
-            flex-shrink: 0;
-        }
-
-        /* Main Content Styles */
-        .main-content {
-            margin-left: 80px;
-            width: calc(100% - 80px);
-            padding: 30px;
-            transition: margin-left 0.3s ease, width 0.3s ease;
-        }
-
-        .sidebar:hover ~ .main-content {
-            margin-left: 250px;
-            width: calc(100% - 250px);
-        }
-
-        .sidebar.collapsed ~ .main-content {
-            margin-left: 80px;
-            width: calc(100% - 80px);
-        }
-
-        /* Marketplace Styles */
-        .product-card {
-            transition: all 0.3s ease;
-            border: 1px solid #e2e8f0;
-        }
-
-        .product-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-        }
-
-        .status-badge {
-            font-size: 12px;
-            padding: 4px 8px;
-            border-radius: 12px;
-        }
-
-        .status-pending {
-            background-color: #fef3c7;
-            color: #d97706;
-        }
-
-        .status-processing {
-            background-color: #dbeafe;
-            color: #1d4ed8;
-        }
-
-        .status-shipped {
-            background-color: #e0f2fe;
-            color: #0369a1;
-        }
-
-        .status-completed {
-            background-color: #dcfce7;
-            color: #166534;
-        }
-
-        .status-cancelled {
-            background-color: #fee2e2;
-            color: #b91c1c;
-        }
-
-        /* Chat Bubble */
-        .chat-bubble {
-            max-width: 70%;
-            padding: 10px 15px;
-            border-radius: 18px;
-            margin-bottom: 10px;
-        }
-
-        .chat-bubble.sent {
-            background-color: #2563eb;
-            color: white;
-            margin-left: auto;
-            border-bottom-right-radius: 4px;
-        }
-
-        .chat-bubble.received {
-            background-color: #e2e8f0;
-            color: #1e293b;
-            margin-right: auto;
-            border-bottom-left-radius: 4px;
-        }
-
-        /* Stepper */
-        .stepper {
-            display: flex;
-            justify-content: space-between;
-            position: relative;
-            margin: 2rem 0;
-        }
-
-        .stepper::before {
-            content: '';
-            position: absolute;
-            top: 20px;
-            left: 0;
-            right: 0;
-            height: 2px;
-            background: #e2e8f0;
-            z-index: 1;
-        }
-
-        .step {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            position: relative;
-            z-index: 2;
-        }
-
-        .step-number {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: #e2e8f0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 0.5rem;
-            font-weight: bold;
-            color: #64748b;
-        }
-
-        .step.active .step-number {
-            background: #2563eb;
-            color: white;
-        }
-
-        .step.completed .step-number {
-            background: #16a34a;
-            color: white;
-        }
-
-        .step-title {
-            font-size: 0.875rem;
-            color: #64748b;
-            text-align: center;
-        }
-
-        .step.active .step-title {
-            color: #1e293b;
-            font-weight: 500;
-        }
-
-        .step.completed .step-title {
-            color: #16a34a;
-        }
-
-        /* Responsive Styles */
-        @media (max-width: 1024px) {
-            .sidebar {
-                width: 240px;
-            }
-            .main-content {
-                margin-left: 240px;
-                width: calc(100% - 240px);
-            }
-        }
-
-        @media (max-width: 768px) {
-            .sidebar {
-                width: 80px;
-            }
-            .sidebar.collapsed {
-                width: 80px;
-            }
-            .main-content {
-                margin-left: 80px;
-                width: calc(100% - 80px);
-                padding: 20px 15px;
-            }
-            .menu-text, .logo-text {
-                display: none;
-            }
-            .logo-container {
-                justify-content: center;
-            }
-            .sub-menu-item {
-                padding-left: 20px;
-            }
-        }
-    </style>
+</style>
 </head>
 <body class="bg-gray-50">
 
-    <!-- Sidebar -->
-    <div class="sidebar">
-        <div class="logo-container">
-            <div class="logo">
-                <img src="{{ asset('asset/img/Logo Alternative_Dark (1).png') }}" alt="Bijak Sampah Logo">
-            </div>
-            <button class="toggle-collapse">
-                <i class="fas fa-chevron-left"></i>
-            </button>
-        </div>
-        
-        <div class="menu-container">
-            <ul class="menu-items">
-                <li class="menu-item">
-                    <a href="{{ route('dashboard-banksampah') }}" style="text-decoration: none; color: inherit;">
-                        <div class="menu-icon"><i class="fas fa-home"></i></div>
-                        <span class="menu-text">Dashboard</span>
-                    </a>
-                </li>
-                <li class="menu-item">
-                    <div class="menu-icon"><i class="fas fa-users"></i></div>
-                    <span class="menu-text">Nasabah</span>
-                    <i class="fas fa-chevron-down ml-auto text-xs opacity-70"></i>
-                </li>
-                <li class="sub-menu-item">
-                    <a href="{{ route('verifikasi-nasabah-banksampah') }}" style="text-decoration: none; color: inherit;">
-                        <div class="menu-icon"><i class="fas fa-user-check"></i></div>
-                        <span class="menu-text">Verifikasi Nasabah</span>
-                    </a>
-                </li>
-                <li class="sub-menu-item">
-                    <a href="{{ route('data-nasabah-banksampah') }}" style="text-decoration: none; color: inherit;">
-                        <div class="menu-icon"><i class="fas fa-database"></i></div>
-                        <span class="menu-text">Data Nasabah</span>
-                    </a>
-                </li>
-                <li class="menu-item">
-                    <a href="{{ route('penjemputan-sampah-banksampah') }}" style="text-decoration: none; color: inherit;">
-                        <div class="menu-icon"><i class="fas fa-truck"></i></div>
-                        <span class="menu-text">Penjemputan Sampah</span>
-                    </a>
-                </li>
-                <li class="menu-item">
-                    <a href="{{ route('penimbangansampah-banksampah') }}" style="text-decoration: none; color: inherit;">
-                        <div class="menu-icon"><i class="fas fa-weight-hanging"></i></div>
-                        <span class="menu-text">Penimbangan</span>
-                        <i class="fas fa-chevron-down ml-auto text-xs opacity-70"></i>
-                    </a>
-                </li>
-                <li class="sub-menu-item">
-                    <div class="menu-icon"><i class="fas fa-plus-circle"></i></div>
-                    <span class="menu-text">Input Setoran</span>
-                </li>
-                <li class="menu-item">
-                    <a href="{{ route('datasampah-banksampah') }}" style="text-decoration: none; color: inherit;">
-                        <div class="menu-icon"><i class="fas fa-trash-alt"></i></div>
-                        <span class="menu-text">Data Sampah</span>
-                    </a>
-                </li>
-                <li class="menu-item active">
-                    <a href="{{ route('penjualansampah-banksampah') }}" style="text-decoration: none; color: inherit;">
-                        <div class="menu-icon"><i class="fas fa-shopping-cart"></i></div>
-                        <span class="menu-text">Penjualan Sampah</span>
-                    </a>
-                </li>
-                <li class="menu-item">
-                    <div class="menu-icon"><i class="fas fa-cog"></i></div>
-                    <span class="menu-text">Pengaturan</span>
-                </li>
-            </ul>
-        </div>
+<div class="flex min-h-screen bg-gray-50" x-data="{ sidebarOpen: false, activeMenu: 'penjualansampah' }" x-init="activeMenu = 'penjualansampah'">
 
-        <div class="sidebar-footer">
-            <div class="menu-item" id="logoutBtn">
-                <div class="menu-icon"><i class="fas fa-sign-out-alt"></i></div>
-                <span class="menu-text">Logout</span>
-            </div>
-        </div>
-    </div>
-
-    <!-- Main Content -->
-    <div class="main-content">
-        <!-- Header -->
-        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
-            <div>
-                <h1 class="text-2xl font-bold text-gray-800">Marketplace Sampah</h1>
-                <p class="text-sm text-gray-500">Jual sampah Anda ke UMKM daur ulang dan pengepul terdekat</p>
-            </div>
-            <div class="flex items-center space-x-4 w-full md:w-auto">
-                <div class="relative flex-grow md:flex-grow-0">
-                    <input type="text" placeholder="Cari jenis sampah..." class="pl-10 pr-4 py-2 border rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm w-full">
-                    <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
-                </div>
-                <div class="relative">
-                    <select id="locationFilter" class="pl-4 pr-10 py-2 border rounded-full appearance-none bg-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        <option value="all">Semua Lokasi</option>
-                        <option value="jakarta">Jakarta</option>
-                        <option value="bandung">Bandung</option>
-                        <option value="surabaya">Surabaya</option>
-                        <option value="bali">Bali</option>
-                    </select>
-                    <i class="fas fa-chevron-down absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-xs"></i>
-                </div>
-                <div class="relative tooltip">
-                    <i class="fas fa-bell text-xl text-gray-600 cursor-pointer hover:text-blue-500"></i>
-                    <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">3</span>
-                    <span class="tooltip-text">Notifikasi</span>
-                </div>
-                <div class="relative tooltip">
-                    <div class="flex items-center space-x-2 cursor-pointer">
-                        <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="User" class="w-8 h-8 rounded-full object-cover">
-                        <span class="hidden md:inline text-sm font-medium">Admin</span>
-                    </div>
-                    <span class="tooltip-text">Profil Pengguna</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Tabs -->
-        <div class="flex border-b border-gray-200 mb-6">
-            <button class="px-4 py-2 font-medium text-blue-600 border-b-2 border-blue-600" id="marketplaceTab">
-                <i class="fas fa-store mr-2"></i>Marketplace
-            </button>
-            <button class="px-4 py-2 font-medium text-gray-500 hover:text-blue-600" id="mySalesTab">
-                <i class="fas fa-clipboard-list mr-2"></i>Penjualan Saya
-            </button>
-            <button class="px-4 py-2 font-medium text-gray-500 hover:text-blue-600" id="transactionsTab">
-                <i class="fas fa-exchange-alt mr-2"></i>Transaksi
-            </button>
-        </div>
-
-        <!-- Marketplace Content -->
-        <div id="marketplaceContent" class="space-y-6">
-            <!-- Create New Listing -->
-            <div class="bg-white rounded-xl shadow-md p-6">
-                <div class="flex flex-col md:flex-row justify-between items-center gap-4">
-                    <div>
-                        <h3 class="text-lg font-semibold text-gray-800">Buat Penawaran Baru</h3>
-                        <p class="text-sm text-gray-500">Jual sampah Anda ke UMKM daur ulang dan pengepul</p>
-                    </div>
-                    <button class="w-full md:w-auto px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-800 text-white rounded-lg font-medium hover:from-blue-700 hover:to-blue-900 transition-all" id="createListingBtn">
-                        <i class="fas fa-plus mr-2"></i>Buat Penawaran
+    {{-- Sidebar --}}
+    <aside 
+        class="fixed top-0 left-0 z-40 flex flex-col py-6 overflow-hidden shadow-2xl group sidebar-banksampah-gradient text-white"
+        :class="sidebarOpen ? 'w-[250px]' : 'w-16'"
+        style="transition: width 0.3s ease; height: 100vh; background: linear-gradient(135deg, #75E6DA 0%, #05445E 30%, #05445E 100%);"
+    >
+        <div class="relative flex flex-col h-full w-full px-4">
+            
+            {{-- Logo Section with Toggle Button --}}
+            {{-- PASTIKAN FILE logo-icon.png ADA DI public/asset/img --}}
+            <div class="flex items-center justify-center mb-8 mt-14" :class="sidebarOpen ? 'justify-between' : 'justify-center'">
+                <div class="flex items-center justify-center gap-2" :class="sidebarOpen ? 'flex-1' : ''">
+                    <img x-show="sidebarOpen" class="w-32 h-auto" src="{{ asset('asset/img/logo1.png') }}" alt="Logo Penuh">
+                    <img x-show="!sidebarOpen" class="w-6 h-6" src="{{ asset('asset/img/logo.png') }}" alt="Logo Kecil">
+                    {{-- Toggle Button --}}
+                    <button 
+                        @click="sidebarOpen = !sidebarOpen"
+                        class="p-1 rounded-full bg-white/20 hover:bg-white/30 transition-colors duration-200 text-white"
+                        :class="sidebarOpen ? 'rotate-180' : ''"
+                        style="transition: transform 0.3s ease;"
+                    >
+                        <i class="fas fa-chevron-left text-sm"></i>
                     </button>
                 </div>
             </div>
+            
+            {{-- Navigation Menu --}}
+            <nav class="flex flex-col gap-2 w-full flex-1 overflow-y-auto">
+                <a 
+                    href="{{ route('dashboard-banksampah') }}" 
+                    class="flex items-center p-3 font-medium rounded-lg whitespace-nowrap w-full transition-colors duration-200 hover:bg-white/10 hover:shadow-sm"
+                    :style="sidebarOpen ? 'gap: 12px;' : 'justify-content: center; padding-left: 0; padding-right: 0;'"
+                    @click="activeMenu = 'dashboard'"
+                >
+                    <i class="fas fa-home text-lg"></i>
+                    <span x-show="sidebarOpen" class="text-sm font-medium">Dashboard</span>
+                </a>
 
-            <!-- Available Waste Listings -->
-            <div class="bg-white rounded-xl shadow-md p-6">
-                <div class="flex justify-between items-center mb-6">
-                    <h3 class="text-lg font-semibold text-gray-800">Sampah Tersedia di Marketplace</h3>
-                    <div class="flex space-x-2">
-                        <button class="px-3 py-1 bg-blue-50 text-blue-600 rounded-full text-sm hover:bg-blue-100 transition-colors">
-                            <i class="fas fa-filter mr-1"></i> Filter
-                        </button>
-                        <button class="px-3 py-1 bg-gray-50 text-gray-600 rounded-full text-sm hover:bg-gray-100 transition-colors">
-                            <i class="fas fa-sort mr-1"></i> Urutkan
-                        </button>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <!-- Product Card 1 -->
-                    <div class="product-card bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow">
-                        <div class="relative">
-                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTkhzQG6s2X-haW0c3C_jdFh3OZInLXz5F_UA&s" alt="Plastik PET" class="w-full h-48 object-cover">
-                            <div class="absolute top-2 right-2 bg-white rounded-full p-2 shadow">
-                                <i class="fas fa-heart text-gray-400 hover:text-red-500 cursor-pointer"></i>
-                            </div>
+                <div 
+                    class="group"
+                    x-data="{ expanded: false }"
+                    x-init="$watch('sidebarOpen', value => { if (!value) expanded = false })"
+                >
+                    <button 
+                        @click="expanded = !expanded" 
+                        class="flex items-center p-3 font-medium rounded-lg whitespace-nowrap w-full transition-colors duration-200 hover:bg-white/10 hover:shadow-sm"
+                        :style="sidebarOpen ? 'justify-between; gap: 12px;' : 'justify-content: center;'"
+                    >
+                        <div class="flex items-center" :style="sidebarOpen ? 'gap: 12px;' : 'justify-content: center;'">
+                            <i class="fas fa-users text-lg"></i>
+                            <span x-show="sidebarOpen" class="text-sm font-medium">Nasabah</span>
                         </div>
-                        <div class="p-4">
-                            <div class="flex justify-between items-start">
-                                <div>
-                                    <h4 class="font-semibold text-lg mb-1">Plastik PET Bersih</h4>
-                                    <p class="text-sm text-gray-500 mb-2">Dari: Bank Sampah Hijau</p>
-                                </div>
-                                <span class="status-badge status-pending">Tersedia</span>
-                            </div>
-                            <p class="text-sm text-gray-600 mb-3">Plastik PET bersih, sudah dicuci dan dikeringkan, siap untuk didaur ulang.</p>
-                            <div class="flex justify-between items-center">
-                                <div>
-                                    <p class="font-bold text-blue-600">Rp 7.500/kg</p>
-                                    <p class="text-xs text-gray-500">Stok: 150 kg</p>
-                                </div>
-                                <button class="px-3 py-1 bg-blue-50 text-blue-600 rounded-full text-sm hover:bg-blue-100 transition-colors">
-                                    <i class="fas fa-shopping-cart mr-1"></i> Beli
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Product Card 2 -->
-                    <div class="product-card bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow">
-                        <div class="relative">
-                            <img src="https://images.unsplash.com/photo-1604176354204-9268737828e4?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80" alt="Kertas Campur" class="w-full h-48 object-cover">
-                            <div class="absolute top-2 right-2 bg-white rounded-full p-2 shadow">
-                                <i class="fas fa-heart text-red-500 cursor-pointer"></i>
-                            </div>
-                        </div>
-                        <div class="p-4">
-                            <div class="flex justify-between items-start">
-                                <div>
-                                    <h4 class="font-semibold text-lg mb-1">Kertas Campur Kualitas Baik</h4>
-                                    <p class="text-sm text-gray-500 mb-2">Dari: UMKM Daur Ulang Jaya</p>
-                                </div>
-                                <span class="status-badge status-pending">Tersedia</span>
-                            </div>
-                            <p class="text-sm text-gray-600 mb-3">Kertas campur berbagai jenis (HVS, koran, karton) dalam kondisi baik.</p>
-                            <div class="flex justify-between items-center">
-                                <div>
-                                    <p class="font-bold text-blue-600">Rp 3.200/kg</p>
-                                    <p class="text-xs text-gray-500">Stok: 250 kg</p>
-                                </div>
-                                <button class="px-3 py-1 bg-blue-50 text-blue-600 rounded-full text-sm hover:bg-blue-100 transition-colors">
-                                    <i class="fas fa-shopping-cart mr-1"></i> Beli
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Product Card 3 -->
-                    <div class="product-card bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow">
-                        <div class="relative">
-                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTs0pB8_kV-FK2QYIu8XHO27KJwUiNppU1ouA&s" alt="Kaleng Aluminium" class="w-full h-48 object-cover">
-                            <div class="absolute top-2 right-2 bg-white rounded-full p-2 shadow">
-                                <i class="fas fa-heart text-gray-400 hover:text-red-500 cursor-pointer"></i>
-                            </div>
-                        </div>
-                        <div class="p-4">
-                            <div class="flex justify-between items-start">
-                                <div>
-                                    <h4 class="font-semibold text-lg mb-1">Kaleng Aluminium Bekas</h4>
-                                    <p class="text-sm text-gray-500 mb-2">Dari: Pengepul Logam Sejahtera</p>
-                                </div>
-                                <span class="status-badge status-pending">Tersedia</span>
-                            </div>
-                            <p class="text-sm text-gray-600 mb-3">Kaleng aluminium berbagai ukuran, sudah dipress dan siap dilebur.</p>
-                            <div class="flex justify-between items-center">
-                                <div>
-                                    <p class="font-bold text-blue-600">Rp 12.000/kg</p>
-                                    <p class="text-xs text-gray-500">Stok: 80 kg</p>
-                                </div>
-                                <button class="px-3 py-1 bg-blue-50 text-blue-600 rounded-full text-sm hover:bg-blue-100 transition-colors">
-                                    <i class="fas fa-shopping-cart mr-1"></i> Beli
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="mt-6 flex justify-center">
-                    <button class="px-4 py-2 border border-blue-500 text-blue-500 rounded-md hover:bg-blue-50 transition-colors">
-                        Lihat Lebih Banyak
+                        <i x-show="sidebarOpen" class="fas fa-chevron-down text-xs opacity-70 transition-transform duration-200" :class="expanded ? 'rotate-180' : ''"></i>
                     </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- My Sales Content (Hidden by default) -->
-        <div id="mySalesContent" class="space-y-6 hidden">
-            <div class="bg-white rounded-xl shadow-md p-6">
-                <div class="flex justify-between items-center mb-6">
-                    <h3 class="text-lg font-semibold text-gray-800">Penjualan Saya</h3>
-                    <div class="flex space-x-2">
-                        <button class="px-3 py-1 bg-blue-50 text-blue-600 rounded-full text-sm hover:bg-blue-100 transition-colors">
-                            <i class="fas fa-filter mr-1"></i> Filter
-                        </button>
-                        <button class="px-3 py-1 bg-gray-50 text-gray-600 rounded-full text-sm hover:bg-gray-100 transition-colors">
-                            <i class="fas fa-sort mr-1"></i> Urutkan
-                        </button>
+                    <div x-show="expanded && sidebarOpen" x-collapse.duration.300ms class="pl-6 pt-2 space-y-1">
+                        <a 
+                            href="{{ route('verifikasi-nasabah-banksampah') }}" 
+                            class="flex items-center gap-3 p-2 rounded-lg whitespace-nowrap w-full text-sm hover:bg-white/10 hover:shadow-sm transition-colors duration-200"
+                            @click="activeMenu = 'verifikasi-nasabah'"
+                        >
+                            <i class="fas fa-user-check"></i>
+                            <span x-show="sidebarOpen">Verifikasi Nasabah</span>
+                        </a>
+                        <a 
+                            href="{{ route('data-nasabah-banksampah') }}" 
+                            class="flex items-center gap-3 p-2 rounded-lg whitespace-nowrap w-full text-sm hover:bg-white/10 hover:shadow-sm transition-colors duration-200"
+                            @click="activeMenu = 'data-nasabah'"
+                        >
+                            <i class="fas fa-database"></i>
+                            <span x-show="sidebarOpen">Data Nasabah</span>
+                        </a>
                     </div>
                 </div>
 
-                <div class="overflow-x-auto">
-                    <table class="min-w-full divide-y divide-gray-200">
-                        <thead class="bg-gray-50">
-                            <tr>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID Transaksi</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Produk</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Pembeli</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Jumlah</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody class="bg-white divide-y divide-gray-200">
-                            <tr>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#TRX-20250515-001</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Plastik PET</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">UMKM Daur Ulang Jaya</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">25 kg</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Rp 187.500</td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <span class="status-badge status-processing">Diproses</span>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    <button class="text-blue-500 hover:text-blue-700 mr-3">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                    <button class="text-green-500 hover:text-green-700">
-                                        <i class="fas fa-truck"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#TRX-20250510-002</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Kertas Campur</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Pabrik Kertas Maju</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">50 kg</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Rp 160.000</td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <span class="status-badge status-shipped">Dikirim</span>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    <button class="text-blue-500 hover:text-blue-700 mr-3">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                    <button class="text-green-500 hover:text-green-700">
-                                        <i class="fas fa-map-marked-alt"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#TRX-20250505-003</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Kaleng Aluminium</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Pengepul Logam Sejahtera</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">15 kg</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Rp 180.000</td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <span class="status-badge status-completed">Selesai</span>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    <button class="text-blue-500 hover:text-blue-700 mr-3">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                    <button class="text-purple-500 hover:text-purple-700">
-                                        <i class="fas fa-file-invoice-dollar"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <!-- Transactions Content (Hidden by default) -->
-        <div id="transactionsContent" class="space-y-6 hidden">
-            <div class="bg-white rounded-xl shadow-md p-6">
-                <div class="flex justify-between items-center mb-6">
-                    <h3 class="text-lg font-semibold text-gray-800">Riwayat Transaksi</h3>
-                    <div class="flex space-x-2">
-                        <button class="px-3 py-1 bg-blue-50 text-blue-600 rounded-full text-sm hover:bg-blue-100 transition-colors">
-                            <i class="fas fa-filter mr-1"></i> Filter
-                        </button>
-                        <button class="px-3 py-1 bg-gray-50 text-gray-600 rounded-full text-sm hover:bg-gray-100 transition-colors">
-                            <i class="fas fa-sort mr-1"></i> Urutkan
-                        </button>
-                    </div>
-                </div>
-
-                <div class="space-y-6">
-                    <!-- Transaction Item 1 -->
-                    <div class="border border-gray-200 rounded-lg p-4 hover:border-blue-300 transition-colors">
-                        <div class="flex justify-between items-start mb-3">
-                            <div>
-                                <h4 class="font-semibold text-lg">#TRX-20250515-001</h4>
-                                <p class="text-sm text-gray-500">15 Mei 2025, 14:30 WIB</p>
-                            </div>
-                            <span class="status-badge status-completed">Selesai</span>
-                        </div>
-                        
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                            <div>
-                                <p class="text-sm text-gray-500">Produk</p>
-                                <p class="font-medium">Plastik PET - 25 kg</p>
-                            </div>
-                            <div>
-                                <p class="text-sm text-gray-500">Pembeli</p>
-                                <p class="font-medium">UMKM Daur Ulang Jaya</p>
-                            </div>
-                            <div>
-                                <p class="text-sm text-gray-500">Total</p>
-                                <p class="font-medium text-blue-600">Rp 187.500</p>
-                            </div>
-                        </div>
-                        
-                        <div class="stepper">
-                            <div class="step completed">
-                                <div class="step-number">
-                                    <i class="fas fa-check"></i>
-                                </div>
-                                <div class="step-title">Pesanan Dibuat</div>
-                            </div>
-                            <div class="step completed">
-                                <div class="step-number">
-                                    <i class="fas fa-check"></i>
-                                </div>
-                                <div class="step-title">Pembayaran</div>
-                            </div>
-                            <div class="step completed">
-                                <div class="step-number">
-                                    <i class="fas fa-check"></i>
-                                </div>
-                                <div class="step-title">Pengiriman</div>
-                            </div>
-                            <div class="step completed">
-                                <div class="step-number">
-                                    <i class="fas fa-check"></i>
-                                </div>
-                                <div class="step-title">Selesai</div>
-                            </div>
-                        </div>
-                        
-                        <div class="flex justify-end space-x-3">
-                            <button class="px-4 py-2 border rounded-md text-sm hover:bg-gray-100">Detail</button>
-                            <button class="px-4 py-2 bg-blue-500 text-white rounded-md text-sm hover:bg-blue-600">Cetak Invoice</button>
-                        </div>
-                    </div>
-
-                    <!-- Transaction Item 2 -->
-                    <div class="border border-gray-200 rounded-lg p-4 hover:border-blue-300 transition-colors">
-                        <div class="flex justify-between items-start mb-3">
-                            <div>
-                                <h4 class="font-semibold text-lg">#TRX-20250510-002</h4>
-                                <p class="text-sm text-gray-500">10 Mei 2025, 09:15 WIB</p>
-                            </div>
-                            <span class="status-badge status-shipped">Dikirim</span>
-                        </div>
-                        
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                            <div>
-                                <p class="text-sm text-gray-500">Produk</p>
-                                <p class="font-medium">Kertas Campur - 50 kg</p>
-                            </div>
-                            <div>
-                                <p class="text-sm text-gray-500">Pembeli</p>
-                                <p class="font-medium">Pabrik Kertas Maju</p>
-                            </div>
-                            <div>
-                                <p class="text-sm text-gray-500">Total</p>
-                                <p class="font-medium text-blue-600">Rp 160.000</p>
-                            </div>
-                        </div>
-                        
-                        <div class="stepper">
-                            <div class="step completed">
-                                <div class="step-number">
-                                    <i class="fas fa-check"></i>
-                                </div>
-                                <div class="step-title">Pesanan Dibuat</div>
-                            </div>
-                            <div class="step completed">
-                                <div class="step-number">
-                                    <i class="fas fa-check"></i>
-                                </div>
-                                <div class="step-title">Pembayaran</div>
-                            </div>
-                            <div class="step active">
-                                <div class="step-number">3</div>
-                                <div class="step-title">Pengiriman</div>
-                            </div>
-                            <div class="step">
-                                <div class="step-number">4</div>
-                                <div class="step-title">Selesai</div>
-                            </div>
-                        </div>
-                        
-                        <div class="mt-4 p-3 bg-blue-50 rounded-lg">
-                            <div class="flex items-center">
-                                <i class="fas fa-truck text-blue-500 mr-3"></i>
-                                <div>
-                                    <p class="font-medium text-sm">Paket sedang dalam perjalanan</p>
-                                    <p class="text-xs text-gray-500">Estimasi tiba: 18 Mei 2025</p>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="flex justify-end space-x-3 mt-4">
-                            <button class="px-4 py-2 border rounded-md text-sm hover:bg-gray-100">Detail</button>
-                            <button class="px-4 py-2 bg-blue-500 text-white rounded-md text-sm hover:bg-blue-600">Lacak</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Create Listing Modal -->
-    <div id="createListingModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
-        <div class="bg-white rounded-lg w-full max-w-2xl mx-4 max-h-[90vh] overflow-y-auto">
-            <div class="p-6">
-                <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-lg font-semibold">Buat Penawaran Baru</h3>
-                    <button id="closeCreateModal" class="text-gray-500 hover:text-gray-700">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
+                <a 
+                    href="{{ route('penjemputan-sampah-banksampah') }}" 
+                    class="flex items-center p-3 font-medium rounded-lg whitespace-nowrap w-full transition-colors duration-200 hover:bg-white/10 hover:shadow-sm"
+                    :style="sidebarOpen ? 'gap: 12px;' : 'justify-content: center;'"
+                    @click="activeMenu = 'penjemputan-sampah'"
+                >
+                    <i class="fas fa-truck text-lg"></i>
+                    <span x-show="sidebarOpen" class="text-sm font-medium">Penjemputan Sampah</span>
+                </a>
                 
-                <form id="listingForm">
-                    <div class="space-y-4">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Jenis Sampah</label>
-                            <select class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                <option value="">Pilih Jenis Sampah</option>
-                                <optgroup label="Plastik">
-                                    <option value="pet">Plastik PET</option>
-                                    <option value="hdpe">Plastik HDPE</option>
-                                    <option value="ldpe">Plastik LDPE</option>
-                                    <option value="pp">Plastik PP</option>
-                                </optgroup>
-                                <optgroup label="Kertas">
-                                    <option value="hvs">Kertas HVS</option>
-                                    <option value="koran">Kertas Koran</option>
-                                    <option value="duplex">Kertas Duplex</option>
-                                </optgroup>
-                                <optgroup label="Logam">
-                                    <option value="aluminium">Aluminium</option>
-                                    <option value="besi">Besi</option>
-                                    <option value="tembaga">Tembaga</option>
-                                </optgroup>
-                                <optgroup label="Lainnya">
-                                    <option value="kaca">Kaca</option>
-                                    <option value="elektronik">Elektronik</option>
-                                    <option value="minyak">Minyak Jelantah</option>
-                                </optgroup>
-                            </select>
+                <div 
+                    class="group"
+                    x-data="{ expanded: false }"
+                    x-init="$watch('sidebarOpen', value => { if (!value) expanded = false })"
+                >
+                    <button 
+                        @click="expanded = !expanded" 
+                        class="flex items-center p-3 font-medium rounded-lg whitespace-nowrap w-full transition-colors duration-200 hover:bg-white/10 hover:shadow-sm"
+                        :style="sidebarOpen ? 'justify-between; gap: 12px;' : 'justify-content: center;'"
+                    >
+                        <div class="flex items-center" :style="sidebarOpen ? 'gap: 12px;' : 'justify-content: center;'">
+                            <i class="fas fa-weight-hanging text-lg"></i>
+                            <span x-show="sidebarOpen" class="text-sm font-medium">Penimbangan</span>
                         </div>
-                        
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Jumlah</label>
-                                <div class="flex">
-                                    <input type="number" class="flex-1 border border-gray-300 rounded-l-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="0">
-                                    <select class="border border-gray-300 border-l-0 rounded-r-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                        <option value="kg">Kg</option>
-                                        <option value="liter">Liter</option>
-                                        <option value="unit">Unit</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Harga per Satuan (Rp)</label>
-                                <input type="text" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="0">
-                            </div>
-                        </div>
-                        
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Deskripsi</label>
-                            <textarea class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" rows="3" placeholder="Deskripsikan kondisi sampah (bersih, kering, dll)"></textarea>
-                        </div>
-                        
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Foto Sampah</label>
-                            <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
-                                <div class="space-y-1 text-center">
-                                    <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
-                                        <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                                    </svg>
-                                    <div class="flex text-sm text-gray-600">
-                                        <label for="file-upload" class="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500">
-                                            <span>Upload foto</span>
-                                            <input id="file-upload" name="file-upload" type="file" class="sr-only">
-                                        </label>
-                                        <p class="pl-1">atau drag and drop</p>
-                                    </div>
-                                    <p class="text-xs text-gray-500">PNG, JPG, GIF up to 10MB</p>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Lokasi Penjemputan</label>
-                                <input type="text" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Alamat lengkap">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Tanggal Tersedia</label>
-                                <input type="date" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                            </div>
-                        </div>
-                        
-                        <div class="pt-4 border-t border-gray-200 flex justify-end space-x-3">
-                            <button type="button" class="px-4 py-2 border rounded-md text-sm hover:bg-gray-100">Batal</button>
-                            <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded-md text-sm hover:bg-blue-600">Posting Penawaran</button>
-                        </div>
+                        <i x-show="sidebarOpen" class="fas fa-chevron-down text-xs opacity-70 transition-transform duration-200" :class="expanded ? 'rotate-180' : ''"></i>
+                    </button>
+                    <div x-show="expanded && sidebarOpen" x-collapse.duration.300ms class="pl-6 pt-2 space-y-1">
+                        <a 
+                            href="{{ route('input-setoran') }}" 
+                            class="flex items-center gap-3 p-2 rounded-lg whitespace-nowrap w-full text-sm hover:bg-white/10 hover:shadow-sm transition-colors duration-200"
+                            @click="activeMenu = 'input-setoran'"
+                        >
+                            <i class="fas fa-plus-circle"></i>
+                            <span x-show="sidebarOpen">Input Setoran</span>
+                        </a>
                     </div>
-                </form>
+                </div>
+
+                <a 
+                    href="{{ route('datasampah-banksampah') }}" 
+                    class="flex items-center p-3 font-medium rounded-lg whitespace-nowrap w-full transition-colors duration-200 hover:bg-white/10 hover:shadow-sm"
+                    :style="sidebarOpen ? 'gap: 12px;' : 'justify-content: center;'"
+                    @click="activeMenu = 'data-sampah'"
+                >
+                    <i class="fas fa-trash-alt text-lg"></i>
+                    <span x-show="sidebarOpen" class="text-sm font-medium">Data Sampah</span>
+                </a>
+                
+                <a 
+                    href="{{ route('penjualansampah-banksampah') }}" 
+                    class="flex items-center p-3 font-medium rounded-lg whitespace-nowrap w-full transition-colors duration-200 bg-white/20 shadow-sm"
+                    :style="sidebarOpen ? 'gap: 12px;' : 'justify-content: center;'"
+                    @click="activeMenu = 'penjualansampah'"
+                >
+                    <i class="fas fa-shopping-cart text-lg"></i>
+                    <span x-show="sidebarOpen" class="text-sm font-medium">Penjualan Sampah</span>
+                </a>
+                
+                <a 
+                    href="{{ route('settingsbank') }}" 
+                    class="flex items-center p-3 font-medium rounded-lg whitespace-nowrap w-full transition-colors duration-200 hover:bg-white/10 hover:shadow-sm"
+                    :style="sidebarOpen ? 'gap: 12px;' : 'justify-content: center;'"
+                    @click="activeMenu = 'pengaturan'"
+                >
+                    <i class="fas fa-cog text-lg"></i>
+                    <span x-show="sidebarOpen" class="text-sm font-medium">Pengaturan</span>
+                </a>
+            </nav>
+            
+            {{-- Logout Section --}}
+            <div class="w-full flex items-center py-3 mt-auto border-t border-white/20">
+                <a 
+                    href="{{ route('logout') }}" 
+                    class="flex items-center p-3 rounded-lg hover:bg-white/10 hover:shadow-sm text-white transition-all duration-200 w-full whitespace-nowrap"
+                    :style="sidebarOpen ? 'gap: 12px;' : 'justify-content: center;'"
+                >
+                    <i class="fas fa-sign-out-alt text-lg"></i>
+                    <span x-show="sidebarOpen" class="text-sm font-medium">Logout</span>
+                </a>
             </div>
         </div>
-    </div>
+    </aside>
 
-    <!-- Order Detail Modal -->
-    <div id="orderDetailModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
-        <div class="bg-white rounded-lg w-full max-w-2xl mx-4 max-h-[90vh] overflow-y-auto">
-            <div class="p-6">
-                <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-lg font-semibold">Detail Pesanan #TRX-20250515-001</h3>
-                    <button id="closeOrderModal" class="text-gray-500 hover:text-gray-700">
-                        <i class="fas fa-times"></i>
-                    </button>
+    {{-- Main Content --}}
+    <div class="main-content" :class="sidebarOpen ? 'pl-24' : 'pl-24'" style="transition: padding-left 0.3s ease;">
+        {{-- Top Header Bar --}}
+        <div class="fixed top-0 left-0 right-0 h-12 z-40 flex items-center justify-between px-6 text-white" :style="'padding-left:' + (sidebarOpen ? '16rem' : '4rem') + '; background: linear-gradient(135deg, #75E6DA 0%, #05445E 30%, #05445E 100%);'">
+            <h1 class="text-white font-semibold text-lg" style="position: absolute; left: 1.5rem;">BijakSampah</h1>
+            <div class="flex items-center gap-4" style="position: absolute; right: 1.5rem;">
+                <a href="{{ route('notifikasibank') }}" class="relative">
+                    <i class="far fa-bell text-white text-sm"></i>
+                    <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center font-medium">3</span>
+                </a>
+                <button class="focus:outline-none">
+                    <i class="fas fa-search text-white text-sm"></i>
+                </button>
+                <div class="flex items-center gap-2">
+                    <a href="{{ route('profilebank') }}" class="w-8 h-8 rounded-full overflow-hidden flex items-center justify-center border-2 border-gray-300">
+                        <img src="{{ asset('asset/img/user_profile.jpg') }}" alt="Profile" class="w-full h-full object-cover">
+                    </a>
+                    <i class="fas fa-chevron-down text-white text-xs"></i>
                 </div>
-                
-                <div class="space-y-6">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            </div>
+            </div>
+
+        <div class="p-6" style="padding-top: 20px;">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+                <div>
+                    <h1 class="text-2xl font-bold text-gray-800">Marketplace Sampah</h1>
+                    <p class="text-sm text-gray-500">Jual sampah Anda ke UMKM daur ulang dan pengepul terdekat</p>
+                </div>
+            </div>
+
+            <div class="flex border-b border-gray-200 mb-6">
+                <button class="tab-button active px-4 py-2 font-medium text-blue-600 border-b-2 border-blue-600" onclick="switchTab('marketplace')">
+                    <i class="fas fa-store mr-2"></i>Marketplace
+                </button>
+                <button class="tab-button px-4 py-2 font-medium text-gray-500 hover:text-blue-600" onclick="switchTab('mySales')">
+                    <i class="fas fa-clipboard-list mr-2"></i>Penjualan Saya
+                </button>
+                <button class="tab-button px-4 py-2 font-medium text-gray-500 hover:text-blue-600" onclick="switchTab('transactions')">
+                    <i class="fas fa-exchange-alt mr-2"></i>Transaksi
+                </button>
+            </div>
+
+            <div id="marketplaceContent" class="space-y-6">
+                <div class="bg-white rounded-xl shadow-md p-6">
+                    <div class="flex flex-col md:flex-row justify-between items-center gap-4">
                         <div>
-                            <h4 class="font-medium text-gray-900 mb-3">Informasi Produk</h4>
-                            <div class="flex items-start space-x-4">
-                                <img src="https://images.unsplash.com/photo-1583994009785-37ec30bf934b?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80" alt="Plastik PET" class="w-16 h-16 object-cover rounded">
-                                <div>
-                                    <p class="font-medium">Plastik PET Bersih</p>
-                                    <p class="text-sm text-gray-500">25 kg @ Rp 7.500</p>
-                                    <p class="text-sm text-gray-500 mt-1">Kondisi: Bersih, sudah dicuci dan dikeringkan</p>
-                                </div>
-                            </div>
+                            <h3 class="text-lg font-semibold text-gray-800">Buat Penawaran Baru</h3>
+                            <p class="text-sm text-gray-500">Jual sampah Anda ke UMKM daur ulang dan pengepul</p>
                         </div>
-                        
-                        <div>
-                            <h4 class="font-medium text-gray-900 mb-3">Informasi Pembeli</h4>
-                            <div class="space-y-2">
-                                <p class="font-medium">UMKM Daur Ulang Jaya</p>
-                                <p class="text-sm text-gray-500">
-                                    <i class="fas fa-map-marker-alt mr-2"></i>Jl. Industri No. 123, Jakarta
-                                </p>
-                                <p class="text-sm text-gray-500">
-                                    <i class="fas fa-phone-alt mr-2"></i>0812-3456-7890
-                                </p>
-                                <p class="text-sm text-gray-500">
-                                    <i class="fas fa-envelope mr-2"></i>daurulangjaya@example.com
-                                </p>
-                            </div>
-                        </div>
+                        <button class="w-full md:w-auto px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-800 text-white rounded-lg font-medium hover:from-blue-700 hover:to-blue-900 transition-all" onclick="showCreateListingModal()">
+                            <i class="fas fa-plus mr-2"></i>Buat Penawaran
+                        </button>
                     </div>
-                    
-                    <div class="border-t border-gray-200 pt-4">
-                        <h4 class="font-medium text-gray-900 mb-3">Ringkasan Pembayaran</h4>
-                        <div class="space-y-2">
-                            <div class="flex justify-between">
-                                <p class="text-sm text-gray-500">Subtotal</p>
-                                <p class="text-sm">Rp 187.500</p>
-                            </div>
-                            <div class="flex justify-between">
-                                <p class="text-sm text-gray-500">Biaya Pengiriman</p>
-                                <p class="text-sm">Rp 15.000</p>
-                            </div>
-                            <div class="flex justify-between border-t border-gray-200 pt-2">
-                                <p class="font-medium">Total</p>
-                                <p class="font-medium text-blue-600">Rp 202.500</p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="border-t border-gray-200 pt-4">
-                        <h4 class="font-medium text-gray-900 mb-3">Status Pengiriman</h4>
-                        <div class="stepper">
-                            <div class="step completed">
-                                <div class="step-number">
-                                    <i class="fas fa-check"></i>
-                                </div>
-                                <div class="step-title">Pesanan Dibuat</div>
-                            </div>
-                            <div class="step completed">
-                                <div class="step-number">
-                                    <i class="fas fa-check"></i>
-                                </div>
-                                <div class="step-title">Pembayaran</div>
-                            </div>
-                            <div class="step active">
-                                <div class="step-number">3</div>
-                                <div class="step-title">Pengiriman</div>
-                            </div>
-                            <div class="step">
-                                <div class="step-number">4</div>
-                                <div class="step-title">Selesai</div>
-                            </div>
-                        </div>
-                        
-                        <div class="mt-4 p-3 bg-blue-50 rounded-lg">
-                            <div class="flex items-center">
-                                <i class="fas fa-truck text-blue-500 mr-3"></i>
-                                <div>
-                                    <p class="font-medium text-sm">Paket sedang dalam perjalanan</p>
-                                    <p class="text-xs text-gray-500">No. Resi: JNE-1234567890</p>
-                                    <p class="text-xs text-gray-500 mt-1">Estimasi tiba: 18 Mei 2025</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="border-t border-gray-200 pt-4">
-                        <h4 class="font-medium text-gray-900 mb-3">Chat dengan Pembeli</h4>
-                        <div class="space-y-3 max-h-40 overflow-y-auto p-2">
-                            <div class="chat-bubble received">
-                                <p class="text-sm">Halo, apakah sampah plastiknya sudah dipacking dengan baik?</p>
-                                <p class="text-xs text-gray-400 mt-1 text-right">10:30 AM</p>
-                            </div>
-                            <div class="chat-bubble sent">
-                                <p class="text-sm">Sudah pak, sudah dipacking dalam karung dan siap dikirim</p>
-                                <p class="text-xs text-gray-300 mt-1 text-right">10:32 AM</p>
-                            </div>
-                            <div class="chat-bubble received">
-                                <p class="text-sm">Baik, kami akan proses pembayaran hari ini juga</p>
-                                <p class="text-xs text-gray-400 mt-1 text-right">10:35 AM</p>
-                            </div>
-                        </div>
-                        <div class="mt-3 flex">
-                            <input type="text" class="flex-1 border border-gray-300 rounded-l-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Ketik pesan...">
-                            <button class="px-3 py-2 bg-blue-500 text-white rounded-r-md hover:bg-blue-600">
-                                <i class="fas fa-paper-plane"></i>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-md p-6">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-lg font-semibold text-gray-800">List Penawaran Saya</h3>
+                        <div class="flex space-x-2">
+                            <button class="px-3 py-1 bg-blue-50 text-blue-600 rounded-full text-sm hover:bg-blue-100 transition-colors" onclick="showFilterModal()">
+                                <i class="fas fa-filter mr-1"></i> Filter
+                            </button>
+                            <button class="px-3 py-1 bg-gray-50 text-gray-600 rounded-full text-sm hover:bg-gray-100 transition-colors" onclick="showSortModal()">
+                                <i class="fas fa-sort mr-1"></i> Urutkan
                             </button>
                         </div>
                     </div>
-                    
-                    <div class="border-t border-gray-200 pt-4 flex justify-end space-x-3">
-                        <button class="px-4 py-2 border rounded-md text-sm hover:bg-gray-100">Cetak Invoice</button>
-                        <button class="px-4 py-2 bg-blue-500 text-white rounded-md text-sm hover:bg-blue-600">Lacak Pengiriman</button>
+                    <div id="myListingsContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <!-- Penawaran akan ditampilkan di sini -->
+                        <div class="text-center py-8 text-gray-500">
+                            <i class="fas fa-box-open text-4xl mb-4"></i>
+                            <p>Belum ada penawaran yang dibuat</p>
+                            <p class="text-sm">Klik "Buat Penawaran" untuk mulai menjual sampah Anda</p>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
-    <script>
-        // Initialize the page
-        document.addEventListener('DOMContentLoaded', function() {
-            // Tab switching functionality
-            document.getElementById('marketplaceTab').addEventListener('click', function() {
-                document.getElementById('marketplaceContent').classList.remove('hidden');
-                document.getElementById('mySalesContent').classList.add('hidden');
-                document.getElementById('transactionsContent').classList.add('hidden');
-                
-                // Update active tab
-                this.classList.add('text-blue-600', 'border-blue-600');
-                this.classList.remove('text-gray-500');
-                
-                document.getElementById('mySalesTab').classList.add('text-gray-500');
-                document.getElementById('mySalesTab').classList.remove('text-blue-600', 'border-blue-600');
-                
-                document.getElementById('transactionsTab').classList.add('text-gray-500');
-                document.getElementById('transactionsTab').classList.remove('text-blue-600', 'border-blue-600');
-            });
-            
-            document.getElementById('mySalesTab').addEventListener('click', function() {
-                document.getElementById('marketplaceContent').classList.add('hidden');
-                document.getElementById('mySalesContent').classList.remove('hidden');
-                document.getElementById('transactionsContent').classList.add('hidden');
-                
-                // Update active tab
-                this.classList.add('text-blue-600', 'border-blue-600');
-                this.classList.remove('text-gray-500');
-                
-                document.getElementById('marketplaceTab').classList.add('text-gray-500');
-                document.getElementById('marketplaceTab').classList.remove('text-blue-600', 'border-blue-600');
-                
-                document.getElementById('transactionsTab').classList.add('text-gray-500');
-                document.getElementById('transactionsTab').classList.remove('text-blue-600', 'border-blue-600');
-            });
-            
-            document.getElementById('transactionsTab').addEventListener('click', function() {
-                document.getElementById('marketplaceContent').classList.add('hidden');
-                document.getElementById('mySalesContent').classList.add('hidden');
-                document.getElementById('transactionsContent').classList.remove('hidden');
-                
-                // Update active tab
-                this.classList.add('text-blue-600', 'border-blue-600');
-                this.classList.remove('text-gray-500');
-                
-                document.getElementById('marketplaceTab').classList.add('text-gray-500');
-                document.getElementById('marketplaceTab').classList.remove('text-blue-600', 'border-blue-600');
-                
-                document.getElementById('mySalesTab').classList.add('text-gray-500');
-                document.getElementById('mySalesTab').classList.remove('text-blue-600', 'border-blue-600');
-            });
-            
-            // Create listing modal
-            document.getElementById('createListingBtn').addEventListener('click', function() {
-                document.getElementById('createListingModal').classList.remove('hidden');
-            });
-            
-            document.getElementById('closeCreateModal').addEventListener('click', function() {
-                document.getElementById('createListingModal').classList.add('hidden');
-            });
-            
-            // Order detail modal
-            const viewDetailButtons = document.querySelectorAll('[data-order-detail]');
-            viewDetailButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    document.getElementById('orderDetailModal').classList.remove('hidden');
-                });
-            });
-            
-            document.getElementById('closeOrderModal').addEventListener('click', function() {
-                document.getElementById('orderDetailModal').classList.add('hidden');
-            });
-            
-            // Form submission
-            document.getElementById('listingForm').addEventListener('submit', function(e) {
-                e.preventDefault();
-                alert('Penawaran berhasil diposting!');
-                document.getElementById('createListingModal').classList.add('hidden');
-                // In a real app, you would submit the form data to the server here
-            });
-            
-            // Sidebar toggle functionality
-            document.querySelector('.toggle-collapse').addEventListener('click', function() {
-                const sidebar = document.querySelector('.sidebar');
-                sidebar.classList.toggle('collapsed');
-                const icon = this.querySelector('i');
-                
-                if (sidebar.classList.contains('collapsed')) {
-                    icon.classList.remove('fa-chevron-left');
-                    icon.classList.add('fa-chevron-right');
-                    document.querySelector('.main-content').style.marginLeft = '80px';
-                    document.querySelector('.main-content').style.width = 'calc(100% - 80px)';
-                } else {
-                    icon.classList.remove('fa-chevron-right');
-                    icon.classList.add('fa-chevron-left');
-                    document.querySelector('.main-content').style.marginLeft = '280px';
-                    document.querySelector('.main-content').style.width = 'calc(100% - 280px)';
-                }
-            });
-            
-            // Logout functionality
-            document.getElementById('logoutBtn').addEventListener('click', function() {
-                if (confirm('Apakah Anda yakin ingin logout?')) {
-                    // Show loading
-                    this.innerHTML = '<div class="loading-spinner mr-2"></div> Logging out...';
-                    
-                    // Simulate logout process
-                    setTimeout(() => {
-                        // Redirect to login page
-                        window.location.href = '/login';
-                    }, 1000);
-                }
-            });
+<!-- Create Listing Modal -->
+<div class="modal" id="createListingModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Buat Penawaran Baru</h3>
+            <button class="modal-close" onclick="closeModal('createListingModal')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <form id="createListingForm">
+                <div class="form-group">
+                    <label>Jenis Sampah</label>
+                    <select id="wasteType" required>
+                        <option value="">Pilih jenis sampah</option>
+                        <option value="plastik">Plastik</option>
+                        <option value="kertas">Kertas</option>
+                        <option value="logam">Logam</option>
+                        <option value="elektronik">Elektronik</option>
+                        <option value="organik">Organik</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Judul Penawaran</label>
+                    <input type="text" id="listingTitle" placeholder="Contoh: Plastik PET Bersih" required>
+                </div>
+                <div class="form-group">
+                    <label>Deskripsi</label>
+                    <textarea id="listingDescription" placeholder="Jelaskan detail sampah Anda..." required></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Harga per Kg</label>
+                    <input type="number" id="listingPrice" placeholder="5000" required>
+                </div>
+                <div class="form-group">
+                    <label>Stok (Kg)</label>
+                    <input type="number" id="listingStock" placeholder="100" required>
+                </div>
+                <div class="form-group">
+                    <label>Lokasi</label>
+                    <input type="text" id="listingLocation" placeholder="Jakarta Selatan" required>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="closeModal('createListingModal')">Batal</button>
+            <button class="btn btn-success" onclick="submitCreateListing()">Buat Penawaran</button>
+        </div>
+    </div>
+</div>
+
+<!-- Filter Modal -->
+<div class="modal" id="filterModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Filter Sampah</h3>
+            <button class="modal-close" onclick="closeModal('filterModal')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <label>Jenis Sampah</label>
+                <select id="filterWasteType">
+                    <option value="">Semua Jenis</option>
+                    <option value="plastik">Plastik</option>
+                    <option value="kertas">Kertas</option>
+                    <option value="logam">Logam</option>
+                    <option value="elektronik">Elektronik</option>
+                    <option value="organik">Organik</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Rentang Harga</label>
+                <div class="flex gap-2">
+                    <input type="number" id="minPrice" placeholder="Min" class="flex-1">
+                    <span class="self-center">-</span>
+                    <input type="number" id="maxPrice" placeholder="Max" class="flex-1">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Lokasi</label>
+                <input type="text" id="filterLocation" placeholder="Masukkan lokasi">
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="closeModal('filterModal')">Batal</button>
+            <button class="btn btn-primary" onclick="applyFilter()">Terapkan Filter</button>
+        </div>
+    </div>
+</div>
+
+<!-- Sort Modal -->
+<div class="modal" id="sortModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Urutkan Sampah</h3>
+            <button class="modal-close" onclick="closeModal('sortModal')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <label>Urutkan Berdasarkan</label>
+                <select id="sortBy">
+                    <option value="price-low">Harga: Rendah ke Tinggi</option>
+                    <option value="price-high">Harga: Tinggi ke Rendah</option>
+                    <option value="date-new">Tanggal: Terbaru</option>
+                    <option value="date-old">Tanggal: Terlama</option>
+                    <option value="stock-high">Stok: Terbanyak</option>
+                    <option value="stock-low">Stok: Tersedikit</option>
+                </select>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="closeModal('sortModal')">Batal</button>
+            <button class="btn btn-primary" onclick="applySort()">Terapkan Urutan</button>
+        </div>
+    </div>
+</div>
+
+<!-- Buy Modal -->
+<div class="modal" id="buyModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Beli Sampah</h3>
+            <button class="modal-close" onclick="closeModal('buyModal')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <label>Produk</label>
+                <input type="text" id="buyProductName" readonly>
+            </div>
+            <div class="form-group">
+                <label>Harga</label>
+                <input type="text" id="buyPrice" readonly>
+            </div>
+            <div class="form-group">
+                <label>Stok Tersedia</label>
+                <input type="text" id="buyStock" readonly>
+            </div>
+            <div class="form-group">
+                <label>Jumlah yang Dibeli (Kg)</label>
+                <input type="number" id="buyQuantity" placeholder="Masukkan jumlah" min="1" required>
+            </div>
+            <div class="form-group">
+                <label>Alamat Pengiriman</label>
+                <textarea id="buyAddress" placeholder="Masukkan alamat lengkap" required></textarea>
+            </div>
+            <div class="form-group">
+                <label>Catatan</label>
+                <textarea id="buyNotes" placeholder="Catatan tambahan (opsional)"></textarea>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="closeModal('buyModal')">Batal</button>
+            <button class="btn btn-success" onclick="submitBuy()">Beli Sekarang</button>
+        </div>
+    </div>
+</div>
+
+<!-- Product Detail Modal -->
+<div class="modal" id="productDetailModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Detail Produk</h3>
+            <button class="modal-close" onclick="closeModal('productDetailModal')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="text-center mb-4">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTkhzQG6s2X-haW0c3C_jdFh3OZInLXz5F_UA&s" alt="Plastik PET" class="w-full max-w-md mx-auto rounded-lg">
+            </div>
+            <div class="form-group">
+                <label>Nama Produk</label>
+                <input type="text" id="detailProductName" readonly>
+            </div>
+            <div class="form-group">
+                <label>Penjual</label>
+                <input type="text" id="detailSeller" readonly>
+            </div>
+            <div class="form-group">
+                <label>Deskripsi</label>
+                <textarea id="detailDescription" readonly></textarea>
+            </div>
+            <div class="form-group">
+                <label>Harga</label>
+                <input type="text" id="detailPrice" readonly>
+            </div>
+            <div class="form-group">
+                <label>Stok</label>
+                <input type="text" id="detailStock" readonly>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="closeModal('productDetailModal')">Tutup</button>
+            <button class="btn btn-primary" onclick="showBuyModalFromDetail()">Beli Sekarang</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Tab switching functionality
+    function switchTab(tabName) {
+        // Remove active class from all tabs
+        document.querySelectorAll('.tab-button').forEach(btn => {
+            btn.classList.remove('active', 'text-blue-600', 'border-blue-600');
+            btn.classList.add('text-gray-500');
         });
-    </script>
+        
+        // Add active class to clicked tab
+        event.target.classList.add('active', 'text-blue-600', 'border-blue-600');
+        event.target.classList.remove('text-gray-500');
+        
+        // Hide all content
+        document.querySelectorAll('.tab-content').forEach(content => {
+            content.classList.remove('active');
+        });
+        
+        // Show selected content
+        document.getElementById(tabName + 'Content').classList.add('active');
+    }
+
+    // Show Create Listing Modal
+    function showCreateListingModal() {
+        document.getElementById('createListingModal').style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+    }
+
+    // Show Filter Modal
+    function showFilterModal() {
+        document.getElementById('filterModal').style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+    }
+
+    // Show Sort Modal
+    function showSortModal() {
+        document.getElementById('sortModal').style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+    }
+
+    // Show Buy Modal
+    function showBuyModal(productName, price, stock) {
+        document.getElementById('buyProductName').value = productName;
+        document.getElementById('buyPrice').value = price;
+        document.getElementById('buyStock').value = stock;
+        document.getElementById('buyModal').style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+    }
+
+    // Show Product Detail Modal
+    function showProductDetail() {
+        document.getElementById('detailProductName').value = 'Plastik PET Bersih';
+        document.getElementById('detailSeller').value = 'Bank Sampah Hijau';
+        document.getElementById('detailDescription').value = 'Plastik PET bersih, sudah dicuci dan dikeringkan, siap untuk didaur ulang.';
+        document.getElementById('detailPrice').value = 'Rp 7.500/kg';
+        document.getElementById('detailStock').value = '150 kg';
+        document.getElementById('productDetailModal').style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+    }
+
+    // Close Modal
+    function closeModal(modalId) {
+        document.getElementById(modalId).style.display = 'none';
+        document.body.style.overflow = 'auto';
+    }
+
+    // Toggle Favorite
+    function toggleFavorite(element) {
+        if (element.classList.contains('text-red-500')) {
+            element.classList.remove('text-red-500');
+            element.classList.add('text-gray-400');
+            alert('Dihapus dari favorit!');
+        } else {
+            element.classList.remove('text-gray-400');
+            element.classList.add('text-red-500');
+            alert('Ditambahkan ke favorit!');
+        }
+    }
+
+    // Submit Create Listing
+    function submitCreateListing() {
+        const wasteType = document.getElementById('wasteType').value;
+        const title = document.getElementById('listingTitle').value;
+        const description = document.getElementById('listingDescription').value;
+        const price = document.getElementById('listingPrice').value;
+        const stock = document.getElementById('listingStock').value;
+        const location = document.getElementById('listingLocation').value;
+
+        if (!wasteType || !title || !description || !price || !stock || !location) {
+            alert('Harap isi semua field yang wajib!');
+            return;
+        }
+
+        // Tambah penawaran ke list
+        addListingToContainer(title, description, price, stock, location, wasteType);
+        
+        alert('Penawaran berhasil dibuat!');
+        closeModal('createListingModal');
+        document.getElementById('createListingForm').reset();
+    }
+
+    // Function untuk menambah penawaran ke container
+    function addListingToContainer(title, description, price, stock, location, wasteType) {
+        const container = document.getElementById('myListingsContainer');
+        
+        // Hapus pesan "Belum ada penawaran" jika ada
+        const emptyMessage = container.querySelector('.text-center');
+        if (emptyMessage) {
+            emptyMessage.remove();
+        }
+        
+        // Buat card penawaran baru
+        const listingCard = document.createElement('div');
+        listingCard.className = 'product-card bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow';
+        listingCard.innerHTML = `
+            <div class="relative">
+                <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop" alt="${title}" class="w-full h-48 object-cover">
+                <div class="absolute top-2 right-2 bg-white rounded-full p-2 shadow">
+                    <i class="fas fa-edit text-blue-500 hover:text-blue-700 cursor-pointer" onclick="editListing(this)" title="Edit Penawaran"></i>
+                </div>
+            </div>
+            <div class="p-4">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h4 class="font-semibold text-lg mb-1">${title}</h4>
+                        <p class="text-sm text-gray-500 mb-2">Lokasi: ${location}</p>
+                    </div>
+                    <span class="status-badge status-pending">Aktif</span>
+                </div>
+                <p class="text-sm text-gray-600 mb-3">${description}</p>
+                <div class="flex justify-between items-center">
+                    <div>
+                        <p class="font-bold text-blue-600">Rp ${price}/kg</p>
+                        <p class="text-xs text-gray-500">Stok: ${stock} kg</p>
+                    </div>
+                    <div class="flex gap-2">
+                        <button class="px-3 py-1 bg-green-50 text-green-600 rounded-full text-sm hover:bg-green-100 transition-colors" onclick="viewOrders('${title}')">
+                            <i class="fas fa-eye mr-1"></i> Lihat Pesanan
+                        </button>
+                        <button class="px-3 py-1 bg-red-50 text-red-600 rounded-full text-sm hover:bg-red-100 transition-colors" onclick="deleteListing(this)">
+                            <i class="fas fa-trash mr-1"></i> Hapus
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        container.appendChild(listingCard);
+    }
+
+    // Apply Filter
+    function applyFilter() {
+        const wasteType = document.getElementById('filterWasteType').value;
+        const minPrice = document.getElementById('minPrice').value;
+        const maxPrice = document.getElementById('maxPrice').value;
+        const location = document.getElementById('filterLocation').value;
+
+        alert('Filter diterapkan!');
+        closeModal('filterModal');
+    }
+
+    // Apply Sort
+    function applySort() {
+        const sortBy = document.getElementById('sortBy').value;
+        alert('Urutan diterapkan!');
+        closeModal('sortModal');
+    }
+
+    // Submit Buy
+    function submitBuy() {
+        const quantity = document.getElementById('buyQuantity').value;
+        const address = document.getElementById('buyAddress').value;
+
+        if (!quantity || !address) {
+            alert('Harap isi jumlah dan alamat pengiriman!');
+            return;
+        }
+
+        alert('Pembelian berhasil! Pesanan Anda akan diproses.');
+        closeModal('buyModal');
+        document.getElementById('buyQuantity').value = '';
+        document.getElementById('buyAddress').value = '';
+        document.getElementById('buyNotes').value = '';
+    }
+
+    // Show Buy Modal from Detail
+    function showBuyModalFromDetail() {
+        closeModal('productDetailModal');
+        showBuyModal('Plastik PET Bersih', 'Rp 7.500/kg', '150 kg');
+    }
+
+    // Edit Listing
+    function editListing(element) {
+        const card = element.closest('.product-card');
+        const title = card.querySelector('h4').textContent;
+        const description = card.querySelector('p.text-gray-600').textContent;
+        const price = card.querySelector('.text-blue-600').textContent.replace('Rp ', '').replace('/kg', '');
+        const stock = card.querySelector('.text-xs.text-gray-500').textContent.replace('Stok: ', '').replace(' kg', '');
+        const location = card.querySelector('p.text-gray-500').textContent.replace('Lokasi: ', '');
+        
+        // Populate edit modal
+        document.getElementById('wasteType').value = 'plastik'; // Default
+        document.getElementById('listingTitle').value = title;
+        document.getElementById('listingDescription').value = description;
+        document.getElementById('listingPrice').value = price;
+        document.getElementById('listingStock').value = stock;
+        document.getElementById('listingLocation').value = location;
+        
+        // Show modal
+        showCreateListingModal();
+        
+        // Change modal title and button
+        document.querySelector('#createListingModal .modal-header h3').textContent = 'Edit Penawaran';
+        document.querySelector('#createListingModal .btn-success').textContent = 'Update Penawaran';
+        document.querySelector('#createListingModal .btn-success').onclick = function() {
+            updateListing(card);
+        };
+    }
+
+    // Update Listing
+    function updateListing(card) {
+        const title = document.getElementById('listingTitle').value;
+        const description = document.getElementById('listingDescription').value;
+        const price = document.getElementById('listingPrice').value;
+        const stock = document.getElementById('listingStock').value;
+        const location = document.getElementById('listingLocation').value;
+
+        if (!title || !description || !price || !stock || !location) {
+            alert('Harap isi semua field yang wajib!');
+            return;
+        }
+
+        // Update card content
+        card.querySelector('h4').textContent = title;
+        card.querySelector('p.text-gray-600').textContent = description;
+        card.querySelector('.text-blue-600').textContent = `Rp ${price}/kg`;
+        card.querySelector('.text-xs.text-gray-500').textContent = `Stok: ${stock} kg`;
+        card.querySelector('p.text-gray-500').textContent = `Lokasi: ${location}`;
+        card.querySelector('img').alt = title;
+
+        alert('Penawaran berhasil diupdate!');
+        closeModal('createListingModal');
+        document.getElementById('createListingForm').reset();
+        
+        // Reset modal title and button
+        document.querySelector('#createListingModal .modal-header h3').textContent = 'Buat Penawaran Baru';
+        document.querySelector('#createListingModal .btn-success').textContent = 'Buat Penawaran';
+        document.querySelector('#createListingModal .btn-success').onclick = submitCreateListing;
+    }
+
+    // Delete Listing
+    function deleteListing(element) {
+        if (confirm('Apakah Anda yakin ingin menghapus penawaran ini?')) {
+            const card = element.closest('.product-card');
+            card.remove();
+            
+            // Check if no more listings
+            const container = document.getElementById('myListingsContainer');
+            if (container.children.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-8 text-gray-500">
+                        <i class="fas fa-box-open text-4xl mb-4"></i>
+                        <p>Belum ada penawaran yang dibuat</p>
+                        <p class="text-sm">Klik "Buat Penawaran" untuk mulai menjual sampah Anda</p>
+                    </div>
+                `;
+            }
+            
+            alert('Penawaran berhasil dihapus!');
+        }
+    }
+
+    // View Orders
+    function viewOrders(title) {
+        alert(`Melihat pesanan untuk: ${title}\n\nBelum ada pesanan yang masuk.`);
+    }
+
+    // Close modal when clicking outside
+    window.addEventListener('click', function(event) {
+        const modals = ['createListingModal', 'filterModal', 'sortModal', 'buyModal', 'productDetailModal'];
+        modals.forEach(modalId => {
+            const modal = document.getElementById(modalId);
+            if (event.target === modal) {
+                closeModal(modalId);
+            }
+        });
+    });
+
+    // Product card click to show detail
+    document.addEventListener('DOMContentLoaded', function() {
+        const productCard = document.querySelector('.product-card');
+        if (productCard) {
+            productCard.addEventListener('click', function(e) {
+                // Don't trigger if clicking on heart icon or buy button
+                if (!e.target.closest('.fa-heart') && !e.target.closest('button')) {
+                    showProductDetail();
+                }
+            });
+        }
+    });
+</script>
 </body>
 </html>

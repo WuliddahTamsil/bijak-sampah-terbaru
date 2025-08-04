@@ -39,7 +39,7 @@
             {{-- Logo Section --}}
             <div class="flex items-center justify-center mb-8 mt-2">
                 <img x-show="open" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" 
-                     class="w-24 h-auto" src="{{ asset('asset/img/logo_full.png') }}" alt="Logo Penuh">
+                     class="w-32 h-auto" src="{{ asset('asset/img/logo1.png') }}" alt="Logo Penuh">
                 <img x-show="!open" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" 
                      class="w-6 h-6" src="{{ asset('asset/img/logo_icon.png') }}" alt="Logo Ikon">
             </div>

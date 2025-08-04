@@ -749,7 +749,7 @@
     </div>
     <nav>
       <a href="/">Home</a>
-      <a href="/profile">Profil</a>
+      <a href="/profil">Profil</a>
       <a href="/kontakld">Kontak</a>
     </nav>
     <div class="buttons">

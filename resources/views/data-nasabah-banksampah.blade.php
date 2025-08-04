@@ -1,11 +1,23 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard Admin - Bijak Sampah</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Data Nasabah - Bijak Sampah</title>
+    <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <script>
+        window.addEventListener('load', function() {
+            console.log('Window loaded, Chart.js available:', typeof Chart !== 'undefined');
+        });
+    </script>
   <script type="module">
     // Import the functions you need from the SDKs you need
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
@@ -27,6 +39,107 @@
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const database = getDatabase(app);
+
+    // Fungsi untuk memeriksa status login
+    window.checkAuthState = () => {
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          // User is signed in
+          console.log('User logged in:', user);
+          window.displayUserInfo(user);
+          window.loadCustomerData(); // Memanggil fungsi yang benar
+        } else {
+          // No user is signed in
+          console.log('No user logged in');
+          window.location.href = '/login'; // Redirect ke halaman login
+        }
+      });
+    };
+
+    // Fungsi untuk menampilkan info user (dummy)
+    window.displayUserInfo = (user) => {
+      const userAvatar = document.getElementById('userAvatar');
+      // Anda bisa mengganti ini dengan foto profil asli jika tersedia
+      userAvatar.src = user.photoURL || 'https://ui-avatars.com/api/?name=Admin&background=75E6DA&color=05445E';
+    };
+
+    // Fungsi untuk memuat data nasabah dari Firebase
+    window.loadCustomerData = () => {
+      console.log('Loading customer data...');
+      const customersRef = ref(database, 'nasabah'); // Mengambil data dari koleksi 'nasabah'
+      
+      onValue(customersRef, (snapshot) => {
+        const customersTableBody = document.getElementById('customersTableBody');
+        customersTableBody.innerHTML = ''; // Hapus spinner atau data lama
+
+        if (snapshot.exists()) {
+          const customers = snapshot.val();
+          let totalCustomers = 0;
+          let activeCustomers = 0;
+          let inactiveCustomers = 0;
+
+          // Mengambil semua nasabah, termasuk sub-node jika ada
+          Object.keys(customers).forEach(key => {
+            const customer = customers[key];
+            if (customer) {
+              totalCustomers++;
+              if (customer.status === 'aktif') {
+                activeCustomers++;
+              } else {
+                inactiveCustomers++;
+              }
+
+              const row = document.createElement('tr');
+              row.innerHTML = `
+                <td><a href="#" class="customer-name-link">${customer.nama}</a></td>
+                <td>${customer.alamat || 'N/A'}</td>
+                <td>${customer.kota || 'N/A'}</td>
+                <td>${customer.email || 'N/A'}</td>
+                <td>${customer.telepon || 'N/A'}</td>
+                <td><span class="status ${customer.status === 'aktif' ? 'active' : 'inactive'}">${customer.status}</span></td>
+              `;
+              customersTableBody.appendChild(row);
+            }
+          });
+
+          // Update stats cards
+          document.getElementById('totalCustomers').textContent = totalCustomers;
+          document.getElementById('activeCustomers').textContent = activeCustomers;
+          document.getElementById('inactiveCustomers').textContent = inactiveCustomers;
+
+        } else {
+          customersTableBody.innerHTML = '<tr><td colspan="6" class="text-center">Tidak ada data nasabah.</td></tr>';
+        }
+      }, (error) => {
+        console.error('Error loading customer data:', error);
+        customersTableBody.innerHTML = '<tr><td colspan="6" class="text-center text-red-500">Gagal memuat data.</td></tr>';
+      });
+    };
+
+    // Fungsi untuk toggle dropdown
+    window.toggleDropdown = () => {
+      document.getElementById("dropdownMenu").classList.toggle("show");
+    };
+
+    // Fungsi logout
+    window.setupLogout = () => {
+      document.getElementById('logoutBtn').addEventListener('click', () => {
+        if (confirm('Apakah Anda yakin ingin logout?')) {
+          signOut(auth).then(() => {
+            window.location.href = '/login';
+          }).catch(error => {
+            console.error('Logout error:', error);
+            alert('Gagal logout');
+          });
+        }
+      });
+    };
+
+    // Initialize aplikasi saat DOM siap
+    window.addEventListener('DOMContentLoaded', () => {
+      window.checkAuthState();
+      window.setupLogout();
+    });
   </script>
   <style>
     :root {
@@ -37,214 +150,159 @@
       --danger-color: #c0392b;
     }
     
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
+        body {
       font-family: 'Inter', sans-serif;
-    }
-    
-    body {
-      background: #f8f9fc;
-      color: #333;
-      min-height: 100vh;
-      display: flex;
-    }
+            background-color: #f8fafc;
+        }
 
-    /* Sidebar dari kode pertama (disesuaikan) */
-    .sidebar {
-      width: 80px;
-      background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 30%, var(--primary-color) 100%);
-      color: white;
-      padding: 20px 0;
-      min-height: 100vh;
-      transition: width 0.3s ease;
-      position: fixed;
-      left: 0;
-      top: 0;
-      overflow: hidden;
-      box-shadow: 2px 0 10px rgba(0,0,0,0.1);
-      z-index: 1000;
-    }
+        /* Custom CSS untuk efek gradasi sidebar */
+        .sidebar-banksampah-gradient {
+            background: linear-gradient(135deg, #75E6DA 0%, #05445E 30%, #05445E 100%);
+        }
+        
+        /* Ensure seamless connection between topbar and sidebar */
+        .topbar-sidebar-seamless {
+            background: linear-gradient(135deg, #75E6DA 0%, #05445E 30%, #05445E 100%);
+            border: none;
+            box-shadow: none;
+        }
 
-    .sidebar:hover {
-      width: 250px;
-    }
+        /* Style untuk area main content */
+        .main-content {
+            padding-top: 64px; /* Menyesuaikan dengan tinggi top bar */
+            min-height: 100vh;
+            width: 100%;
+            margin-left: 0;
+            margin-right: 0;
+        }
 
-    .sidebar.collapsed {
-      width: 80px;
-    }
+        /* Chart Container */
+        .chart-container {
+            position: relative;
+            height: 400px;
+            width: 100%;
+            min-height: 300px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 10px;
+            background: white;
+        }
+        
+        #trendChart, #compositionChart {
+            width: 100% !important;
+            height: 100% !important;
+            min-height: 300px;
+            display: block !important;
+        }
 
-    .logo-container {
-      padding: 0 20px;
-      margin-bottom: 30px;
-      display: flex;
-      align-items: center;
-      height: 60px;
-      justify-content: space-between;
-    }
+        /* Custom Card Styles */
+        .custom-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
 
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      white-space: nowrap;
-    }
+        .custom-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px rgba(0,0,0,0.1);
+        }
 
-    .logo img {
-      width: 200px;
-      height: 200px;
-      object-fit: contain;
-    }
+        /* Badge Styles */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 8px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
 
-    .logo-text {
-      font-size: 18px;
-      font-weight: bold;
-      color: white;
-      opacity: 0;
-      transition: opacity 0.3s ease;
-    }
+        .badge-primary {
+            background-color: #e1f0fa;
+            color: var(--primary-color);
+        }
 
-    .sidebar:hover .logo-text {
-      opacity: 1;
-    }
+        .badge-success {
+            background-color: #e6f7ed;
+            color: var(--success-color);
+        }
 
-    .logo span {
-      color: #4ADE80;
-    }
+        .badge-warning {
+            background-color: #fff4e6;
+            color: #f97316;
+        }
 
-    .toggle-collapse {
-      background: none;
-      border: none;
-      color: white;
-      font-size: 18px;
-      cursor: pointer;
-      padding: 5px;
-      opacity: 0;
-      transition: opacity 0.3s ease;
-    }
+        /* Table Styles */
+        .data-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin: 0;
+            padding: 0;
+        }
 
-    .sidebar:hover .toggle-collapse {
-      opacity: 1;
-    }
+        .data-table thead th {
+            background-color: #f8fafc;
+            color: #64748b;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 12px;
+            padding: 12px 16px;
+            border-bottom: 1px solid #e2e8f0;
+        }
 
-    .menu-items {
-      list-style: none;
-    }
-
-    .menu-item {
-      padding: 12px 20px;
-      display: flex;
-      align-items: center;
-      cursor: pointer;
-      transition: all 0.3s;
-      white-space: nowrap;
-    }
-
-    .menu-item:hover {
-      background: rgba(255, 255, 255, 0.1);
-    }
-
-    .menu-item.active {
-      background: rgba(255, 255, 255, 0.2);
-      border-left: 4px solid var(--accent-color);
-    }
-
-    .sub-menu-item {
-      padding: 10px 20px 10px 50px;
-      display: flex;
-      align-items: center;
-      cursor: pointer;
-      transition: all 0.3s;
-      white-space: nowrap;
+        .data-table tbody td {
+            padding: 14px 16px;
+            border-bottom: 1px solid #e2e8f0;
       font-size: 14px;
     }
 
-    .sub-menu-item:hover {
-      background: rgba(255, 255, 255, 0.1);
-    }
+        .data-table tbody tr:last-child td {
+            border-bottom: none;
+        }
 
-    .sub-menu-item.active {
-      background: rgba(255, 255, 255, 0.15);
-    }
+        .data-table tbody tr:hover td {
+            background-color: #f8fafc;
+        }
 
-    .menu-icon {
-      width: 24px;
-      height: 24px;
-      margin-right: 15px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-    }
+        /* Animation */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
 
-    .menu-text {
-      font-size: 15px;
-      transition: opacity 0.3s ease;
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+
+        /* Tooltip */
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+
+        .tooltip .tooltip-text {
+            visibility: hidden;
+            width: 120px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
       opacity: 0;
-    }
+            transition: opacity 0.3s;
+            font-size: 12px;
+        }
 
-    .sidebar:hover .menu-text {
-      opacity: 1;
-    }
-
-    .sidebar.collapsed .menu-text {
-      opacity: 0;
-      width: 0;
-    }
-
-    .sidebar.collapsed .logo-text {
-      display: none;
-    }
-
-    .sidebar.collapsed .logo-icon {
-      font-size: 22px;
-    }
-
-    .sidebar.collapsed .logo-text {
-      display: none;
-    }
-
-    .sidebar.collapsed .logo-icon {
-      font-size: 22px;
-    }
-
-    .sidebar-footer {
-      padding: 0;
-      border-top: 1px solid rgba(255,255,255,0.1);
-      margin-top: auto;
-      flex-shrink: 0;
-    }
-
-    /* Main Content Styles */
-    .main-content {
-      margin-left: 80px;
-      width: calc(100% - 80px);
-      padding: 30px;
-      transition: margin-left 0.3s ease, width 0.3s ease;
-    }
-
-    .sidebar:hover ~ .main-content {
-      margin-left: 250px;
-      width: calc(100% - 250px);
-    }
-
-    .sidebar.collapsed ~ .main-content {
-      margin-left: 80px;
-      width: calc(100% - 80px);
-    }
-
-    /* Header Styles */
-    .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 30px;
-    }
-
-    .header h1 {
-      color: var(--primary-color);
-      font-size: 28px;
+        .tooltip:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
     }
 
     /* Stats Cards */
@@ -419,28 +477,6 @@
 
     /* Responsive Design */
     @media (max-width: 992px) {
-      .sidebar {
-        width: 80px;
-      }
-      
-      .sidebar .menu-text,
-      .sidebar .sub-menu-item {
-        display: none;
-      }
-      
-      .sidebar .logo-text {
-        display: none;
-      }
-      
-      .sidebar .logo-icon {
-        font-size: 22px;
-      }
-      
-      .main-content {
-        margin-left: 80px;
-        width: calc(100% - 80px);
-      }
-      
       .search input {
         width: 200px;
       }
@@ -464,6 +500,23 @@
         display: block;
         overflow-x: auto;
       }
+            
+            .main-content {
+                padding-left: 1rem !important;
+                padding-right: 1rem !important;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .search-sort {
+                width: 100%;
+                justify-content: flex-start;
+            }
     }
 
     /* Loading Spinner */
@@ -486,97 +539,225 @@
       justify-content: center;
       padding: 20px;
     }
+
+        /* Customers Container Full Width */
+        .customers-container {
+            width: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        .table-header {
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .search-sort {
+            width: 100%;
+            justify-content: flex-end;
+        }
+
+        /* Table Full Width */
+        #customersTable {
+            width: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        #customersTable th,
+        #customersTable td {
+            word-wrap: break-word;
+            max-width: 200px;
+        }
   </style>
 </head>
-<body>
-  <!-- Sidebar -->
-  <div class="sidebar" id="sidebar">
-    <div class="logo-container">
-      <div class="logo">
-        <img src="{{ asset('asset/img/Logo Alternative_Dark (1).png') }}" alt="Bijak Sampah Logo">
-      </div>
-      <button class="toggle-collapse" id="toggleCollapse">
-        <i class="fas fa-chevron-left"></i>
+<body class="bg-gray-50" onload="checkAuthState()">
+
+        <div class="flex min-h-screen bg-gray-50 w-full" x-data="{ sidebarOpen: false, activeMenu: 'data-nasabah' }" x-init="activeMenu = 'data-nasabah'">
+    {{-- Sidebar --}}
+    <aside 
+        class="fixed top-0 left-0 z-40 flex flex-col py-6 overflow-hidden shadow-2xl group sidebar-banksampah-gradient text-white"
+        :class="sidebarOpen ? 'w-[250px]' : 'w-16'"
+        style="transition: width 0.3s ease; height: 100vh; background: linear-gradient(135deg, #75E6DA 0%, #05445E 30%, #05445E 100%);"
+    >
+        <div class="relative flex flex-col h-full w-full px-4">
+            
+            {{-- Logo Section with Toggle Button --}}
+            {{-- PASTIKAN FILE logo-icon.png ADA DI public/asset/img --}}
+            <div class="flex items-center justify-center mb-8 mt-14" :class="sidebarOpen ? 'justify-between' : 'justify-center'">
+                <div class="flex items-center justify-center gap-2" :class="sidebarOpen ? 'flex-1' : ''">
+                    <img x-show="sidebarOpen" class="w-32 h-auto" src="{{ asset('asset/img/logo1.png') }}" alt="Logo Penuh">
+                    <img x-show="!sidebarOpen" class="w-6 h-6" src="{{ asset('asset/img/logo.png') }}" alt="Logo Kecil">
+                    {{-- Toggle Button --}}
+                    <button 
+                        @click="sidebarOpen = !sidebarOpen"
+                        class="p-1 rounded-full bg-white/20 hover:bg-white/30 transition-colors duration-200 text-white"
+                        :class="sidebarOpen ? 'rotate-180' : ''"
+                        style="transition: transform 0.3s ease;"
+                    >
+                        <i class="fas fa-chevron-left text-sm"></i>
       </button>
     </div>
-    
-    <div class="menu-container">
-      <ul class="menu-items">
-        <li class="menu-item">
-          <a href="{{ route('dashboard-banksampah') }}" style="text-decoration: none; color: inherit;">
-            <div class="menu-icon"><i class="fas fa-home"></i></div>
-            <span class="menu-text">Dashboard</span>
-          </a>
-        </li>
-        <li class="menu-item">
-          <div class="menu-icon"><i class="fas fa-users"></i></div>
-          <span class="menu-text">Nasabah</span>
-        </li>
-        <li class="sub-menu-item">
-          <a href="{{ route('verifikasi-nasabah-banksampah') }}" style="text-decoration: none; color: inherit;">
-            <div class="menu-icon"><i class="fas fa-user-check"></i></div>
-            <span class="menu-text">Verifikasi Nasabah</span>
-          </a>
-        </li>
-        <li class="sub-menu-item active">
-          <a href="{{ route('data-nasabah-banksampah') }}" style="text-decoration: none; color: inherit;">
-            <div class="menu-icon"><i class="fas fa-database"></i></div>
-            <span class="menu-text">Data Nasabah</span>
-          </a>
-        </li>
-        <li class="menu-item">
-          <a href="{{ route('penjemputan-sampah-banksampah') }}" style="text-decoration: none; color: inherit;">
-            <div class="menu-icon"><i class="fas fa-truck"></i></div>
-            <span class="menu-text">Penjemputan Sampah</span>
-          </a>
-        </li>
-        <li class="menu-item">
-          <a href="{{ route('penimbangansampah-banksampah') }}" style="text-decoration: none; color: inherit;">
-            <div class="menu-icon"><i class="fas fa-weight-hanging"></i></div>
-            <span class="menu-text">Penimbangan</span>
-          </a>
-        </li>
-        <li class="sub-menu-item">
-          <div class="menu-icon"><i class="fas fa-plus-circle"></i></div>
-          <span class="menu-text">Input Setoran</span>
-        </li>
-        <li class="menu-item">
-          <a href="{{ route('datasampah-banksampah') }}" style="text-decoration: none; color: inherit;">
-            <div class="menu-icon"><i class="fas fa-trash-alt"></i></div>
-            <span class="menu-text">Data Sampah</span>
-          </a>
-        </li>
-        <li class="menu-item">
-          <a href="{{ route('penjualansampah-banksampah') }}" style="text-decoration: none; color: inherit;">
-            <div class="menu-icon"><i class="fas fa-shopping-cart"></i></div>
-            <span class="menu-text">Penjualan Sampah</span>
-          </a>
-        </li>
-        <li class="menu-item">
-          <div class="menu-icon"><i class="fas fa-cog"></i></div>
-          <span class="menu-text">Setting</span>
-        </li>
-      </ul>
-    </div>
+            </div>
+            
+            {{-- Navigation Menu --}}
+            <nav class="flex flex-col gap-2 w-full flex-1 overflow-y-auto">
+                <a 
+                    href="{{ route('dashboard-banksampah') }}" 
+                    class="flex items-center p-3 font-medium rounded-lg whitespace-nowrap w-full transition-colors duration-200 hover:bg-white/10 hover:shadow-sm"
+                    :style="sidebarOpen ? 'gap: 12px;' : 'justify-content: center; padding-left: 0; padding-right: 0;'"
+                    @click="activeMenu = 'dashboard'"
+                >
+                    <i class="fas fa-home text-lg"></i>
+                    <span x-show="sidebarOpen" class="text-sm font-medium">Dashboard</span>
+                </a>
 
-    <div class="sidebar-footer">
-      <div class="menu-item" id="logoutBtn">
-        <div class="menu-icon"><i class="fas fa-sign-out-alt"></i></div>
-        <span class="menu-text">Logout</span>
+                <div 
+                    class="group"
+                    x-data="{ expanded: false }"
+                    x-init="$watch('sidebarOpen', value => { if (!value) expanded = false })"
+                >
+                    <button 
+                        @click="expanded = !expanded" 
+                        class="flex items-center p-3 font-medium rounded-lg whitespace-nowrap w-full transition-colors duration-200 hover:bg-white/10 hover:shadow-sm"
+                        :style="sidebarOpen ? 'justify-between; gap: 12px;' : 'justify-content: center;'"
+                    >
+                        <div class="flex items-center" :style="sidebarOpen ? 'gap: 12px;' : 'justify-content: center;'">
+                            <i class="fas fa-users text-lg"></i>
+                            <span x-show="sidebarOpen" class="text-sm font-medium">Nasabah</span>
+                        </div>
+                        <i x-show="sidebarOpen" class="fas fa-chevron-down text-xs opacity-70 transition-transform duration-200" :class="expanded ? 'rotate-180' : ''"></i>
+                    </button>
+                    <div x-show="expanded && sidebarOpen" x-collapse.duration.300ms class="pl-6 pt-2 space-y-1">
+                        <a 
+                            href="{{ route('verifikasi-nasabah-banksampah') }}" 
+                            class="flex items-center gap-3 p-2 rounded-lg whitespace-nowrap w-full text-sm hover:bg-white/10 hover:shadow-sm transition-colors duration-200"
+                            @click="activeMenu = 'verifikasi-nasabah'"
+                        >
+                            <i class="fas fa-user-check"></i>
+                            <span x-show="sidebarOpen">Verifikasi Nasabah</span>
+                        </a>
+                        <a 
+                            href="{{ route('data-nasabah-banksampah') }}" 
+                            class="flex items-center gap-3 p-2 rounded-lg whitespace-nowrap w-full text-sm hover:bg-white/10 hover:shadow-sm transition-colors duration-200 bg-white/20"
+                            @click="activeMenu = 'data-nasabah'"
+                        >
+                            <i class="fas fa-database"></i>
+                            <span x-show="sidebarOpen">Data Nasabah</span>
+                        </a>
+                    </div>
+                </div>
+
+                <a 
+                    href="{{ route('penjemputan-sampah-banksampah') }}" 
+                    class="flex items-center p-3 font-medium rounded-lg whitespace-nowrap w-full transition-colors duration-200 hover:bg-white/10 hover:shadow-sm"
+                    :style="sidebarOpen ? 'gap: 12px;' : 'justify-content: center;'"
+                    @click="activeMenu = 'penjemputan-sampah'"
+                >
+                    <i class="fas fa-truck text-lg"></i>
+                    <span x-show="sidebarOpen" class="text-sm font-medium">Penjemputan Sampah</span>
+                </a>
+                
+                <div 
+                    class="group"
+                    x-data="{ expanded: false }"
+                    x-init="$watch('sidebarOpen', value => { if (!value) expanded = false })"
+                >
+                    <button 
+                        @click="expanded = !expanded" 
+                        class="flex items-center p-3 font-medium rounded-lg whitespace-nowrap w-full transition-colors duration-200 hover:bg-white/10 hover:shadow-sm"
+                        :style="sidebarOpen ? 'justify-between; gap: 12px;' : 'justify-content: center;'"
+                    >
+                        <div class="flex items-center" :style="sidebarOpen ? 'gap: 12px;' : 'justify-content: center;'">
+                            <i class="fas fa-weight-hanging text-lg"></i>
+                            <span x-show="sidebarOpen" class="text-sm font-medium">Penimbangan</span>
+                        </div>
+                        <i x-show="sidebarOpen" class="fas fa-chevron-down text-xs opacity-70 transition-transform duration-200" :class="expanded ? 'rotate-180' : ''"></i>
+                    </button>
+                    <div x-show="expanded && sidebarOpen" x-collapse.duration.300ms class="pl-6 pt-2 space-y-1">
+                        <a 
+                            href="{{ route('input-setoran') }}" 
+                            class="flex items-center gap-3 p-2 rounded-lg whitespace-nowrap w-full text-sm hover:bg-white/10 hover:shadow-sm transition-colors duration-200"
+                            @click="activeMenu = 'input-setoran'"
+                        >
+                            <i class="fas fa-plus-circle"></i>
+                            <span x-show="sidebarOpen">Input Setoran</span>
+                        </a>
+                    </div>
+                </div>
+
+                <a 
+                    href="{{ route('datasampah-banksampah') }}" 
+                    class="flex items-center p-3 font-medium rounded-lg whitespace-nowrap w-full transition-colors duration-200 hover:bg-white/10 hover:shadow-sm"
+                    :style="sidebarOpen ? 'gap: 12px;' : 'justify-content: center;'"
+                    @click="activeMenu = 'data-sampah'"
+                >
+                    <i class="fas fa-trash-alt text-lg"></i>
+                    <span x-show="sidebarOpen" class="text-sm font-medium">Data Sampah</span>
+                </a>
+                
+                <a 
+                    href="{{ route('penjualansampah-banksampah') }}" 
+                    class="flex items-center p-3 font-medium rounded-lg whitespace-nowrap w-full transition-colors duration-200 hover:bg-white/10 hover:shadow-sm"
+                    :style="sidebarOpen ? 'gap: 12px;' : 'justify-content: center;'"
+                    @click="activeMenu = 'penjualansampah'"
+                >
+                    <i class="fas fa-shopping-cart text-lg"></i>
+                    <span x-show="sidebarOpen" class="text-sm font-medium">Penjualan Sampah</span>
+                </a>
+                
+                <a 
+                    href="{{ route('settingsbank') }}" 
+                    class="flex items-center p-3 font-medium rounded-lg whitespace-nowrap w-full transition-colors duration-200 hover:bg-white/10 hover:shadow-sm"
+                    :style="sidebarOpen ? 'gap: 12px;' : 'justify-content: center;'"
+                    @click="activeMenu = 'pengaturan'"
+                >
+                    <i class="fas fa-cog text-lg"></i>
+                    <span x-show="sidebarOpen" class="text-sm font-medium">Pengaturan</span>
+                </a>
+            </nav>
+            
+            {{-- Logout Section --}}
+            <div class="w-full flex items-center py-3 mt-auto border-t border-white/20">
+                <a 
+                    href="{{ route('logout') }}" 
+                    class="flex items-center p-3 rounded-lg hover:bg-white/10 hover:shadow-sm text-white transition-all duration-200 w-full whitespace-nowrap"
+                    :style="sidebarOpen ? 'gap: 12px;' : 'justify-content: center;'"
+                >
+                    <i class="fas fa-sign-out-alt text-lg"></i>
+                    <span x-show="sidebarOpen" class="text-sm font-medium">Logout</span>
+                </a>
+            </div>
+    </div>
+    </aside>
+
+    {{-- Main Content --}}
+    <div class="main-content" :class="sidebarOpen ? 'pl-24' : 'pl-24'" style="transition: padding-left 0.3s ease; width: 100%;">
+        {{-- Top Header Bar --}}
+        <div class="fixed top-0 left-0 right-0 h-12 z-40 flex items-center justify-between px-6 text-white" :style="'padding-left:' + (sidebarOpen ? '16rem' : '4rem') + '; background: linear-gradient(135deg, #75E6DA 0%, #05445E 30%, #05445E 100%);'">
+            <h1 class="text-white font-semibold text-lg" style="position: absolute; left: 1.5rem;">BijakSampah</h1>
+            <div class="flex items-center gap-4" style="position: absolute; right: 1.5rem;">
+                <a href="{{ route('notifikasibank') }}" class="relative">
+                    <i class="far fa-bell text-white text-sm"></i>
+                    <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center font-medium">3</span>
+                </a>
+                <button class="focus:outline-none">
+                    <i class="fas fa-search text-white text-sm"></i>
+                </button>
+                <div class="flex items-center gap-2">
+                    <a href="{{ route('profilebank') }}" class="w-8 h-8 rounded-full overflow-hidden flex items-center justify-center border-2 border-gray-300">
+                        <img src="{{ asset('asset/img/user_profile.jpg') }}" alt="Profile" class="w-full h-full object-cover">
+                    </a>
+                    <i class="fas fa-chevron-down text-white text-xs"></i>
       </div>
     </div>
   </div>
 
-  <!-- Main Content -->
-  <div class="main-content">
-    <div class="header">
-      <h1>Nasabah</h1>
-      <div class="profile-dropdown">
-        <img id="userAvatar" class="avatar" src="https://ui-avatars.com/api/?name=Admin&background=75E6DA&color=05445E" alt="User" onclick="toggleDropdown()">
-        <div id="dropdownMenu" class="dropdown-content">
-          <a href="#" id="profileLink"><i class="fas fa-user-circle"></i> Profil Saya</a>
-          <a href="#" id="logoutLink"><i class="fas fa-sign-out-alt"></i> Logout</a>
-        </div>
+        <div class="p-6" style="padding-top: 60px; width: 100%; max-width: 100%;">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+                <div>
+                    <h1 class="text-2xl font-bold text-gray-800">Data Nasabah</h1>
+                    <p class="text-sm text-gray-500">Kelola data nasabah bank sampah</p>
       </div>
     </div>
 
@@ -597,7 +778,7 @@
       </div>
     </div>
 
-    <div class="customers-container">
+            <div class="customers-container" style="width: 100%;">
       <div class="table-header">
         <h2>Semua Nasabah</h2>
         <div class="search-sort">
@@ -636,162 +817,70 @@
           </tr>
         </tbody>
       </table>
+            </div>
+        </div>
     </div>
   </div>
 
   <script>
-    // Konfigurasi Firebase
-    const firebaseConfig = {
-      apiKey: "YOUR_API_KEY",
-      authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-      databaseURL: "https://YOUR_PROJECT_ID.firebaseio.com",
-      projectId: "YOUR_PROJECT_ID",
-      storageBucket: "YOUR_PROJECT_ID.appspot.com",
-      messagingSenderId: "YOUR_SENDER_ID",
-      appId: "YOUR_APP_ID"
+    // Fungsi untuk memuat data nasabah dari Firebase (perbaikan)
+    // Sisa fungsi lainnya dari file asli sudah benar, jadi tidak perlu diubah
+    const loadCustomerData = () => {
+      console.log('Loading customer data...');
+      const customersRef = ref(database, 'nasabah'); // Mengambil data dari koleksi 'nasabah'
+      
+      onValue(customersRef, (snapshot) => {
+        const customersTableBody = document.getElementById('customersTableBody');
+        customersTableBody.innerHTML = ''; // Hapus spinner atau data lama
+
+        if (snapshot.exists()) {
+          const customers = snapshot.val();
+          let totalCustomers = 0;
+          let activeCustomers = 0;
+          let inactiveCustomers = 0;
+
+          // Mengambil semua nasabah, termasuk sub-node jika ada
+          Object.keys(customers).forEach(key => {
+            const customer = customers[key];
+            if (customer) {
+              totalCustomers++;
+              if (customer.status === 'aktif') {
+                activeCustomers++;
+              } else {
+                inactiveCustomers++;
+              }
+
+              const row = document.createElement('tr');
+              row.innerHTML = `
+                <td><a href="#" class="customer-name-link">${customer.nama}</a></td>
+                <td>${customer.alamat || 'N/A'}</td>
+                <td>${customer.kota || 'N/A'}</td>
+                <td>${customer.email || 'N/A'}</td>
+                <td>${customer.telepon || 'N/A'}</td>
+                <td><span class="status ${customer.status === 'aktif' ? 'active' : 'inactive'}">${customer.status}</span></td>
+              `;
+              customersTableBody.appendChild(row);
+            }
+          });
+
+          // Update stats cards
+          document.getElementById('totalCustomers').textContent = totalCustomers;
+          document.getElementById('activeCustomers').textContent = activeCustomers;
+          document.getElementById('inactiveCustomers').textContent = inactiveCustomers;
+
+        } else {
+          customersTableBody.innerHTML = '<tr><td colspan="6" class="text-center">Tidak ada data nasabah.</td></tr>';
+        }
+      }, (error) => {
+        console.error('Error loading customer data:', error);
+        customersTableBody.innerHTML = '<tr><td colspan="6" class="text-center text-red-500">Gagal memuat data.</td></tr>';
+      });
     };
 
-    // Initialize Firebase
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const db = firebase.firestore();
-    const database = firebase.database();
-
-    // Fungsi untuk memeriksa status login
-    function checkAuthState() {
-      auth.onAuthStateChanged(user => {
-        if (user) {
-          // User is signed in
-          console.log('User logged in:', user);
-          displayUserInfo(user);
-          loadWasteData();
-        } else {
-          // No user is signed in
-          console.log('No user logged in');
-          window.location.href = '/login'; // Redirect ke halaman login
-        }
-      });
-    }
-
-    // Fungsi untuk menampilkan info user
-    function displayUserInfo(user) {
-      // Update foto profil dan nama di navbar
-      const userPhoto = user.photoURL || 'https://randomuser.me/api/portraits/women/44.jpg';
-      const userName = user.displayName || 'Admin';
-      
-      document.querySelector('.user-photo').src = userPhoto;
-      document.querySelector('.user-name').textContent = userName;
-      
-      // Jika ingin menampilkan lebih banyak info user
-      db.collection('users').doc(user.uid).get().then(doc => {
-        if (doc.exists) {
-          const userData = doc.data();
-          console.log('User data:', userData);
-          // Anda bisa menggunakan data ini untuk menampilkan role, dll
-        }
-      });
-    }
-
-    // Fungsi untuk memuat data sampah dari Firebase
-    async function loadWasteData() {
-      try {
-        // Contoh mengambil data dari Firestore
-        const querySnapshot = await db.collection('waste_deposits')
-          .orderBy('date', 'desc')
-          .limit(10)
-          .get();
-        
-        const wastes = [];
-        querySnapshot.forEach(doc => {
-          wastes.push({
-            id: doc.id,
-            ...doc.data()
-          });
-        });
-        
-        // Update tabel dengan data dari Firebase
-        updateWasteTable(wastes);
-        
-        // Contoh mengambil data dari Realtime Database
-        database.ref('monthly_stats').once('value').then(snapshot => {
-          const stats = snapshot.val();
-          if (stats) {
-            updateStatsCards(stats);
-          }
-        });
-        
-      } catch (error) {
-        console.error('Error loading waste data:', error);
-        alert('Gagal memuat data sampah');
-      }
-    }
-
-    // Fungsi untuk mengupdate tabel dengan data dari Firebase
-    function updateWasteTable(wastes) {
-      const tableBody = document.getElementById('wasteTableBody');
-      tableBody.innerHTML = '';
-      
-      wastes.forEach((waste, index) => {
-        const row = document.createElement('tr');
-        row.className = 'hover:bg-gray-50';
-        row.innerHTML = `
-          <td class="font-medium">${index+1}</td>
-          <td>${waste.type}</td>
-          <td><span class="badge ${getCategoryBadgeClass(waste.category)}">${waste.category}</span></td>
-          <td>${waste.unit}</td>
-          <td class="text-right">${waste.amount} ${waste.unit}</td>
-          <td class="text-right">
-            <button class="text-blue-500 hover:text-blue-700 view-detail" data-waste='${JSON.stringify(waste)}'>
-              <i class="fas fa-eye"></i>
-            </button>
-          </td>
-        `;
-        tableBody.appendChild(row);
-      });
-      
-      // Update info pagination
-      document.getElementById('startItem').textContent = '1';
-      document.getElementById('endItem').textContent = wastes.length;
-      document.getElementById('totalItems').textContent = wastes.length;
-    }
-
-    // Fungsi untuk mengupdate statistik
-    function updateStatsCards(stats) {
-      document.getElementById('totalDepositMonth').textContent = `${stats.totalDeposit.toFixed(1)} Kg`;
-      document.getElementById('totalActiveUsers').textContent = `${stats.activeUsers} Orang`;
-      document.getElementById('avgDepositPerUser').textContent = `${stats.avgDeposit.toFixed(2)} Kg`;
-      document.getElementById('topWasteType').textContent = stats.topWasteType;
-    }
-
-    // Fungsi logout
-    function setupLogout() {
-      document.getElementById('logoutBtn').addEventListener('click', function() {
-        if (confirm('Apakah Anda yakin ingin logout?')) {
-          this.innerHTML = '<div class="loading-spinner mr-2"></div> Logging out...';
-          
-          auth.signOut().then(() => {
-            window.location.href = '/login';
-          }).catch(error => {
-            console.error('Logout error:', error);
-            alert('Gagal logout');
-            this.innerHTML = '<i class="fas fa-sign-out-alt"></i> Logout';
-          });
-        }
-      });
-    }
-
-    // Initialize aplikasi saat DOM siap
+    // Panggil fungsi ini saat DOM selesai dimuat
     document.addEventListener('DOMContentLoaded', function() {
-      checkAuthState();
-      setupLogout();
-      
-      // Inisialisasi chart dan event listeners lainnya
-      initCharts();
-      setupEventListeners();
-      
-      // Load data bulan saat ini
-      const currentMonth = new Date().getMonth() + 1;
-      loadMonthData(currentMonth);
+        checkAuthState();
+        setupLogout();
     });
   </script>
 </body>

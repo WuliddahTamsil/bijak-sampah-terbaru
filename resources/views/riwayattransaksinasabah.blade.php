@@ -1,208 +1,173 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <title>Poin Mu - Bijak Sampah</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Riwayat Transaksi - Bijak Sampah</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script>
+        window.addEventListener('load', function() {
+            console.log('Window loaded, Chart.js available:', typeof Chart !== 'undefined');
+        });
+    </script>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Inter', sans-serif;
-    }
-
     body {
-      background-color: #f8f9fc;
-      display: flex;
-      min-height: 100vh;
+        font-family: 'Inter', sans-serif;
+        background-color: #f8fafc;
     }
 
-    /* Sidebar */
-    .sidebar {
-      width: 250px;
-      background: linear-gradient(135deg, #75E6DA 0%, #05445E 30%, #05445E 100%);
-      color: white;
-      padding: 20px 0;
-      min-height: 100vh;
-      transition: width 0.3s;
-      position: fixed;
-      left: 0;
-      top: 0;
-      overflow: hidden;
-      box-shadow: 2px 0 10px rgba(0,0,0,0.1);
-      z-index: 1000;
+    /* Custom CSS untuk efek gradasi sidebar */
+    .sidebar-banksampah-gradient {
+        background: linear-gradient(135deg, #75E6DA 0%, #05445E 30%, #05445E 100%);
+    }
+    
+    /* Ensure seamless connection between topbar and sidebar */
+    .topbar-sidebar-seamless {
+        background: linear-gradient(135deg, #75E6DA 0%, #05445E 30%, #05445E 100%);
+        border: none;
+        box-shadow: none;
     }
 
-    .sidebar.collapsed {
-      width: 80px;
-    }
-
-    .logo-container {
-      padding: 0 20px;
-      margin-bottom: 30px;
-      display: flex;
-      align-items: center;
-      height: 60px;
-      justify-content: space-between;
-    }
-
-    .logo {
-      font-size: 22px;
-      font-weight: bold;
-      color: white;
-      white-space: nowrap;
-    }
-
-    .logo span {
-      color: #4ADE80;
-    }
-
-    .toggle-collapse {
-      background: none;
-      border: none;
-      color: white;
-      font-size: 18px;
-      cursor: pointer;
-      padding: 5px;
-    }
-
-    .menu-items {
-      list-style: none;
-    }
-
-    .menu-item {
-      padding: 12px 20px;
-      display: flex;
-      align-items: center;
-      cursor: pointer;
-      transition: all 0.3s;
-      white-space: nowrap;
-    }
-
-    .menu-item:hover {
-      background: rgba(255, 255, 255, 0.1);
-    }
-
-    .menu-item.active {
-      background: rgba(255, 255, 255, 0.2);
-      border-left: 4px solid #f16728;
-    }
-
-    .menu-icon {
-      width: 24px;
-      height: 24px;
-      margin-right: 15px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .menu-text {
-      font-size: 15px;
-      transition: opacity 0.3s;
-    }
-
-    .sidebar.collapsed .menu-text {
-      opacity: 0;
-      width: 0;
-    }
-
-    .sidebar.collapsed .logo-text {
-      display: none;
-    }
-
-    .sidebar.collapsed .logo-icon {
-      font-size: 22px;
-    }
-
-    /* Main Content */
+    /* Style untuk area main content */
     .main-content {
-      margin-left: 250px;
-      width: calc(100% - 250px);
-      padding: 30px;
-      transition: margin-left 0.3s, width 0.3s;
+        padding-top: 64px; /* Menyesuaikan dengan tinggi top bar */
+        min-height: 100vh;
     }
 
-    .sidebar.collapsed ~ .main-content {
-      margin-left: 80px;
-      width: calc(100% - 80px);
+    /* Chart Container */
+    .chart-container {
+        position: relative;
+        height: 400px;
+        width: 100%;
+        min-height: 300px;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 10px;
+        background: white;
+    }
+    
+    #trendChart, #compositionChart {
+        width: 100% !important;
+        height: 100% !important;
+        min-height: 300px;
+        display: block !important;
     }
 
-    .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 30px;
+    /* Custom Card Styles */
+    .custom-card {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
 
-    .page-title {
-      font-size: 28px;
-      color: #0A3A60;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      gap: 10px;
+    .custom-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 15px rgba(0,0,0,0.1);
     }
 
-    .profile-actions {
-      display: flex;
-      align-items: center;
-      gap: 15px;
+    /* Badge Styles */
+    .badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 4px 8px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 500;
     }
 
-    .profile-icon {
-      width: 40px;
-      height: 40px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: white;
-      border-radius: 50%;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-      cursor: pointer;
-      position: relative;
-      transition: all 0.3s;
+    .badge-primary {
+        background-color: #e1f0fa;
+        color: var(--primary-color);
     }
 
-    .profile-icon:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    .badge-success {
+        background-color: #e6f7ed;
+        color: var(--success-color);
     }
 
-    .profile-icon.notif::after {
-      content: '';
-      position: absolute;
-      top: 5px;
-      right: 5px;
-      width: 8px;
-      height: 8px;
-      background: #FF5A5F;
-      border-radius: 50%;
-      border: 2px solid white;
+    .badge-warning {
+        background-color: #fff4e6;
+        color: #f97316;
     }
 
-    .profile-icon i {
-      color: #05445E;
-      font-size: 18px;
+    /* Table Styles */
+    .data-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
     }
 
-    .avatar {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 2px solid #05445E;
-      cursor: pointer;
-      transition: all 0.3s;
+    .data-table thead th {
+        background-color: #f8fafc;
+        color: #64748b;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 12px;
+        padding: 12px 16px;
+        border-bottom: 1px solid #e2e8f0;
     }
 
-    .avatar:hover {
-      transform: scale(1.05);
-      box-shadow: 0 4px 12px rgba(5, 68, 94, 0.2);
+    .data-table tbody td {
+        padding: 14px 16px;
+        border-bottom: 1px solid #e2e8f0;
+        font-size: 14px;
+    }
+
+    .data-table tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+    .data-table tbody tr:hover td {
+        background-color: #f8fafc;
+    }
+
+    /* Animation */
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .animate-fade-in {
+        animation: fadeIn 0.5s ease-out forwards;
+    }
+
+    /* Tooltip */
+    .tooltip {
+        position: relative;
+        display: inline-block;
+    }
+
+    .tooltip .tooltip-text {
+        visibility: hidden;
+        width: 120px;
+        background-color: #333;
+        color: #fff;
+        text-align: center;
+        border-radius: 6px;
+        padding: 5px;
+        position: absolute;
+        z-index: 1;
+        bottom: 125%;
+        left: 50%;
+        transform: translateX(-50%);
+        opacity: 0;
+        transition: opacity 0.3s;
+        font-size: 12px;
+    }
+
+    .tooltip:hover .tooltip-text {
+        visibility: visible;
+        opacity: 1;
     }
 
     /* Balance Section */
@@ -796,83 +761,151 @@
     }
   </style>
 </head>
-<body>
+<body class="bg-gray-50">
 
-  <div class="sidebar" id="sidebar">
-    <div class="logo-container">
-                              <div class="logo">
-                            <img src="{{ asset('asset/img/Logo Alternative_Dark (1).png') }}" alt="Bijak Sampah Logo" style="width: 200px; height: 200px; object-fit: contain;">
-                        </div>
-      <button class="toggle-collapse" id="toggleCollapse">
-        <i class="fas fa-chevron-left"></i>
-      </button>
-    </div>
-    
-    <ul class="menu-items">
-      <li class="menu-item" id="dashboard-menu">
-        <a href="{{ route('nasabahdashboard') }}" style="text-decoration: none; color: inherit; display: flex; align-items: center; width: 100%;">
-          <div class="menu-icon"><i class="fas fa-home"></i></div>
-          <span class="menu-text">Dashboard</span>
-        </a>
-      </li>
-      <li class="menu-item">
-        <a href="{{ route('nasabahkomunitas') }}" style="text-decoration: none; color: inherit; display: flex; align-items: center; width: 100%;">
-          <div class="menu-icon"><i class="fas fa-users"></i></div>
-          <span class="menu-text">Komunitas</span>
-        </a>
-      </li>
-      <li class="menu-item">
-        <a href="{{ route('sampahnasabah') }}" style="text-decoration: none; color: inherit; display: flex; align-items: center; width: 100%;">
-          <div class="menu-icon"><i class="fas fa-trash-alt"></i></div>
-          <span class="menu-text">Penjemputan Sampah</span>
-        </a>
-      </li>
-      <li class="menu-item">
-        <a href="{{ route('poin-nasabah') }}" style="text-decoration: none; color: inherit; display: flex; align-items: center; width: 100%;">
-          <div class="menu-icon"><i class="fas fa-coins"></i></div>
-          <span class="menu-text">Poin Mu</span>
-        </a>
-      </li>
-      <li class="menu-item active">
-        <a href="{{ route('riwayattransaksinasabah') }}" style="text-decoration: none; color: inherit; display: flex; align-items: center; width: 100%;">
-          <div class="menu-icon"><i class="fas fa-history"></i></div>
-          <span class="menu-text">Riwayat Transaksi</span>
-        </a>
-      </li>
-      <li class="menu-item">
-        <a href="{{ route('tokou') }}" style="text-decoration: none; color: inherit; display: flex; align-items: center; width: 100%;">
-          <div class="menu-icon"><i class="fas fa-store"></i></div>
-          <span class="menu-text">Marketplace</span>
-        </a>
-      </li>
-      <li class="menu-item">
-        <a href="{{ route('settings') }}" style="text-decoration: none; color: inherit; display: flex; align-items: center; width: 100%;">
-          <div class="menu-icon"><i class="fas fa-cog"></i></div>
-          <span class="menu-text">Settings</span>
-        </a>
-      </li>
-      <li class="menu-item">
-        <a href="{{ route('logout') }}" style="text-decoration: none; color: inherit; display: flex; align-items: center; width: 100%;">
-          <div class="menu-icon"><i class="fas fa-sign-out-alt"></i></div>
-          <span class="menu-text">Logout</span>
-        </a>
-      </li>
-    </ul>
-  </div>
+<div class="flex min-h-screen bg-gray-50" x-data="{ sidebarOpen: false, activeMenu: 'riwayat-transaksi' }" x-init="activeMenu = 'riwayat-transaksi'">
+    {{-- Sidebar --}}
+    <aside 
+        class="fixed top-0 left-0 z-40 flex flex-col py-6 overflow-hidden shadow-2xl group sidebar-banksampah-gradient text-white"
+        :class="sidebarOpen ? 'w-[250px]' : 'w-16'"
+        style="transition: width 0.3s ease; height: 100vh; background: linear-gradient(135deg, #75E6DA 0%, #05445E 30%, #05445E 100%);"
+    >
+        <div class="relative flex flex-col h-full w-full px-4">
+            
+            {{-- Logo Section with Toggle Button --}}
+            {{-- PASTIKAN FILE logo-icon.png ADA DI public/asset/img --}}
+            <div class="flex items-center justify-center mb-8 mt-14" :class="sidebarOpen ? 'justify-between' : 'justify-center'">
+                <div class="flex items-center justify-center gap-2" :class="sidebarOpen ? 'flex-1' : ''">
+                    <img x-show="sidebarOpen" class="w-32 h-auto" src="{{ asset('asset/img/logo1.png') }}" alt="Logo Penuh">
+                    <img x-show="!sidebarOpen" class="w-6 h-6" src="{{ asset('asset/img/logo.png') }}" alt="Logo Kecil">
+                    {{-- Toggle Button --}}
+                    <button 
+                        @click="sidebarOpen = !sidebarOpen"
+                        class="p-1 rounded-full bg-white/20 hover:bg-white/30 transition-colors duration-200 text-white"
+                        :class="sidebarOpen ? 'rotate-180' : ''"
+                        style="transition: transform 0.3s ease;"
+                    >
+                        <i class="fas fa-chevron-left text-sm"></i>
+                    </button>
+                </div>
+            </div>
+            
+            {{-- Navigation Menu --}}
+            <nav class="flex flex-col gap-2 w-full flex-1 overflow-y-auto">
+                <a 
+                    href="{{ route('nasabahdashboard') }}" 
+                    class="flex items-center p-3 font-medium rounded-lg whitespace-nowrap w-full transition-colors duration-200 hover:bg-white/10 hover:shadow-sm"
+                    :style="sidebarOpen ? 'gap: 12px;' : 'justify-content: center; padding-left: 0; padding-right: 0;'"
+                    @click="activeMenu = 'dashboard'"
+                >
+                    <i class="fas fa-home text-lg"></i>
+                    <span x-show="sidebarOpen" class="text-sm font-medium">Dashboard</span>
+                </a>
 
-  <div class="main-content">
-    <div class="header">
-      <h1 class="page-title"><i class="fas fa-coins"></i> Poin Mu</h1>
-      <div class="profile-actions">
-        <div class="profile-icon notif" id="notifBtn" title="Notifikasi">
-          <i class="fas fa-bell"></i>
+                <a 
+                    href="{{ route('nasabahkomunitas') }}" 
+                    class="flex items-center p-3 font-medium rounded-lg whitespace-nowrap w-full transition-colors duration-200 hover:bg-white/10 hover:shadow-sm"
+                    :style="sidebarOpen ? 'gap: 12px;' : 'justify-content: center;'"
+                    @click="activeMenu = 'komunitas'"
+                >
+                    <i class="fas fa-users text-lg"></i>
+                    <span x-show="sidebarOpen" class="text-sm font-medium">Komunitas</span>
+                </a>
+
+                <a 
+                    href="{{ route('sampahnasabah') }}" 
+                    class="flex items-center p-3 font-medium rounded-lg whitespace-nowrap w-full transition-colors duration-200 hover:bg-white/10 hover:shadow-sm"
+                    :style="sidebarOpen ? 'gap: 12px;' : 'justify-content: center;'"
+                    @click="activeMenu = 'penjemputan'"
+                >
+                    <i class="fas fa-trash-alt text-lg"></i>
+                    <span x-show="sidebarOpen" class="text-sm font-medium">Penjemputan Sampah</span>
+                </a>
+
+                <a 
+                    href="{{ route('poin-nasabah') }}" 
+                    class="flex items-center p-3 font-medium rounded-lg whitespace-nowrap w-full transition-colors duration-200 hover:bg-white/10 hover:shadow-sm"
+                    :style="sidebarOpen ? 'gap: 12px;' : 'justify-content: center;'"
+                    @click="activeMenu = 'poin'"
+                >
+                    <i class="fas fa-coins text-lg"></i>
+                    <span x-show="sidebarOpen" class="text-sm font-medium">Poin Mu</span>
+                </a>
+
+                <a 
+                    href="{{ route('riwayattransaksinasabah') }}" 
+                    class="flex items-center p-3 font-medium rounded-lg whitespace-nowrap w-full transition-colors duration-200 bg-white/20 shadow-sm"
+                    :style="sidebarOpen ? 'gap: 12px;' : 'justify-content: center;'"
+                    @click="activeMenu = 'riwayat-transaksi'"
+                >
+                    <i class="fas fa-history text-lg"></i>
+                    <span x-show="sidebarOpen" class="text-sm font-medium">Riwayat Transaksi</span>
+                </a>
+
+                <a 
+                    href="{{ route('tokou') }}" 
+                    class="flex items-center p-3 font-medium rounded-lg whitespace-nowrap w-full transition-colors duration-200 hover:bg-white/10 hover:shadow-sm"
+                    :style="sidebarOpen ? 'gap: 12px;' : 'justify-content: center;'"
+                    @click="activeMenu = 'marketplace'"
+                >
+                    <i class="fas fa-store text-lg"></i>
+                    <span x-show="sidebarOpen" class="text-sm font-medium">Marketplace</span>
+                </a>
+
+                <a 
+                    href="{{ route('settings') }}" 
+                    class="flex items-center p-3 font-medium rounded-lg whitespace-nowrap w-full transition-colors duration-200 hover:bg-white/10 hover:shadow-sm"
+                    :style="sidebarOpen ? 'gap: 12px;' : 'justify-content: center;'"
+                    @click="activeMenu = 'settings'"
+                >
+                    <i class="fas fa-cog text-lg"></i>
+                    <span x-show="sidebarOpen" class="text-sm font-medium">Settings</span>
+                </a>
+            </nav>
+            
+            {{-- Logout Section --}}
+            <div class="w-full flex items-center py-3 mt-auto border-t border-white/20">
+                <a 
+                    href="{{ route('logout') }}" 
+                    class="flex items-center p-3 rounded-lg hover:bg-white/10 hover:shadow-sm text-white transition-all duration-200 w-full whitespace-nowrap"
+                    :style="sidebarOpen ? 'gap: 12px;' : 'justify-content: center;'"
+                >
+                    <i class="fas fa-sign-out-alt text-lg"></i>
+                    <span x-show="sidebarOpen" class="text-sm font-medium">Logout</span>
+                </a>
+            </div>
         </div>
-        <div class="profile-icon" id="searchBtn" title="Cari">
-          <i class="fas fa-search"></i>
+    </aside>
+
+    {{-- Main Content --}}
+    <div class="main-content" :class="sidebarOpen ? 'pl-24' : 'pl-24'" style="transition: padding-left 0.3s ease;">
+        {{-- Top Header Bar --}}
+        <div class="fixed top-0 left-0 right-0 h-12 z-40 flex items-center justify-between px-6 text-white" :style="'padding-left:' + (sidebarOpen ? '16rem' : '4rem') + '; background: linear-gradient(135deg, #75E6DA 0%, #05445E 30%, #05445E 100%);'">
+            <h1 class="text-white font-semibold text-lg" style="position: absolute; left: 1.5rem;">BijakSampah</h1>
+            <div class="flex items-center gap-4" style="position: absolute; right: 1.5rem;">
+                <a href="{{ route('notifikasi') }}" class="relative">
+                    <i class="far fa-bell text-white text-sm"></i>
+                    <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center font-medium">3</span>
+                </a>
+                <button class="focus:outline-none">
+                    <i class="fas fa-search text-white text-sm"></i>
+                </button>
+                <div class="flex items-center gap-2">
+                    <a href="{{ route('profile') }}" class="w-8 h-8 rounded-full overflow-hidden flex items-center justify-center border-2 border-gray-300">
+                        <img src="https://ui-avatars.com/api/?name=Nasabah&background=75E6DA&color=05445E" alt="Profile" class="w-full h-full object-cover">
+                    </a>
+                    <i class="fas fa-chevron-down text-white text-xs"></i>
+                </div>
+            </div>
         </div>
-        <img class="avatar" src="https://ui-avatars.com/api/?name=Nasabah&background=75E6DA&color=05445E" alt="Profile" id="profileBtn">
-      </div>
-    </div>
+
+        <div class="p-6" style="padding-top: 60px;">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+                <div>
+                    <h1 class="text-2xl font-bold text-gray-800"><i class="fas fa-history"></i> Riwayat Transaksi</h1>
+                    <p class="text-sm text-gray-500">Lihat dan kelola riwayat transaksi poin Anda</p>
+                </div>
+            </div>
 
     <div class="balance-section">
       <div class="balance-card">
@@ -1445,17 +1478,7 @@
 
 
     // --- Other existing button actions ---
-    document.getElementById('notifBtn').addEventListener('click', function() {
-      alert('Fitur notifikasi dalam pengembangan!');
-    });
-
-    document.getElementById('searchBtn').addEventListener('click', function() {
-      alert('Fitur pencarian dalam pengembangan!');
-    });
-
-    document.getElementById('profileBtn').addEventListener('click', function() {
-      alert('Fitur profil dalam pengembangan!');
-    });
+    // Note: These elements are now handled by the new topbar structure
 
     // --- Print Transaction History (using html2canvas) ---
     function printTransactionHistory() {
@@ -1493,5 +1516,8 @@
     }
 
   </script>
+        </div>
+    </div>
+</div>
 </body>
 </html>

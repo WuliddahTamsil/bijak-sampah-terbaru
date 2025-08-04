@@ -1,13 +1,18 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Poin Mu - Bijak Sampah</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     <style>
         :root {
             --primary-color: #05445E;
@@ -32,170 +37,29 @@
         }
 
         body {
-            background-color: var(--background-color);
-            display: flex;
-            min-height: 100vh;
-            color: var(--text-color);
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
         }
 
-        /* Sidebar */
-        .sidebar {
-            width: 250px;
-            background: linear-gradient(135deg, var(--accent-color) 0%, var(--primary-color) 30%, var(--primary-color) 100%);
-            color: white;
-            padding: 20px 0;
-            min-height: 100vh;
-            transition: width 0.3s;
-            position: fixed;
-            left: 0;
-            top: 0;
-            overflow: hidden;
-            box-shadow: 2px 0 10px var(--shadow-medium);
-            z-index: 1000;
+        /* Custom CSS untuk efek gradasi sidebar */
+        .sidebar-banksampah-gradient {
+            background: linear-gradient(135deg, #75E6DA 0%, #05445E 30%, #05445E 100%);
         }
-        .sidebar.collapsed {
-            width: 80px;
-        }
-        .logo-container {
-            padding: 0 20px;
-            margin-bottom: 30px;
-            display: flex;
-            align-items: center;
-            height: 60px;
-            justify-content: space-between;
-        }
-        .logo {
-            font-size: 22px;
-            font-weight: bold;
-            color: white;
-            white-space: nowrap;
-        }
-        .logo span {
-            color: var(--success-color);
-        }
-        .toggle-collapse {
-            background: none;
+        
+        /* Ensure seamless connection between topbar and sidebar */
+        .topbar-sidebar-seamless {
+            background: linear-gradient(135deg, #75E6DA 0%, #05445E 30%, #05445E 100%);
             border: none;
-            color: white;
-            font-size: 18px;
-            cursor: pointer;
-            padding: 5px;
-        }
-        .menu-items {
-            list-style: none;
-        }
-        .menu-item {
-            padding: 12px 20px;
-            display: flex;
-            align-items: center;
-            cursor: pointer;
-            transition: all 0.3s;
-            white-space: nowrap;
-        }
-        .menu-item:hover {
-            background: rgba(255, 255, 255, 0.1);
-        }
-        .menu-item.active {
-            background: rgba(255, 255, 255, 0.2);
-            border-left: 4px solid var(--secondary-color);
-        }
-        .menu-icon {
-            width: 24px;
-            height: 24px;
-            margin-right: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .menu-text {
-            font-size: 15px;
-            transition: opacity 0.3s;
-        }
-        .sidebar.collapsed .menu-text {
-            opacity: 0;
-            width: 0;
-        }
-        .sidebar.collapsed .logo-text {
-            display: none;
-        }
-        .sidebar.collapsed .logo-icon {
-            font-size: 22px;
+            box-shadow: none;
         }
 
-        /* Main Content */
+        /* Style untuk area main content */
         .main-content {
-            margin-left: 250px;
-            width: calc(100% - 250px);
-            padding: 30px;
-            transition: margin-left 0.3s, width 0.3s;
-        }
-        .sidebar.collapsed ~ .main-content {
-            margin-left: 80px;
-            width: calc(100% - 80px);
-        }
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-        }
-        .page-title {
-            font-size: 28px;
-            color: var(--primary-color);
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .profile-actions {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-        .profile-icon {
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: var(--card-background);
-            border-radius: 50%;
-            box-shadow: 0 2px 8px var(--shadow-light);
-            cursor: pointer;
-            position: relative;
-            transition: all 0.3s;
-        }
-        .profile-icon:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px var(--shadow-medium);
-        }
-        .profile-icon.notif::after {
-            content: '';
-            position: absolute;
-            top: 5px;
-            right: 5px;
-            width: 8px;
-            height: 8px;
-            background: var(--danger-color);
-            border-radius: 50%;
-            border: 2px solid white;
-        }
-        .profile-icon i {
-            color: var(--primary-color);
-            font-size: 18px;
-        }
-        .avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid var(--primary-color);
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        .avatar:hover {
-            transform: scale(1.05);
-            box-shadow: 0 4px 12px rgba(255, 255, 255, 0.2);
+            padding-top: 64px; /* Menyesuaikan dengan tinggi top bar */
+            min-height: 100vh;
+            width: 100%;
+            margin-left: 0;
+            margin-right: 0;
         }
 
         /* PoinMu Section Specific Styles */
@@ -207,6 +71,7 @@
             color: white;
             box-shadow: 0 8px 20px rgba(0,0,0,0.1);
             margin-bottom: 25px;
+            width: 100%;
         }
         .poinmu-info-section {
             flex: 1; /* Take up 1/4 of space */
@@ -265,6 +130,7 @@
             display: flex;
             gap: 20px;
             margin-bottom: 30px;
+            width: 100%;
         }
         .poin-flow-card {
             background: var(--card-background);
@@ -318,6 +184,7 @@
             border-radius: var(--border-radius);
             box-shadow: 0 4px 12px var(--shadow-light);
             margin-bottom: 30px;
+            width: 100%;
         }
         .section-title {
             color: var(--primary-color);
@@ -635,6 +502,72 @@
             background-color: #0A3A60;
         }
 
+        /* Modal untuk CRUD */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 500px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            animation: modalFadeIn 0.3s ease-out;
+        }
+
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            font-size: 22px;
+            color: #05445E;
+            font-weight: 700;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #777;
+            transition: all 0.2s;
+        }
+
+        .close-modal:hover {
+            color: #05445E;
+            transform: rotate(90deg);
+        }
+
+        .modal-body {
+            margin-bottom: 25px;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+        }
+
         /* Footer */
         .footer {
             text-align: center;
@@ -720,72 +653,148 @@
         }
     </style>
 </head>
-<body>
-    <div class="sidebar" id="sidebar">
-        <div class="logo-container">
-                                          <div class="logo">
-                            <img src="{{ asset('asset/img/Logo Alternative_Dark (1).png') }}" alt="Bijak Sampah Logo" style="width: 200px; height: 200px; object-fit: contain;">
-                        </div>
-            <button class="toggle-collapse" id="toggleCollapse">
-                <i class="fas fa-chevron-left"></i>
-            </button>
+<body class="bg-gray-50">
+
+<div class="flex min-h-screen bg-gray-50" x-data="{ sidebarOpen: false, activeMenu: 'poin' }" x-init="activeMenu = 'poin'">
+    {{-- Sidebar --}}
+    <aside 
+        class="fixed top-0 left-0 z-40 flex flex-col py-6 overflow-hidden shadow-2xl group sidebar-banksampah-gradient text-white"
+        :class="sidebarOpen ? 'w-[250px]' : 'w-16'"
+        style="transition: width 0.3s ease; height: 100vh; background: linear-gradient(135deg, #75E6DA 0%, #05445E 30%, #05445E 100%);"
+    >
+        <div class="relative flex flex-col h-full w-full px-4">
+            
+            {{-- Logo Section with Toggle Button --}}
+            <div class="flex items-center justify-center mb-8 mt-14" :class="sidebarOpen ? 'justify-between' : 'justify-center'">
+                <div class="flex items-center justify-center gap-2" :class="sidebarOpen ? 'flex-1' : ''">
+                    <img x-show="sidebarOpen" class="w-32 h-auto" src="{{ asset('asset/img/logo1.png') }}" alt="Logo Penuh">
+                    <img x-show="!sidebarOpen" class="w-6 h-6" src="{{ asset('asset/img/logo.png') }}" alt="Logo Kecil">
+                    {{-- Toggle Button --}}
+                    <button 
+                        @click="sidebarOpen = !sidebarOpen"
+                        class="p-1 rounded-full bg-white/20 hover:bg-white/30 transition-colors duration-200 text-white"
+                        :class="sidebarOpen ? 'rotate-180' : ''"
+                        style="transition: transform 0.3s ease;"
+                    >
+                        <i class="fas fa-chevron-left text-sm"></i>
+                    </button>
+                </div>
+            </div>
+            
+            {{-- Navigation Menu --}}
+            <nav class="flex flex-col gap-2 w-full flex-1 overflow-y-auto">
+                <a 
+                    href="{{ route('non-nasabah-dashboard') }}" 
+                    class="flex items-center p-3 font-medium rounded-lg whitespace-nowrap w-full transition-colors duration-200 hover:bg-white/10 hover:shadow-sm"
+                    :style="sidebarOpen ? 'gap: 12px;' : 'justify-content: center;'"
+                    @click="activeMenu = 'dashboard'"
+                >
+                    <i class="fas fa-home text-lg"></i>
+                    <span x-show="sidebarOpen" class="text-sm font-medium">Dashboard</span>
+                </a>
+
+                <a 
+                    href="{{ route('poin-non-nasabah') }}" 
+                    class="flex items-center p-3 font-medium rounded-lg whitespace-nowrap w-full transition-colors duration-200 bg-white/20 shadow-sm"
+                    :style="sidebarOpen ? 'gap: 12px;' : 'justify-content: center;'"
+                    @click="activeMenu = 'poin'"
+                >
+                    <i class="fas fa-coins text-lg"></i>
+                    <span x-show="sidebarOpen" class="text-sm font-medium">Poin Mu</span>
+                </a>
+
+                <button 
+                    onclick="showDevelopmentModal('Marketplace')"
+                    class="flex items-center p-3 font-medium rounded-lg whitespace-nowrap w-full transition-colors duration-200 hover:bg-white/10 hover:shadow-sm"
+                    :style="sidebarOpen ? 'gap: 12px;' : 'justify-content: center;'"
+                    @click="activeMenu = 'marketplace'"
+                >
+                    <i class="fas fa-store text-lg"></i>
+                    <span x-show="sidebarOpen" class="text-sm font-medium">Marketplace</span>
+                </button>
+
+                <button 
+                    onclick="showDevelopmentModal('Belanja')"
+                    class="flex items-center p-3 font-medium rounded-lg whitespace-nowrap w-full transition-colors duration-200 hover:bg-white/10 hover:shadow-sm"
+                    :style="sidebarOpen ? 'gap: 12px;' : 'justify-content: center;'"
+                    @click="activeMenu = 'belanja'"
+                >
+                    <i class="fas fa-shopping-bag text-lg"></i>
+                    <span x-show="sidebarOpen" class="text-sm font-medium">Belanja</span>
+                </button>
+
+                <button 
+                    onclick="showDevelopmentModal('Wishlist')"
+                    class="flex items-center p-3 font-medium rounded-lg whitespace-nowrap w-full transition-colors duration-200 hover:bg-white/10 hover:shadow-sm"
+                    :style="sidebarOpen ? 'gap: 12px;' : 'justify-content: center;'"
+                    @click="activeMenu = 'wishlist'"
+                >
+                    <i class="fas fa-heart text-lg"></i>
+                    <span x-show="sidebarOpen" class="text-sm font-medium">Wishlist</span>
+                </button>
+
+                <button 
+                    onclick="showDevelopmentModal('Riwayat')"
+                    class="flex items-center p-3 font-medium rounded-lg whitespace-nowrap w-full transition-colors duration-200 hover:bg-white/10 hover:shadow-sm"
+                    :style="sidebarOpen ? 'gap: 12px;' : 'justify-content: center;'"
+                    @click="activeMenu = 'riwayat'"
+                >
+                    <i class="fas fa-history text-lg"></i>
+                    <span x-show="sidebarOpen" class="text-sm font-medium">Riwayat</span>
+                </button>
+
+                <button 
+                    onclick="showDevelopmentModal('Settings')"
+                    class="flex items-center p-3 font-medium rounded-lg whitespace-nowrap w-full transition-colors duration-200 hover:bg-white/10 hover:shadow-sm"
+                    :style="sidebarOpen ? 'gap: 12px;' : 'justify-content: center;'"
+                    @click="activeMenu = 'settings'"
+                >
+                    <i class="fas fa-cog text-lg"></i>
+                    <span x-show="sidebarOpen" class="text-sm font-medium">Settings</span>
+                </button>
+            </nav>
+            
+            {{-- Logout Section --}}
+            <div class="w-full flex items-center py-3 mt-auto border-t border-white/20">
+                <a 
+                    href="{{ route('logout') }}" 
+                    class="flex items-center p-3 rounded-lg hover:bg-white/10 hover:shadow-sm text-white transition-all duration-200 w-full whitespace-nowrap"
+                    :style="sidebarOpen ? 'gap: 12px;' : 'justify-content: center;'"
+                >
+                    <i class="fas fa-sign-out-alt text-lg"></i>
+                    <span x-show="sidebarOpen" class="text-sm font-medium">Logout</span>
+                </a>
+            </div>
         </div>
+    </aside>
 
-        <ul class="menu-items">
-            <li class="menu-item" id="dashboard-menu"> 
-                <a href="{{ route('non-nasabah-dashboard') }}" style="text-decoration: none; color: inherit; display: flex; align-items: center; width: 100%;">
-                    <div class="menu-icon"><i class="fas fa-home"></i></div>
-                    <span class="menu-text">Dashboard</span>
-                </a>
-            </li>
-            <li class="menu-item active" id="poinmu-menu">
-                <a href="{{ route('poin-non-nasabah') }}" style="text-decoration: none; color: inherit; display: flex; align-items: center; width: 100%;">
-                    <div class="menu-icon"><i class="fas fa-coins"></i></div>
-                    <span class="menu-text">Poin Mu</span>
-                </a>
-            </li>
-            <li class="menu-item" id="history-menu">
-                <a href="{{ route('non-nasabah-dashboard') }}" style="text-decoration: none; color: inherit; display: flex; align-items: center; width: 100%;">
-                    <div class="menu-icon"><i class="fas fa-history"></i></div>
-                    <span class="menu-text">Riwayat Transaksi</span>
-                </a>
-            </li>
-            <li class="menu-item">
-                <a href="{{ route('toko') }}" style="text-decoration: none; color: inherit; display: flex; align-items: center; width: 100%;">
-                    <div class="menu-icon"><i class="fas fa-store"></i></div>
-                    <span class="menu-text">Marketplace</span>
-                </a>
-            </li>
-            <li class="menu-item">
-                <a href="{{ route('settings') }}" style="text-decoration: none; color: inherit; display: flex; align-items: center; width: 100%;">
-                    <div class="menu-icon"><i class="fas fa-cog"></i></div>
-                    <span class="menu-text">Settings</span>
-                </a>
-            </li>
-            <li class="menu-item">
-                <a href="{{ route('logout') }}" style="text-decoration: none; color: inherit; display: flex; align-items: center; width: 100%;">
-                    <div class="menu-icon"><i class="fas fa-sign-out-alt"></i></div>
-                    <span class="menu-text">Logout</span>
-                </a>
-            </li>
-        </ul>
-    </div>
-
-    <div class="main-content">
-        <div class="header">
-            <h1 class="page-title"><i class="fas fa-coins"></i> <span id="page-title-text">Poin Mu</span></h1>
-            <div class="profile-actions">
-                <div class="profile-icon notif" id="notifBtn" title="Notifikasi">
-                    <i class="fas fa-bell"></i>
+    {{-- Main Content --}}
+    <div class="main-content" :class="sidebarOpen ? 'pl-24' : 'pl-24'" style="transition: padding-left 0.3s ease; width: 100%; margin-left: 0; margin-right: 0;">
+        {{-- Top Header Bar --}}
+        <div class="fixed top-0 left-0 right-0 h-12 z-40 flex items-center justify-between px-6 text-white" :style="'padding-left:' + (sidebarOpen ? '16rem' : '4rem') + '; background: linear-gradient(135deg, #75E6DA 0%, #05445E 30%, #05445E 100%);'">
+            <h1 class="text-white font-semibold text-lg" style="position: absolute; left: 1.5rem;">BijakSampah</h1>
+            <div class="flex items-center gap-4" style="position: absolute; right: 1.5rem;">
+                <button onclick="showDevelopmentModal('Sign In')" class="bg-white/20 hover:bg-white/30 text-white px-4 py-1 rounded-full text-sm font-medium transition-colors duration-200">Sign in</button>
+                <button onclick="showDevelopmentModal('Notification')" class="relative hover:text-white/80 transition-colors">
+                    <i class="far fa-bell text-white text-sm"></i>
+                    <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center font-medium">2</span>
+                </button>
+                <button onclick="showDevelopmentModal('Search')" class="focus:outline-none hover:text-white/80 transition-colors">
+                    <i class="fas fa-search text-white text-sm"></i>
+                </button>
+                <div class="flex items-center gap-2">
+                    <button onclick="showDevelopmentModal('Profile')" class="w-8 h-8 rounded-full overflow-hidden flex items-center justify-center border-2 border-gray-300 cursor-pointer hover:border-white/50 transition-colors">
+                        <img src="https://ui-avatars.com/api/?name=Non+Nasabah&background=75E6DA&color=05445E" alt="Profile" class="w-full h-full object-cover">
+                    </button>
+                    <button onclick="showDevelopmentModal('Profile Menu')" class="hover:text-white/80 transition-colors">
+                        <i class="fas fa-chevron-down text-white text-xs"></i>
+                    </button>
                 </div>
-                <div class="profile-icon" id="searchBtn" title="Cari">
-                    <i class="fas fa-search"></i>
-                </div>
-                <img class="avatar" src="https://ui-avatars.com/api/?name=Non-Nasabah&background=75E6DA&color=05445E" alt="Profile" id="profileBtn">
             </div>
         </div>
 
-        <div class="poinmu-content-wrapper">
+        <div class="p-6" style="padding-top: 60px; width: 100%; max-width: 100%;">
+            <div class="poinmu-content-wrapper">
             <div class="active-section" id="poinmuDashboard">
                 <div class="poinmu-header-card">
                     <div class="poinmu-info-section">
@@ -939,6 +948,34 @@
 
         <div class="footer">
             Created by <strong>TEK(G)</strong> | All Right Reserved
+        </div>
+    </div>
+
+    {{-- Modal untuk menu dalam pengembangan --}}
+    <div class="modal" id="developmentModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Fitur Dalam Pengembangan</h3>
+                <button class="close-modal" id="closeDevelopmentModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div style="text-align: center; padding: 20px;">
+                    <i class="fas fa-tools" style="font-size: 48px; color: #05445E; margin-bottom: 20px;"></i>
+                    <h4 style="color: #05445E; font-size: 18px; margin-bottom: 10px;">Fitur Sedang Dikembangkan</h4>
+                    <p style="color: #666; font-size: 14px; line-height: 1.6;">
+                        Fitur ini sedang dalam tahap pengembangan. 
+                        Tim kami sedang bekerja keras untuk menghadirkan pengalaman terbaik untuk Anda.
+                    </p>
+                    <div style="margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 8px;">
+                        <p style="color: #05445E; font-size: 12px; margin: 0;">
+                            <i class="fas fa-clock"></i> Estimasi rilis: 2-3 minggu ke depan
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" id="closeDevModal">Mengerti</button>
+            </div>
         </div>
     </div>
     
@@ -1245,6 +1282,33 @@
             });
         }
         
+        // Show Development Modal
+        function showDevelopmentModal(featureName) {
+            const modal = document.getElementById('developmentModal');
+            const title = modal.querySelector('.modal-title');
+            title.textContent = `${featureName} - Fitur Dalam Pengembangan`;
+            modal.style.display = 'flex';
+        }
+
+        // Close Development Modal
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('closeDevelopmentModal').addEventListener('click', function() {
+                document.getElementById('developmentModal').style.display = 'none';
+            });
+
+            document.getElementById('closeDevModal').addEventListener('click', function() {
+                document.getElementById('developmentModal').style.display = 'none';
+            });
+
+            // Close modal when clicking outside
+            window.addEventListener('click', function(event) {
+                const developmentModal = document.getElementById('developmentModal');
+                if (event.target === developmentModal) {
+                    developmentModal.style.display = 'none';
+                }
+            });
+        });
+
         // Event listeners
         document.addEventListener('DOMContentLoaded', () => {
             const today = new Date();
@@ -1255,10 +1319,6 @@
             showSection('poinmuDashboard');
             
             document.getElementById('print-history-btn').addEventListener('click', printTransactionHistory);
-            document.getElementById('toggleCollapse').addEventListener('click', () => {
-                document.getElementById('sidebar').classList.toggle('collapsed');
-                document.querySelector('.main-content').classList.toggle('collapsed');
-            });
         });
     </script>
 </body>
