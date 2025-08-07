@@ -4,93 +4,26 @@
 <style>
     html, body {
         overflow-x: hidden;
+        margin: 0;
+        padding: 0;
+        scroll-behavior: smooth;
     }
-    .sidebar-gradient {
-        background: var(--sidebar-gradient);
-    }
-    .sidebar-hover {
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    .sidebar-item-hover {
-        transition: all 0.2s ease-in-out;
-    }
-    .sidebar-item-hover:hover {
-        background-color: rgba(255, 255, 255, 0.2);
-    }
-    .sidebar-logo {
-        transition: all 0.3s ease-in-out;
-    }
-    .sidebar-nav-item {
-        transition: all 0.2s ease-in-out;
-        border-radius: 8px;
-    }
-    .sidebar-nav-item:hover {
-        background-color: rgba(255, 255, 255, 0.1);
-    }
-    .sidebar-nav-item.active {
-        background-color: rgba(255, 255, 255, 0.2);
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
-    .settings-card {
-        background: var(--bg-primary) !important;
-        border-radius: 12px;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        border: 1px solid var(--border-primary) !important;
-        color: var(--text-primary) !important;
-    }
+    .sidebar-gradient { background: linear-gradient(135deg, #75E6DA 0%, #05445E 63%); }
+    .sidebar-hover { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+    .sidebar-item-hover { transition: all 0.2s ease-in-out; }
+    .sidebar-item-hover:hover { background-color: rgba(255, 255, 255, 0.2); }
+    .sidebar-logo { transition: all 0.3s ease-in-out; }
+    .sidebar-nav-item { transition: all 0.2s ease-in-out; border-radius: 8px; }
+    .sidebar-nav-item:hover { background-color: rgba(255, 255, 255, 0.1); }
+    .sidebar-nav-item.active { background-color: rgba(255, 255, 255, 0.2); box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); }
     .fixed-header {
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 48px;
-        z-index: 40;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding-right: 1.5rem;
-        background: var(--sidebar-gradient) !important;
+        position: fixed; top: 0; left: 0; right: 0; height: 48px; z-index: 40;
+        display: flex; align-items: center; justify-content: space-between; 
+        padding: 0 1.5rem; background: linear-gradient(135deg, #75E6DA 0%, #05445E 63%);
         transition: padding-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     }
-    .toggle-switch {
-        position: relative;
-        display: inline-block;
-        width: 50px;
-        height: 24px;
-    }
-    .toggle-switch input { opacity: 0; width: 0; height: 0; }
-    .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 24px; }
-    .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
-    input:checked + .slider { background-color: var(--success); }
-    input:checked + .slider:before { transform: translateX(26px); }
-    
-    /* Dark theme overrides for settings page */
-    .dark .text-gray-900 { color: var(--text-primary) !important; }
-    .dark .text-gray-600 { color: var(--text-secondary) !important; }
-    .dark .text-gray-500 { color: var(--text-muted) !important; }
-    .dark .border-gray-100 { border-color: var(--border-primary) !important; }
-    .dark .border-gray-300 { border-color: var(--border-secondary) !important; }
-    .dark .bg-gray-50 { background-color: var(--bg-secondary) !important; }
-    .dark .bg-white { background-color: var(--bg-primary) !important; }
-    
-    /* Ensure all text elements use theme colors */
-    .text-gray-900 { color: var(--text-primary) !important; }
-    .text-gray-600 { color: var(--text-secondary) !important; }
-    .text-gray-500 { color: var(--text-muted) !important; }
-    .border-gray-100 { border-color: var(--border-primary) !important; }
-    .border-gray-300 { border-color: var(--border-secondary) !important; }
-    .bg-gray-50 { background-color: var(--bg-secondary) !important; }
-    .bg-white { background-color: var(--bg-primary) !important; }
-    
-    /* Sidebar overlay styles */
-    .sidebar-overlay {
-        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-        background: rgba(0, 0, 0, 0.5); z-index: 45; opacity: 0; visibility: hidden;
-        transition: all 0.3s ease;
-    }
-    .sidebar-overlay.active { opacity: 1; visibility: visible; }
-    
-    /* Main content wrapper styles */
     .main-content-wrapper {
         min-height: 100vh;
         background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #f1f5f9 100%);
@@ -112,78 +45,133 @@
         box-sizing: border-box;
         scroll-behavior: smooth;
     }
+    
+    /* Sidebar alignment fixes */
+    .sidebar-nav-item {
+        justify-content: flex-start !important;
+        text-align: left !important;
+    }
+    
+    .sidebar-nav-item.justify-center {
+        justify-content: center !important;
+    }
+    
+    .sidebar-nav-item.justify-start {
+        justify-content: flex-start !important;
+    }
+    
+    .settings-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(15px);
+        border-radius: 16px;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+    }
+    .settings-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+    }
+    
+    .toggle-switch {
+        position: relative;
+        display: inline-block;
+        width: 50px;
+        height: 24px;
+    }
+    .toggle-switch input { opacity: 0; width: 0; height: 0; }
+    .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 24px; }
+    .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
+    input:checked + .slider { background-color: #10B981; }
+    input:checked + .slider:before { transform: translateX(26px); }
+    
+    /* Responsive fixes */
+    @media (max-width: 1024px) {
+        .main-content-wrapper { padding-left: 1rem; padding-right: 1rem; }
+        .content-container { padding: 1.5rem; }
+    }
+    @media (max-width: 768px) {
+        .main-content-wrapper { padding-left: 0.5rem; padding-right: 0.5rem; }
+        .content-container { padding: 1rem; }
+    }
 </style>
-<div class="flex min-h-screen" style="background-color: var(--bg-secondary);" x-data="settingsApp()" x-init="init()">
-    {{-- Sidebar Overlay --}}
-    <div class="sidebar-overlay" :class="{ 'active': sidebarOpen }" @click="sidebarOpen = false"></div>
 
+<div class="flex min-h-screen bg-gray-50">
     {{-- Sidebar --}}
     <aside
-        x-data="{ open: false, active: 'settings' }"
-        x-ref="sidebar"
-        @mouseenter="open = true; $root.sidebarOpen = true"
-        @mouseleave="open = false; $root.sidebarOpen = false"
-        class="fixed top-0 left-0 z-50 flex flex-col py-6 sidebar-hover overflow-hidden shadow-2xl group sidebar-gradient"
-        :class="open ? 'w-64' : 'w-16'"
+        id="sidebar"
+        class="fixed top-0 left-0 z-50 flex flex-col py-6 sidebar-hover overflow-hidden shadow-2xl group sidebar-gradient w-16"
         style="transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1); margin-top: 48px; height: calc(100vh - 48px);"
     >
         <div class="relative flex flex-col h-full w-full px-4">
             {{-- Logo Section --}}
             <div class="flex items-center justify-center mb-8 mt-2 sidebar-logo">
-                <img x-show="open" class="w-32 h-auto" src="{{ asset('asset/img/logo1.png') }}" alt="Logo Penuh">
-                <img x-show="!open" class="w-6 h-6" src="{{ asset('asset/img/logo.png') }}" alt="Logo Ikon">
+                <img id="logoFull" class="w-32 h-auto hidden" src="{{ asset('asset/img/logo1.png') }}" alt="Logo Penuh">
+                <img id="logoIcon" class="w-6 h-6" src="{{ asset('asset/img/logo.png') }}" alt="Logo Ikon">
             </div>
             
             {{-- Navigation Menu --}}
             <nav class="flex flex-col gap-2 w-full flex-1">
                 {{-- Dashboard Link --}}
-                <a href="{{ route('nasabahdashboard') }}" class="flex items-center gap-3 p-3 font-medium sidebar-nav-item whitespace-nowrap w-full" :class="open ? (active === 'dashboard' ? 'active text-white' : 'text-white') : (active === 'dashboard' ? 'active text-white justify-center' : 'text-white justify-center')">
+                <a href="/dashboard" class="flex items-center gap-3 p-3 font-medium sidebar-nav-item whitespace-nowrap w-full text-white justify-center">
                     <i class="fas fa-home text-lg"></i>
-                    <span x-show="open" class="text-sm font-medium">Dashboard</span>
+                    <span id="dashboardText" class="text-sm font-medium hidden">Dashboard</span>
+                </a>
+                
+                {{-- Bank Sampah Link --}}
+                <a href="/bank-sampah" class="flex items-center gap-3 p-3 rounded-lg sidebar-item-hover sidebar-nav-item whitespace-nowrap w-full text-white justify-center">
+                    <i class="fas fa-balance-scale text-lg"></i>
+                    <span id="bankSampahText" class="text-sm font-medium hidden">Bank Sampah</span>
+                </a>
+                
+                {{-- Toko Link --}}
+                <a href="/toko" class="flex items-center gap-3 p-3 rounded-lg sidebar-item-hover sidebar-nav-item whitespace-nowrap w-full text-white justify-center">
+                    <i class="fas fa-store text-lg"></i>
+                    <span id="tokoText" class="text-sm font-medium hidden">Toko</span>
                 </a>
                 
                 {{-- Komunitas Link --}}
-                <a href="{{ route('nasabahkomunitas') }}" class="flex items-center gap-3 p-3 rounded-lg sidebar-item-hover whitespace-nowrap w-full" :class="open ? (active === 'komunitas' ? 'bg-white/20 text-white shadow-lg' : 'hover:bg-white/20 text-white') : (active === 'komunitas' ? 'bg-white/20 text-white justify-center' : 'hover:bg-white/20 text-white justify-center')">
+                <a href="/komunitas" class="flex items-center gap-3 p-3 rounded-lg sidebar-item-hover sidebar-nav-item whitespace-nowrap w-full text-white justify-center">
                     <i class="fas fa-users text-lg"></i>
-                    <span x-show="open" class="text-sm font-medium">Komunitas</span>
+                    <span id="komunitasText" class="text-sm font-medium hidden">Komunitas</span>
                 </a>
                 
-                {{-- Penjemputan Sampah Link --}}
-                <a href="{{ route('sampahnasabah') }}" class="flex items-center gap-3 p-3 rounded-lg sidebar-item-hover whitespace-nowrap w-full" :class="open ? (active === 'penjemputan' ? 'bg-white/20 text-white shadow-lg' : 'hover:bg-white/20 text-white') : (active === 'penjemputan' ? 'bg-white/20 text-white justify-center' : 'hover:bg-white/20 text-white justify-center')">
-                    <i class="fas fa-trash-alt text-lg"></i>
-                    <span x-show="open" class="text-sm font-medium">Penjemputan Sampah</span>
+                {{-- Berita Link --}}
+                <a href="/berita" class="flex items-center gap-3 p-3 rounded-lg sidebar-item-hover sidebar-nav-item whitespace-nowrap w-full text-white justify-center">
+                    <i class="fas fa-newspaper text-lg"></i>
+                    <span id="beritaText" class="text-sm font-medium hidden">Berita</span>
                 </a>
                 
-                {{-- Poin Link --}}
-                <a href="{{ route('poin-nasabah') }}" class="flex items-center gap-3 p-3 rounded-lg sidebar-item-hover whitespace-nowrap w-full" :class="open ? (active === 'poin' ? 'bg-white/20 text-white shadow-lg' : 'hover:bg-white/20 text-white') : (active === 'poin' ? 'bg-white/20 text-white justify-center' : 'hover:bg-white/20 text-white justify-center')">
-                    <i class="fas fa-coins text-lg"></i>
-                    <span x-show="open" class="text-sm font-medium">Poin Mu</span>
+                {{-- Keuangan Link --}}
+                <a href="/keuangan" class="flex items-center gap-3 p-3 rounded-lg sidebar-item-hover sidebar-nav-item whitespace-nowrap w-full text-white justify-center">
+                    <i class="fas fa-file-invoice-dollar text-lg"></i>
+                    <span id="keuanganText" class="text-sm font-medium hidden">Keuangan</span>
                 </a>
                 
-                {{-- Riwayat Transaksi Link --}}
-                <a href="{{ route('riwayattransaksinasabah') }}" class="flex items-center gap-3 p-3 rounded-lg sidebar-item-hover whitespace-nowrap w-full" :class="open ? (active === 'riwayat-transaksi' ? 'bg-white/20 text-white shadow-lg' : 'hover:bg-white/20 text-white') : (active === 'riwayat-transaksi' ? 'bg-white/20 text-white justify-center' : 'hover:bg-white/20 text-white justify-center')">
-                    <i class="fas fa-history text-lg"></i>
-                    <span x-show="open" class="text-sm font-medium">Riwayat Transaksi</span>
+                {{-- Pesan Link --}}
+                <a href="/chat" class="flex items-center gap-3 p-3 rounded-lg sidebar-item-hover sidebar-nav-item whitespace-nowrap w-full text-white justify-center">
+                    <i class="fas fa-comment-dots text-lg"></i>
+                    <span id="pesanText" class="text-sm font-medium hidden">Pesan</span>
                 </a>
                 
-                {{-- Marketplace Link --}}
-                <a href="{{ route('tokou') }}" class="flex items-center gap-3 p-3 rounded-lg sidebar-item-hover whitespace-nowrap w-full" :class="open ? (active === 'marketplace' ? 'bg-white/20 text-white shadow-lg' : 'hover:bg-white/20 text-white') : (active === 'marketplace' ? 'bg-white/20 text-white justify-center' : 'hover:bg-white/20 text-white justify-center')">
-                    <i class="fas fa-store text-lg"></i>
-                    <span x-show="open" class="text-sm font-medium">Marketplace</span>
+                {{-- Umpan Balik Link --}}
+                <a href="/feedback" class="flex items-center gap-3 p-3 rounded-lg sidebar-item-hover sidebar-nav-item whitespace-nowrap w-full text-white justify-center">
+                    <i class="fas fa-info-circle text-lg"></i>
+                    <span id="feedbackText" class="text-sm font-medium hidden">Umpan Balik</span>
                 </a>
                 
                 {{-- Settings Link --}}
-                <a href="{{ route('settings') }}" class="flex items-center gap-3 p-3 rounded-lg sidebar-item-hover whitespace-nowrap w-full" :class="open ? (active === 'settings' ? 'bg-white/20 text-white shadow-lg' : 'hover:bg-white/20 text-white') : (active === 'settings' ? 'bg-white/20 text-white justify-center' : 'hover:bg-white/20 text-white justify-center')">
+                <a href="/settings" class="flex items-center gap-3 p-3 rounded-lg sidebar-item-hover sidebar-nav-item whitespace-nowrap w-full bg-white/20 text-white shadow-lg justify-center">
                     <i class="fas fa-cog text-lg"></i>
-                    <span x-show="open" class="text-sm font-medium">Settings</span>
+                    <span id="settingsText" class="text-sm font-medium hidden">Settings</span>
                 </a>
             </nav>
             
             {{-- Logout Section --}}
             <div class="w-full flex items-center py-3 mt-auto">
-                <a href="{{ route('logout') }}" class="flex items-center gap-3 p-3 rounded-lg sidebar-item-hover text-white hover:text-red-300 transition-all duration-200 w-full whitespace-nowrap" :class="open ? (active === 'logout' ? 'bg-white/20 text-white shadow-lg' : 'hover:bg-white/20 text-white') : (active === 'logout' ? 'bg-white/20 text-white justify-center' : 'hover:bg-white/20 text-white justify-center')">
+                <a href="/logout" class="flex items-center gap-3 p-3 rounded-lg sidebar-item-hover sidebar-nav-item text-white hover:text-red-300 transition-all duration-200 w-full whitespace-nowrap justify-center">
                     <i class="fas fa-sign-out-alt text-lg"></i>
-                    <span x-show="open" class="text-sm font-medium">Logout</span>
+                    <span id="logoutText" class="text-sm font-medium hidden">Logout</span>
                 </a>
             </div>
         </div>
@@ -195,20 +183,18 @@
         <div class="fixed-header">
             <h1 class="text-white font-semibold text-lg">BijakSampah</h1>
             <div class="flex items-center gap-4">
-                <button onclick="showDevelopmentModal('Notification')" class="relative hover:text-white/80 transition-colors">
+                <a href="/notifikasi" class="relative">
                     <i class="far fa-bell text-white text-sm"></i>
                     <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center font-medium">2</span>
-                </button>
-                <button onclick="showDevelopmentModal('Search')" class="focus:outline-none hover:text-white/80 transition-colors">
+                </a>
+                <button class="focus:outline-none">
                     <i class="fas fa-search text-white text-sm"></i>
                 </button>
                 <div class="flex items-center gap-2">
-                    <button onclick="showDevelopmentModal('Profile')" class="w-8 h-8 rounded-full overflow-hidden flex items-center justify-center border-2 border-gray-300 cursor-pointer hover:border-white/50 transition-colors">
-                        <img src="https://ui-avatars.com/api/?name=Non+Nasabah&background=75E6DA&color=05445E" alt="Profile" class="w-full h-full object-cover">
-                    </button>
-                    <button onclick="showDevelopmentModal('Profile Menu')" class="hover:text-white/80 transition-colors">
+                    <a href="/profile" class="w-8 h-8 rounded-full overflow-hidden flex items-center justify-center border-2 border-gray-300">
+                        <img src="{{ asset('asset/img/user_profile.jpg') }}" alt="Profile" class="w-full h-full object-cover">
+                    </a>
                         <i class="fas fa-chevron-down text-white text-xs"></i>
-                    </button>
                 </div>
             </div>
         </div>
@@ -216,169 +202,173 @@
         {{-- Content Container --}}
         <div class="content-container">
             {{-- Settings Title --}}
-            <div class="mb-8">
-                <h1 class="text-3xl font-bold text-gray-900" x-text="labels.settings"></h1>
-                <p class="text-gray-600 mt-2" x-text="labels.settingsDesc"></p>
+            <div class="mb-8 text-content">
+                <h1 class="text-4xl font-bold text-gray-900 mb-2">Pengaturan Aplikasi ⚙️</h1>
+                <p class="text-gray-600 text-lg">Kelola pengaturan akun dan aplikasi Anda</p>
             </div>
+            
             {{-- Settings Grid --}}
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {{-- Account Settings --}}
-                <div class="settings-card p-6">
+                <div class="settings-card p-6 text-content">
                     <div class="flex items-center gap-3 mb-6">
                         <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
                             <i class="fas fa-user text-blue-600"></i>
                         </div>
                         <div>
-                            <h3 class="text-lg font-semibold text-gray-900" x-text="labels.account"></h3>
-                            <p class="text-sm text-gray-600" x-text="labels.accountDesc"></p>
+                            <h3 class="text-lg font-semibold text-gray-900">Akun</h3>
+                            <p class="text-sm text-gray-600">Kelola informasi akun Anda</p>
                         </div>
                     </div>
                     <div class="space-y-4">
                         <div class="flex items-center justify-between py-3 border-b border-gray-100">
                             <div>
-                                <h4 class="font-medium text-gray-900" x-text="labels.editProfile"></h4>
-                                <p class="text-sm text-gray-600" x-text="labels.editProfileDesc"></p>
+                                <h4 class="font-medium text-gray-900">Ubah Profil</h4>
+                                <p class="text-sm text-gray-600">Perbarui informasi profil Anda</p>
                             </div>
-                            <a href="{{ route('profile') }}" class="text-blue-600 hover:text-blue-700 font-medium">
-                                <span x-text="labels.edit"></span>
+                            <a href="/profile" class="text-blue-600 hover:text-blue-700 font-medium">
+                                <span>Ubah</span>
                             </a>
                         </div>
                         <div class="flex items-center justify-between py-3 border-b border-gray-100">
                             <div>
-                                <h4 class="font-medium text-gray-900" x-text="labels.changePassword"></h4>
-                                <p class="text-sm text-gray-600" x-text="labels.changePasswordDesc"></p>
+                                <h4 class="font-medium text-gray-900">Ubah Password</h4>
+                                <p class="text-sm text-gray-600">Perbarui kata sandi akun</p>
                             </div>
-                            <button class="text-blue-600 hover:text-blue-700 font-medium" @click="showPasswordModal = true">
-                                <span x-text="labels.change"></span>
+                            <button class="text-blue-600 hover:text-blue-700 font-medium" onclick="alert('Fitur ubah password akan segera tersedia!')">
+                                <span>Ubah</span>
                             </button>
                         </div>
                         <div class="flex items-center justify-between py-3">
                             <div>
-                                <h4 class="font-medium text-gray-900" x-text="labels.verifyEmail"></h4>
-                                <p class="text-sm text-gray-600" x-text="labels.verifyEmailDesc"></p>
+                                <h4 class="font-medium text-gray-900">Verifikasi Email</h4>
+                                <p class="text-sm text-gray-600">Konfirmasi alamat email Anda</p>
                             </div>
-                            <span class="text-green-600 text-sm font-medium" x-text="labels.verified"></span>
+                            <span class="text-green-600 text-sm font-medium">Terverifikasi</span>
                         </div>
                     </div>
                 </div>
+                
                 {{-- Notification Settings --}}
-                <div class="settings-card p-6">
+                <div class="settings-card p-6 text-content">
                     <div class="flex items-center gap-3 mb-6">
                         <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
                             <i class="fas fa-bell text-green-600"></i>
                         </div>
                         <div>
-                            <h3 class="text-lg font-semibold text-gray-900" x-text="labels.notifications"></h3>
-                            <p class="text-sm text-gray-600" x-text="labels.notificationsDesc"></p>
+                            <h3 class="text-lg font-semibold text-gray-900">Notifikasi</h3>
+                            <p class="text-sm text-gray-600">Kelola pengaturan notifikasi</p>
                         </div>
                     </div>
                     <div class="space-y-4">
                         <div class="flex items-center justify-between py-3 border-b border-gray-100">
                             <div>
-                                <h4 class="font-medium text-gray-900" x-text="labels.emailNotif"></h4>
-                                <p class="text-sm text-gray-600" x-text="labels.emailNotifDesc"></p>
+                                <h4 class="font-medium text-gray-900">Email Notifikasi</h4>
+                                <p class="text-sm text-gray-600">Dapatkan notifikasi melalui email</p>
                             </div>
                             <label class="toggle-switch">
-                                <input type="checkbox" x-model="settings.notifications.email" @change="save()">
+                                <input type="checkbox" data-setting="email-notifications">
                                 <span class="slider"></span>
                             </label>
                         </div>
                         <div class="flex items-center justify-between py-3 border-b border-gray-100">
                             <div>
-                                <h4 class="font-medium text-gray-900" x-text="labels.pushNotif"></h4>
-                                <p class="text-sm text-gray-600" x-text="labels.pushNotifDesc"></p>
+                                <h4 class="font-medium text-gray-900">Push Notifikasi</h4>
+                                <p class="text-sm text-gray-600">Dapatkan notifikasi melalui aplikasi</p>
                             </div>
                             <label class="toggle-switch">
-                                <input type="checkbox" x-model="settings.notifications.push" @change="save()">
+                                <input type="checkbox" data-setting="push-notifications">
                                 <span class="slider"></span>
                             </label>
                         </div>
                         <div class="flex items-center justify-between py-3">
                             <div>
-                                <h4 class="font-medium text-gray-900" x-text="labels.smsNotif"></h4>
-                                <p class="text-sm text-gray-600" x-text="labels.smsNotifDesc"></p>
+                                <h4 class="font-medium text-gray-900">SMS Notifikasi</h4>
+                                <p class="text-sm text-gray-600">Dapatkan notifikasi melalui SMS</p>
                             </div>
                             <label class="toggle-switch">
-                                <input type="checkbox" x-model="settings.notifications.sms" @change="save()">
+                                <input type="checkbox" data-setting="sms-notifications">
                                 <span class="slider"></span>
                             </label>
                         </div>
                     </div>
                 </div>
+                
                 {{-- Privacy Settings --}}
-                <div class="settings-card p-6">
+                <div class="settings-card p-6 text-content">
                     <div class="flex items-center gap-3 mb-6">
                         <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
                             <i class="fas fa-shield-alt text-purple-600"></i>
                         </div>
                         <div>
-                            <h3 class="text-lg font-semibold text-gray-900" x-text="labels.privacy"></h3>
-                            <p class="text-sm text-gray-600" x-text="labels.privacyDesc"></p>
+                            <h3 class="text-lg font-semibold text-gray-900">Privasi</h3>
+                            <p class="text-sm text-gray-600">Kelola pengaturan privasi akun Anda</p>
                         </div>
                     </div>
                     <div class="space-y-4">
                         <div class="flex items-center justify-between py-3 border-b border-gray-100">
                             <div>
-                                <h4 class="font-medium text-gray-900" x-text="labels.profileVisibility"></h4>
-                                <p class="text-sm text-gray-600" x-text="labels.profileVisibilityDesc"></p>
+                                <h4 class="font-medium text-gray-900">Tampilan Profil</h4>
+                                <p class="text-sm text-gray-600">Kontrol siapa yang dapat melihat profil Anda</p>
                             </div>
-                            <select x-model="settings.privacy.profileVisibility" @change="save()" class="text-sm border border-gray-300 rounded px-2 py-1">
-                                <option value="public" x-text="labels.public"></option>
-                                <option value="friends" x-text="labels.friends"></option>
-                                <option value="private" x-text="labels.private"></option>
+                            <select data-setting="profile-visibility" class="text-sm border border-gray-300 rounded px-2 py-1">
+                                <option value="public">Publik</option>
+                                <option value="friends">Teman</option>
+                                <option value="private">Pribadi</option>
                             </select>
                         </div>
                         <div class="flex items-center justify-between py-3 border-b border-gray-100">
                             <div>
-                                <h4 class="font-medium text-gray-900" x-text="labels.dataSharing"></h4>
-                                <p class="text-sm text-gray-600" x-text="labels.dataSharingDesc"></p>
+                                <h4 class="font-medium text-gray-900">Berbagi Data</h4>
+                                <p class="text-sm text-gray-600">Izinkan aplikasi untuk berbagi data Anda</p>
                             </div>
                             <label class="toggle-switch">
-                                <input type="checkbox" x-model="settings.privacy.dataSharing" @change="save()">
+                                <input type="checkbox" data-setting="data-sharing">
                                 <span class="slider"></span>
                             </label>
                         </div>
                         <div class="flex items-center justify-between py-3">
                             <div>
-                                <h4 class="font-medium text-gray-900" x-text="labels.locationSharing"></h4>
-                                <p class="text-sm text-gray-600" x-text="labels.locationSharingDesc"></p>
+                                <h4 class="font-medium text-gray-900">Berbagi Lokasi</h4>
+                                <p class="text-sm text-gray-600">Izinkan aplikasi untuk menggunakan lokasi Anda</p>
                             </div>
                             <label class="toggle-switch">
-                                <input type="checkbox" x-model="settings.privacy.locationSharing" @change="save()">
+                                <input type="checkbox" data-setting="location-sharing">
                                 <span class="slider"></span>
                             </label>
                         </div>
                     </div>
                 </div>
+                
                 {{-- Appearance Settings --}}
-                <div class="settings-card p-6">
+                <div class="settings-card p-6 text-content">
                     <div class="flex items-center gap-3 mb-6">
                         <div class="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
                             <i class="fas fa-palette text-orange-600"></i>
                         </div>
                         <div>
-                            <h3 class="text-lg font-semibold text-gray-900" x-text="labels.appearance"></h3>
-                            <p class="text-sm text-gray-600" x-text="labels.appearanceDesc"></p>
+                            <h3 class="text-lg font-semibold text-gray-900">Penampilan</h3>
+                            <p class="text-sm text-gray-600">Kelola tampilan dan preferensi bahasa</p>
                         </div>
                     </div>
                     <div class="space-y-4">
                         <div class="flex items-center justify-between py-3 border-b border-gray-100">
                             <div>
-                                <h4 class="font-medium text-gray-900" x-text="labels.theme"></h4>
-                                <p class="text-sm text-gray-600" x-text="labels.themeDesc"></p>
+                                <h4 class="font-medium text-gray-900">Tema</h4>
+                                <p class="text-sm text-gray-600">Pilih tema gelap atau terang</p>
                             </div>
-                            <select x-model="settings.appearance.theme" @change="applyTheme();save()" class="text-sm border border-gray-300 rounded px-2 py-1">
-                                <option value="light" x-text="labels.light"></option>
-                                <option value="dark" x-text="labels.dark"></option>
-                                <option value="auto" x-text="labels.auto"></option>
+                            <select data-setting="theme" class="text-sm border border-gray-300 rounded px-2 py-1">
+                                <option value="light">Terang</option>
+                                <option value="dark">Gelap</option>
+                                <option value="auto">Auto</option>
                             </select>
                         </div>
                         <div class="flex items-center justify-between py-3 border-b border-gray-100">
                             <div>
-                                <h4 class="font-medium text-gray-900" x-text="labels.language"></h4>
-                                <p class="text-sm text-gray-600" x-text="labels.languageDesc"></p>
+                                <h4 class="font-medium text-gray-900">Bahasa</h4>
+                                <p class="text-sm text-gray-600">Pilih bahasa aplikasi</p>
                             </div>
-                            <select x-model="settings.appearance.language" @change="applyLanguage();save()" class="text-sm border border-gray-300 rounded px-2 py-1">
+                            <select data-setting="language" class="text-sm border border-gray-300 rounded px-2 py-1">
                                 <option value="id">Indonesia</option>
                                 <option value="en">English</option>
                                 <option value="ja">日本語</option>
@@ -386,273 +376,325 @@
                         </div>
                         <div class="flex items-center justify-between py-3">
                             <div>
-                                <h4 class="font-medium text-gray-900" x-text="labels.fontSize"></h4>
-                                <p class="text-sm text-gray-600" x-text="labels.fontSizeDesc"></p>
+                                <h4 class="font-medium text-gray-900">Ukuran Huruf</h4>
+                                <p class="text-sm text-gray-600">Pilih ukuran huruf aplikasi</p>
                             </div>
-                            <select x-model="settings.appearance.fontSize" @change="applyFontSize();save()" class="text-sm border border-gray-300 rounded px-2 py-1">
-                                <option value="small" x-text="labels.small"></option>
-                                <option value="medium" x-text="labels.medium"></option>
-                                <option value="large" x-text="labels.large"></option>
+                            <select data-setting="font-size" class="text-sm border border-gray-300 rounded px-2 py-1">
+                                <option value="small">Kecil</option>
+                                <option value="medium">Sedang</option>
+                                <option value="large">Besar</option>
                             </select>
                         </div>
                     </div>
                 </div>
+                
                 {{-- Data & Storage --}}
-                <div class="settings-card p-6">
+                <div class="settings-card p-6 text-content">
                     <div class="flex items-center gap-3 mb-6">
                         <div class="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center">
                             <i class="fas fa-database text-red-600"></i>
                         </div>
                         <div>
-                            <h3 class="text-lg font-semibold text-gray-900" x-text="labels.data"></h3>
-                            <p class="text-sm text-gray-600" x-text="labels.dataDesc"></p>
+                            <h3 class="text-lg font-semibold text-gray-900">Data & Penyimpanan</h3>
+                            <p class="text-sm text-gray-600">Kelola data dan cache aplikasi</p>
                         </div>
                     </div>
                     <div class="space-y-4">
                         <div class="flex items-center justify-between py-3 border-b border-gray-100">
                             <div>
-                                <h4 class="font-medium text-gray-900" x-text="labels.cache"></h4>
-                                <p class="text-sm text-gray-600" x-text="labels.cacheDesc"></p>
+                                <h4 class="font-medium text-gray-900">Cache</h4>
+                                <p class="text-sm text-gray-600">Membersihkan cache aplikasi</p>
                             </div>
-                            <button class="text-blue-600 hover:text-blue-700 font-medium" @click="clearCache()">
-                                <span x-text="labels.clear"></span>
+                            <button class="text-blue-600 hover:text-blue-700 font-medium" data-action="clear-cache">
+                                <span>Bersihkan</span>
                             </button>
                         </div>
                         <div class="flex items-center justify-between py-3 border-b border-gray-100">
                             <div>
-                                <h4 class="font-medium text-gray-900" x-text="labels.download"></h4>
-                                <p class="text-sm text-gray-600" x-text="labels.downloadDesc"></p>
+                                <h4 class="font-medium text-gray-900">Unduh Data</h4>
+                                <p class="text-sm text-gray-600">Unduh data pengaturan aplikasi</p>
                             </div>
-                            <button class="text-blue-600 hover:text-blue-700 font-medium" @click="downloadData()">
-                                <span x-text="labels.downloadBtn"></span>
+                            <button class="text-blue-600 hover:text-blue-700 font-medium" data-action="download-data">
+                                <span>Unduh</span>
                             </button>
                         </div>
                         <div class="flex items-center justify-between py-3">
                             <div>
-                                <h4 class="font-medium text-gray-900" x-text="labels.delete"></h4>
-                                <p class="text-sm text-gray-600" x-text="labels.deleteDesc"></p>
+                                <h4 class="font-medium text-gray-900">Hapus Akun</h4>
+                                <p class="text-sm text-gray-600">Hapus akun dan data Anda</p>
                             </div>
-                            <button class="text-red-600 hover:text-red-700 font-medium" @click="showDeleteModal = true">
-                                <span x-text="labels.deleteBtn"></span>
+                            <button class="text-red-600 hover:text-red-700 font-medium" data-action="delete-account">
+                                <span>Hapus</span>
                             </button>
                         </div>
                     </div>
                 </div>
+                
                 {{-- Help & Support --}}
-                <div class="settings-card p-6">
+                <div class="settings-card p-6 text-content">
                     <div class="flex items-center gap-3 mb-6">
                         <div class="w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center">
                             <i class="fas fa-question-circle text-yellow-600"></i>
                         </div>
                         <div>
-                            <h3 class="text-lg font-semibold text-gray-900" x-text="labels.help"></h3>
-                            <p class="text-sm text-gray-600" x-text="labels.helpDesc"></p>
+                            <h3 class="text-lg font-semibold text-gray-900">Bantuan & Dukungan</h3>
+                            <p class="text-sm text-gray-600">Dapatkan bantuan dan dukungan</p>
                         </div>
                     </div>
                     <div class="space-y-4">
                         <div class="flex items-center justify-between py-3 border-b border-gray-100">
                             <div>
-                                <h4 class="font-medium text-gray-900" x-text="labels.faq"></h4>
-                                <p class="text-sm text-gray-600" x-text="labels.faqDesc"></p>
+                                <h4 class="font-medium text-gray-900">FAQ</h4>
+                                <p class="text-sm text-gray-600">Pertanyaan yang sering ditanyakan</p>
                             </div>
-                            <a href="#" class="text-blue-600 hover:text-blue-700 font-medium" @click.prevent="alert(labels.faqAlert)"><span x-text="labels.open"></span></a>
+                            <a href="#" class="text-blue-600 hover:text-blue-700 font-medium" data-action="faq-link">
+                                <span>Buka</span>
+                            </a>
                         </div>
                         <div class="flex items-center justify-between py-3 border-b border-gray-100">
                             <div>
-                                <h4 class="font-medium text-gray-900" x-text="labels.contact"></h4>
-                                <p class="text-sm text-gray-600" x-text="labels.contactDesc"></p>
+                                <h4 class="font-medium text-gray-900">Hubungi Kami</h4>
+                                <p class="text-sm text-gray-600">Hubungi tim dukungan kami</p>
                             </div>
-                            <a href="#" class="text-blue-600 hover:text-blue-700 font-medium" @click.prevent="alert(labels.contactAlert)"><span x-text="labels.contactBtn"></span></a>
+                            <a href="#" class="text-blue-600 hover:text-blue-700 font-medium" data-action="contact-link">
+                                <span>Hubungi</span>
+                            </a>
                         </div>
                         <div class="flex items-center justify-between py-3">
                             <div>
-                                <h4 class="font-medium text-gray-900" x-text="labels.about"></h4>
-                                <p class="text-sm text-gray-600" x-text="labels.aboutDesc"></p>
+                                <h4 class="font-medium text-gray-900">Tentang</h4>
+                                <p class="text-sm text-gray-600">Versi aplikasi dan informasi lebih lanjut</p>
                             </div>
                             <span class="text-gray-500 text-sm">v1.0.0</span>
                         </div>
                     </div>
                 </div>
             </div>
-            {{-- Password Modal --}}
-            <div x-show="showPasswordModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-                <div class="bg-white rounded-lg p-6 shadow-xl w-full max-w-sm">
-                    <h2 class="text-lg font-semibold mb-4" x-text="labels.changePassword"></h2>
-                    <input type="password" class="w-full border rounded px-3 py-2 mb-3" placeholder="Password baru">
-                    <input type="password" class="w-full border rounded px-3 py-2 mb-3" placeholder="Konfirmasi password">
-                    <div class="flex justify-end gap-2">
-                        <button class="px-4 py-2 bg-gray-200 rounded" @click="showPasswordModal = false">Batal</button>
-                        <button class="px-4 py-2 bg-blue-600 text-white rounded" @click="showPasswordModal = false; alert(labels.passwordChanged)">Simpan</button>
-                    </div>
-                </div>
-            </div>
-            {{-- Delete Modal --}}
-            <div x-show="showDeleteModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-                <div class="bg-white rounded-lg p-6 shadow-xl w-full max-w-sm">
-                    <h2 class="text-lg font-semibold mb-4" x-text="labels.deleteConfirm"></h2>
-                    <p class="mb-4" x-text="labels.deleteWarning"></p>
-                    <div class="flex justify-end gap-2">
-                        <button class="px-4 py-2 bg-gray-200 rounded" @click="showDeleteModal = false">Batal</button>
-                        <button class="px-4 py-2 bg-red-600 text-white rounded" @click="deleteAccount()">Hapus</button>
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 </div>
+
 <script>
-function settingsApp() {
-    return {
-        sidebarOpen: false,
-        showPasswordModal: false,
-        showDeleteModal: false,
-        labels: {
-            settings: 'Pengaturan', settingsDesc: 'Kelola pengaturan akun dan aplikasi Anda',
-            account: 'Akun', accountDesc: 'Pengaturan akun dan profil', editProfile: 'Edit Profil', editProfileDesc: 'Ubah informasi profil Anda', edit: 'Edit', changePassword: 'Ubah Password', changePasswordDesc: 'Perbarui kata sandi akun', change: 'Ubah', verifyEmail: 'Verifikasi Email', verifyEmailDesc: 'Konfirmasi alamat email Anda', verified: 'Terverifikasi',
-            notifications: 'Notifikasi', notificationsDesc: 'Kelola notifikasi aplikasi', emailNotif: 'Notifikasi Email', emailNotifDesc: 'Terima notifikasi via email', pushNotif: 'Notifikasi Push', pushNotifDesc: 'Notifikasi langsung di aplikasi', smsNotif: 'Notifikasi SMS', smsNotifDesc: 'Terima notifikasi via SMS',
-            privacy: 'Privasi', privacyDesc: 'Pengaturan keamanan dan privasi', profileVisibility: 'Visibilitas Profil', profileVisibilityDesc: 'Siapa yang dapat melihat profil Anda', public: 'Publik', friends: 'Teman', private: 'Pribadi', dataSharing: 'Berbagi Data', dataSharingDesc: 'Izinkan berbagi data untuk analisis', locationSharing: 'Bagikan Lokasi', locationSharingDesc: 'Izinkan aplikasi mengakses lokasi',
-            appearance: 'Tampilan', appearanceDesc: 'Kustomisasi tampilan aplikasi', theme: 'Tema', themeDesc: 'Pilih tema aplikasi', light: 'Terang', dark: 'Gelap', auto: 'Otomatis', language: 'Bahasa', languageDesc: 'Pilih bahasa aplikasi', fontSize: 'Ukuran Font', fontSizeDesc: 'Sesuaikan ukuran teks', small: 'Kecil', medium: 'Sedang', large: 'Besar',
-            data: 'Data & Penyimpanan', dataDesc: 'Kelola data dan penyimpanan', cache: 'Cache Aplikasi', cacheDesc: 'Bersihkan cache aplikasi', clear: 'Bersihkan', download: 'Unduh Data', downloadDesc: 'Unduh data akun Anda', downloadBtn: 'Unduh', delete: 'Hapus Akun', deleteDesc: 'Hapus akun secara permanen', deleteBtn: 'Hapus', deleteConfirm: 'Konfirmasi Hapus Akun', deleteWarning: 'Apakah Anda yakin ingin menghapus akun? Tindakan ini tidak dapat dibatalkan.',
-            help: 'Bantuan & Dukungan', helpDesc: 'Dapatkan bantuan dan dukungan', faq: 'Pusat Bantuan', faqDesc: 'Temukan jawaban untuk pertanyaan umum', faqAlert: 'Fitur pusat bantuan belum tersedia.', open: 'Buka', contact: 'Hubungi Kami', contactDesc: 'Hubungi tim dukungan pelanggan', contactAlert: 'Fitur kontak belum tersedia.', contactBtn: 'Kontak', about: 'Tentang Aplikasi', aboutDesc: 'Informasi versi dan lisensi', passwordChanged: 'Password berhasil diubah!',
-        },
-        settings: {
-            notifications: { email: true, push: true, sms: false },
-            privacy: { profileVisibility: 'public', dataSharing: true, locationSharing: false },
-            appearance: { theme: 'light', language: 'id', fontSize: 'medium' },
-        },
-        init() {
-            // Load from localStorage
-            const saved = localStorage.getItem('settingsApp');
-            if (saved) {
-                this.settings = JSON.parse(saved);
-            }
-            
-            // Sync with global settings
-            const globalSettings = localStorage.getItem('globalSettings');
-            if (globalSettings) {
-                const global = JSON.parse(globalSettings);
-                this.settings.appearance.theme = global.theme || this.settings.appearance.theme;
-                this.settings.appearance.language = global.language || this.settings.appearance.language;
-                this.settings.appearance.fontSize = global.fontSize || this.settings.appearance.fontSize;
-            }
-            
-            // Update labels based on current language
-            this.updateLabels();
-            
-            // Listen for language changes from other pages
-            window.addEventListener('languageChanged', (e) => {
-                console.log('Settings: Language changed event received:', e.detail.language);
-                this.settings.appearance.language = e.detail.language;
-                this.updateLabels();
-            });
-            
-            // Listen for font size changes from other pages
-            window.addEventListener('fontSizeChanged', (e) => {
-                console.log('Settings: Font size changed event received:', e.detail.fontSize);
-                this.settings.appearance.fontSize = e.detail.fontSize;
-            });
-        },
-        save() {
-            localStorage.setItem('settingsApp', JSON.stringify(this.settings));
-            
-            // Update global settings
-            const globalSettings = {
-                theme: this.settings.appearance.theme,
-                language: this.settings.appearance.language,
-                fontSize: this.settings.appearance.fontSize
-            };
-            localStorage.setItem('globalSettings', JSON.stringify(globalSettings));
-            
-            // Update global theme
-            if (window.globalTheme) {
-                window.globalTheme.updateSettings(globalSettings);
-            }
-        },
-        applyTheme() {
-            console.log('Settings: Applying theme:', this.settings.appearance.theme);
-            // Update global settings
-            const globalSettings = {
-                theme: this.settings.appearance.theme,
-                language: this.settings.appearance.language,
-                fontSize: this.settings.appearance.fontSize
-            };
-            
-            if (window.globalTheme) {
-                window.globalTheme.updateSettings(globalSettings);
-                console.log('Settings: Theme updated via globalTheme');
-            } else {
-                console.error('Settings: globalTheme not available');
-            }
-        },
-        applyFontSize() {
-            const globalSettings = {
-                theme: this.settings.appearance.theme,
-                language: this.settings.appearance.language,
-                fontSize: this.settings.appearance.fontSize
-            };
-            
-            if (window.globalTheme) {
-                window.globalTheme.updateSettings(globalSettings);
-            }
-        },
-        applyLanguage() {
-            console.log('Settings: Applying language:', this.settings.appearance.language);
-            
-            // Update labels based on language
-            this.updateLabels();
-            
-            // Update global settings
-            const globalSettings = {
-                theme: this.settings.appearance.theme,
-                language: this.settings.appearance.language,
-                fontSize: this.settings.appearance.fontSize
-            };
-            
-            if (window.globalTheme) {
-                window.globalTheme.updateSettings(globalSettings);
-            }
-        },
+// Initialize settings page
+document.addEventListener('DOMContentLoaded', function() {
+    // Wait for global settings to be available
+    function initializeSettingsPage() {
+        console.log('Initializing settings page...');
         
-        updateLabels() {
-            // Demo: hanya ganti label, tidak multi-bahasa penuh
-            if (this.settings.appearance.language === 'en') {
-                this.labels = { ...this.labels, settings: 'Settings', settingsDesc: 'Manage your account and app settings', account: 'Account', accountDesc: 'Account and profile settings', editProfile: 'Edit Profile', editProfileDesc: 'Change your profile info', edit: 'Edit', changePassword: 'Change Password', changePasswordDesc: 'Update your account password', change: 'Change', verifyEmail: 'Verify Email', verifyEmailDesc: 'Confirm your email address', verified: 'Verified', notifications: 'Notifications', notificationsDesc: 'Manage app notifications', emailNotif: 'Email Notifications', emailNotifDesc: 'Receive notifications via email', pushNotif: 'Push Notifications', pushNotifDesc: 'In-app notifications', smsNotif: 'SMS Notifications', smsNotifDesc: 'Receive notifications via SMS', privacy: 'Privacy', privacyDesc: 'Security and privacy settings', profileVisibility: 'Profile Visibility', profileVisibilityDesc: 'Who can see your profile', public: 'Public', friends: 'Friends', private: 'Private', dataSharing: 'Data Sharing', dataSharingDesc: 'Allow data sharing for analytics', locationSharing: 'Location Sharing', locationSharingDesc: 'Allow app to access location', appearance: 'Appearance', appearanceDesc: 'Customize app appearance', theme: 'Theme', themeDesc: 'Choose app theme', light: 'Light', dark: 'Dark', auto: 'Auto', language: 'Language', languageDesc: 'Choose app language', fontSize: 'Font Size', fontSizeDesc: 'Adjust text size', small: 'Small', medium: 'Medium', large: 'Large', data: 'Data & Storage', dataDesc: 'Manage data and storage', cache: 'App Cache', cacheDesc: 'Clear app cache', clear: 'Clear', download: 'Download Data', downloadDesc: 'Download your account data', downloadBtn: 'Download', delete: 'Delete Account', deleteDesc: 'Delete your account permanently', deleteBtn: 'Delete', deleteConfirm: 'Confirm Delete Account', deleteWarning: 'Are you sure you want to delete your account? This action cannot be undone.', help: 'Help & Support', helpDesc: 'Get help and support', faq: 'Help Center', faqDesc: 'Find answers to common questions', faqAlert: 'Help center feature not available.', open: 'Open', contact: 'Contact Us', contactDesc: 'Contact support team', contactAlert: 'Contact feature not available.', contactBtn: 'Contact', about: 'About App', aboutDesc: 'Version and license info', passwordChanged: 'Password changed successfully!', };
-            } else if (this.settings.appearance.language === 'ja') {
-                this.labels = { ...this.labels, settings: '設定', settingsDesc: 'アカウントとアプリの設定を管理', account: 'アカウント', accountDesc: 'アカウントとプロフィールの設定', editProfile: 'プロフィール編集', editProfileDesc: 'プロフィール情報を変更', edit: '編集', changePassword: 'パスワード変更', changePasswordDesc: 'アカウントのパスワードを更新', change: '変更', verifyEmail: 'メール認証', verifyEmailDesc: 'メールアドレスを確認', verified: '認証済み', notifications: '通知', notificationsDesc: 'アプリの通知を管理', emailNotif: 'メール通知', emailNotifDesc: 'メールで通知を受け取る', pushNotif: 'プッシュ通知', pushNotifDesc: 'アプリ内通知', smsNotif: 'SMS通知', smsNotifDesc: 'SMSで通知を受け取る', privacy: 'プライバシー', privacyDesc: 'セキュリティとプライバシー設定', profileVisibility: 'プロフィール公開範囲', profileVisibilityDesc: '誰がプロフィールを見れるか', public: '公開', friends: '友達', private: '非公開', dataSharing: 'データ共有', dataSharingDesc: '分析のためにデータ共有を許可', locationSharing: '位置情報共有', locationSharingDesc: 'アプリに位置情報へのアクセスを許可', appearance: '外観', appearanceDesc: 'アプリの外観をカスタマイズ', theme: 'テーマ', themeDesc: 'アプリのテーマを選択', light: 'ライト', dark: 'ダーク', auto: '自動', language: '言語', languageDesc: 'アプリの言語を選択', fontSize: 'フォントサイズ', fontSizeDesc: 'テキストサイズを調整', small: '小', medium: '中', large: '大', data: 'データとストレージ', dataDesc: 'データとストレージを管理', cache: 'アプリキャッシュ', cacheDesc: 'アプリのキャッシュをクリア', clear: 'クリア', download: 'データダウンロード', downloadDesc: 'アカウントデータをダウンロード', downloadBtn: 'ダウンロード', delete: 'アカウント削除', deleteDesc: 'アカウントを完全に削除', deleteBtn: '削除', deleteConfirm: 'アカウント削除の確認', deleteWarning: '本当にアカウントを削除しますか？この操作は元に戻せません。', help: 'ヘルプとサポート', helpDesc: 'ヘルプとサポートを受ける', faq: 'ヘルプセンター', faqDesc: 'よくある質問の回答を探す', faqAlert: 'ヘルプセンター機能は利用できません。', open: '開く', contact: 'お問い合わせ', contactDesc: 'サポートチームに連絡', contactAlert: 'お問い合わせ機能は利用できません。', contactBtn: '連絡', about: 'アプリについて', aboutDesc: 'バージョンとライセンス情報', passwordChanged: 'パスワードが変更されました！', };
-            } else {
-                // Indonesia (default)
-                this.labels = settingsApp().labels;
+        // Apply initial settings using global function
+        if (window.applyGlobalSettings) {
+            window.applyGlobalSettings();
+        }
+        
+        // Toggle switches functionality
+        const toggles = document.querySelectorAll('.toggle-switch input');
+        toggles.forEach(toggle => {
+            toggle.addEventListener('change', function() {
+                const settingName = this.getAttribute('data-setting');
+                if (settingName) {
+                    if (window.saveSettings) {
+                        window.saveSettings(settingName, this.checked);
+                    } else {
+                        localStorage.setItem(settingName, this.checked);
+                    }
+                }
+            });
+        });
+
+        // Theme selector functionality
+        const themeSelect = document.querySelector('select[data-setting="theme"]');
+        if (themeSelect) {
+            const currentTheme = window.globalSettings?.theme || localStorage.getItem('theme') || 'light';
+            themeSelect.value = currentTheme;
+            console.log('Theme select initialized with value:', currentTheme);
+            
+            themeSelect.addEventListener('change', function() {
+                console.log('Theme changed to:', this.value);
+                if (window.saveSettings) {
+                    window.saveSettings('theme', this.value);
+                } else {
+                    localStorage.setItem('theme', this.value);
+                    if (window.applyGlobalSettings) {
+                        window.applyGlobalSettings();
+                    }
+                }
+            });
+        }
+
+        // Language selector functionality
+        const languageSelect = document.querySelector('select[data-setting="language"]');
+        if (languageSelect) {
+            const currentLanguage = window.globalSettings?.language || localStorage.getItem('language') || 'id';
+            languageSelect.value = currentLanguage;
+            console.log('Language select initialized with value:', currentLanguage);
+            
+            languageSelect.addEventListener('change', function() {
+                console.log('Language changed to:', this.value);
+                if (window.saveSettings) {
+                    window.saveSettings('language', this.value);
+                } else {
+                    localStorage.setItem('language', this.value);
+                }
+                // Show message that language change will take effect on next page load
+                alert('Perubahan bahasa akan diterapkan pada halaman berikutnya.');
+            });
+        }
+
+        // Font size selector functionality
+        const fontSizeSelect = document.querySelector('select[data-setting="font-size"]');
+        if (fontSizeSelect) {
+            const currentFontSize = window.globalSettings?.fontSize || localStorage.getItem('fontSize') || 'medium';
+            fontSizeSelect.value = currentFontSize;
+            console.log('Font size select initialized with value:', currentFontSize);
+            
+            fontSizeSelect.addEventListener('change', function() {
+                console.log('Font size changed to:', this.value);
+                if (window.saveSettings) {
+                    window.saveSettings('fontSize', this.value);
+                } else {
+                    localStorage.setItem('fontSize', this.value);
+                    if (window.applyGlobalSettings) {
+                        window.applyGlobalSettings();
+                    }
+                }
+            });
+        }
+
+        // Clear cache functionality
+        const clearCacheBtn = document.querySelector('[data-action="clear-cache"]');
+        if (clearCacheBtn) {
+            clearCacheBtn.addEventListener('click', function() {
+                if (confirm('Apakah Anda yakin ingin membersihkan cache?')) {
+                    localStorage.clear();
+                    alert('Cache berhasil dibersihkan!');
+                    location.reload();
+                }
+            });
+        }
+
+        // Download data functionality
+        const downloadDataBtn = document.querySelector('[data-action="download-data"]');
+        if (downloadDataBtn) {
+            downloadDataBtn.addEventListener('click', function() {
+                const data = {
+                    settings: window.globalSettings || {
+                        theme: localStorage.getItem('theme') || 'light',
+                        language: localStorage.getItem('language') || 'id',
+                        fontSize: localStorage.getItem('fontSize') || 'medium'
+                    },
+                    timestamp: new Date().toISOString()
+                };
+                
+                const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'bijak-sampah-settings.json';
+                a.click();
+                URL.revokeObjectURL(url);
+            });
+        }
+
+        // Delete account functionality
+        const deleteAccountBtn = document.querySelector('[data-action="delete-account"]');
+        if (deleteAccountBtn) {
+            deleteAccountBtn.addEventListener('click', function() {
+                if (confirm('Apakah Anda yakin ingin menghapus akun? Tindakan ini tidak dapat dibatalkan.')) {
+                    localStorage.clear();
+                    alert('Akun berhasil dihapus!');
+                    window.location.href = '/logout';
+                }
+            });
+        }
+
+        // FAQ link functionality
+        const faqLink = document.querySelector('[data-action="faq-link"]');
+        if (faqLink) {
+            faqLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                alert('Fitur FAQ akan segera tersedia!');
+            });
+        }
+
+        // Contact link functionality
+        const contactLink = document.querySelector('[data-action="contact-link"]');
+        if (contactLink) {
+            contactLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                alert('Fitur kontak akan segera tersedia!');
+            });
+        }
+
+        // Set toggle states
+        const savedSettings = {
+            'email-notifications': localStorage.getItem('email-notifications') === 'true',
+            'push-notifications': localStorage.getItem('push-notifications') === 'true',
+            'sms-notifications': localStorage.getItem('sms-notifications') === 'true',
+            'data-sharing': localStorage.getItem('data-sharing') === 'true',
+            'location-sharing': localStorage.getItem('location-sharing') === 'true'
+        };
+
+        Object.keys(savedSettings).forEach(setting => {
+            const toggle = document.querySelector(`[data-setting="${setting}"]`);
+            if (toggle) {
+                toggle.checked = savedSettings[setting];
             }
-        },
-        clearCache() {
-            localStorage.removeItem('settingsApp');
-            localStorage.removeItem('globalSettings');
-            this.settings = settingsApp().settings;
-            this.applyTheme();
-            this.applyFontSize();
-            this.applyLanguage();
-            alert('Cache dibersihkan!');
-        },
-        downloadData() {
-            const data = JSON.stringify(this.settings, null, 2);
-            const blob = new Blob([data], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'data-akun.json';
-            a.click();
-            URL.revokeObjectURL(url);
-        },
-        deleteAccount() {
-            localStorage.removeItem('settingsApp');
-            localStorage.removeItem('globalSettings');
-            this.settings = settingsApp().settings;
-            this.showDeleteModal = false;
-            alert('Akun berhasil dihapus!');
-            location.reload();
-        },
-    };
-}
+        });
+
+        // Sidebar hover functionality
+        const sidebar = document.getElementById('sidebar');
+        const logoFull = document.getElementById('logoFull');
+        const logoIcon = document.getElementById('logoIcon');
+        const textElements = [
+            'dashboardText', 'bankSampahText', 'tokoText', 'komunitasText', 
+            'beritaText', 'keuanganText', 'pesanText', 'feedbackText', 
+            'settingsText', 'logoutText'
+        ];
+
+        if (sidebar) {
+            sidebar.addEventListener('mouseenter', function() {
+                sidebar.style.width = '16rem';
+                if (logoFull) logoFull.classList.remove('hidden');
+                if (logoIcon) logoIcon.classList.add('hidden');
+                textElements.forEach(id => {
+                    const element = document.getElementById(id);
+                    if (element) element.classList.remove('hidden');
+                });
+                
+                // Update alignment for expanded state
+                const navItems = sidebar.querySelectorAll('.sidebar-nav-item');
+                navItems.forEach(item => {
+                    item.classList.remove('justify-center');
+                    item.classList.add('justify-start');
+                });
+            });
+
+            sidebar.addEventListener('mouseleave', function() {
+                sidebar.style.width = '4rem';
+                if (logoFull) logoFull.classList.add('hidden');
+                if (logoIcon) logoIcon.classList.remove('hidden');
+                textElements.forEach(id => {
+                    const element = document.getElementById(id);
+                    if (element) element.classList.add('hidden');
+                });
+                
+                // Update alignment for collapsed state
+                const navItems = sidebar.querySelectorAll('.sidebar-nav-item');
+                navItems.forEach(item => {
+                    item.classList.remove('justify-start');
+                    item.classList.add('justify-center');
+                });
+            });
+        }
+        
+        console.log('Settings page initialized successfully');
+    }
+
+    // Initialize immediately and also wait a bit for global settings to load
+    initializeSettingsPage();
+    setTimeout(initializeSettingsPage, 100);
+    setTimeout(initializeSettingsPage, 500);
+    setTimeout(initializeSettingsPage, 1000);
+});
 </script>
-</div>
 @endsection 

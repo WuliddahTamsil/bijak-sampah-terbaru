@@ -27,8 +27,8 @@
     .main-content-wrapper {
         min-height: 100vh;
         background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #f1f5f9 100%);
-        padding-top: 60px; 
-        padding-left: 4rem; 
+        padding-top: 30px; 
+        padding-left: 2rem; 
         padding-right: 0;
         transition: padding-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         position: relative; 
@@ -1236,13 +1236,13 @@
                 </a>
                 
                 {{-- Marketplace Link --}}
-                <a href="{{ route('tokou') }}" class="flex items-center gap-3 p-3 rounded-lg sidebar-item-hover whitespace-nowrap w-full" :class="open ? (active === 'marketplace' ? 'bg-white/20 text-white shadow-lg' : 'hover:bg-white/20 text-white') : (active === 'marketplace' ? 'bg-white/20 text-white justify-center' : 'hover:bg-white/20 text-white justify-center')">
+                <a href="{{ route('tokon') }}" class="flex items-center gap-3 p-3 rounded-lg sidebar-item-hover whitespace-nowrap w-full" :class="open ? (active === 'marketplace' ? 'bg-white/20 text-white shadow-lg' : 'hover:bg-white/20 text-white') : (active === 'marketplace' ? 'bg-white/20 text-white justify-center' : 'hover:bg-white/20 text-white justify-center')">
                     <i class="fas fa-store text-lg"></i>
                     <span x-show="open" class="text-sm font-medium">Marketplace</span>
                 </a>
                 
                 {{-- Settings Link --}}
-                <a href="{{ route('settings') }}" class="flex items-center gap-3 p-3 rounded-lg sidebar-item-hover whitespace-nowrap w-full" :class="open ? (active === 'settings' ? 'bg-white/20 text-white shadow-lg' : 'hover:bg-white/20 text-white') : (active === 'settings' ? 'bg-white/20 text-white justify-center' : 'hover:bg-white/20 text-white justify-center')">
+                <a href="{{ route('settingsnasab') }}" class="flex items-center gap-3 p-3 rounded-lg sidebar-item-hover whitespace-nowrap w-full" :class="open ? (active === 'settings' ? 'bg-white/20 text-white shadow-lg' : 'hover:bg-white/20 text-white') : (active === 'settings' ? 'bg-white/20 text-white justify-center' : 'hover:bg-white/20 text-white justify-center')">
                     <i class="fas fa-cog text-lg"></i>
                     <span x-show="open" class="text-sm font-medium">Settings</span>
                 </a>
@@ -1273,7 +1273,7 @@
                 </button>
                 <div class="flex items-center gap-2">
                     <button onclick="showDevelopmentModal('Profile')" class="w-8 h-8 rounded-full overflow-hidden flex items-center justify-center border-2 border-gray-300 cursor-pointer hover:border-white/50 transition-colors">
-                        <img src="https://ui-avatars.com/api/?name=Non+Nasabah&background=75E6DA&color=05445E" alt="Profile" class="w-full h-full object-cover">
+                        <img src="https://ui-avatars.com/api/?name=Nasabah&background=75E6DA&color=05445E" alt="Profile" class="w-full h-full object-cover">
                     </button>
                     <button onclick="showDevelopmentModal('Profile Menu')" class="hover:text-white/80 transition-colors">
                         <i class="fas fa-chevron-down text-white text-xs"></i>
@@ -1284,61 +1284,19 @@
         
         {{-- Content Container --}}
         <div class="content-container">
-                    <i class="fas fa-cog text-lg"></i>
-                </a>
-            </nav>
-            
-            {{-- Logout Section --}}
-            <div class="w-full flex items-center py-3 mt-auto border-t border-white/20">
-                <a 
-                    href="{{ route('logout') }}" 
-                    class="flex items-center p-3 rounded-lg hover:bg-white/10 hover:shadow-sm text-white transition-all duration-200 w-full whitespace-nowrap"
-                    :style="sidebarOpen ? 'gap: 12px;' : 'justify-content: center;'"
-                >
-                    <i class="fas fa-sign-out-alt text-lg"></i>
-                    <span x-show="sidebarOpen" class="text-sm font-medium">Logout</span>
-                </a>
-            </div>
-        </div>
-    </aside>
-
-    {{-- Main Content --}}
-    <div class="main-content" :class="sidebarOpen ? 'pl-24' : 'pl-24'" style="transition: padding-left 0.3s ease; width: 100%; margin-left: 0; margin-right: 0;">
-        {{-- Top Header Bar --}}
-        <div class="fixed top-0 left-0 right-0 h-12 z-40 flex items-center justify-between px-6 text-white" :style="'padding-left:' + (sidebarOpen ? '16rem' : '4rem') + '; background: linear-gradient(135deg, #75E6DA 0%, #05445E 30%, #05445E 100%);'">
-            <h1 class="text-white font-semibold text-lg" style="position: absolute; left: 1.5rem;">BijakSampah</h1>
-            <div class="flex items-center gap-4" style="position: absolute; right: 1.5rem;">
-                <button onclick="showDevelopmentModal('Notification')" class="relative hover:text-white/80 transition-colors">
-                    <i class="far fa-bell text-white text-sm"></i>
-                    <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center font-medium">3</span>
-                </button>
-                <button onclick="showDevelopmentModal('Search')" class="focus:outline-none hover:text-white/80 transition-colors">
-                    <i class="fas fa-search text-white text-sm"></i>
-                </button>
-                <div class="flex items-center gap-2">
-                    <button onclick="showDevelopmentModal('Profile')" class="w-8 h-8 rounded-full overflow-hidden flex items-center justify-center border-2 border-gray-300 cursor-pointer hover:border-white/50 transition-colors">
-                        <img src="https://ui-avatars.com/api/?name=Nasabah&background=75E6DA&color=05445E" alt="Profile" class="w-full h-full object-cover">
-                    </button>
-                    <button onclick="showDevelopmentModal('Profile Menu')" class="hover:text-white/80 transition-colors">
-                        <i class="fas fa-chevron-down text-white text-xs"></i>
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <div class="p-6" style="padding-top: 20px; width: 100%; max-width: 100%;">
             <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
                 <div>
                     <h1 class="text-2xl font-bold text-gray-800"><i class="fas fa-history"></i> Riwayat Sampah</h1>
                     <p class="text-sm text-gray-500">Lihat dan kelola riwayat sampah Anda</p>
                 </div>
+                <button onclick="showPenjemputanModal()" class="btn-primary px-6 py-3 rounded-lg">
+                    <i class="fas fa-plus mr-2"></i>Ajukan Penjemputan Sampah
+                </button>
             </div>
 
         <div class="bs-pay-section">
       <div class="bs-pay-card">
-        <div class="bs-pay-logo">
-          BS
-        </div>
+                    <div class="bs-pay-logo">BS</div>
         <div class="bs-pay-info">
           <div class="bs-pay-title">BS, PAY!</div>
           <div class="bs-pay-amount">4.297 Koin</div>
@@ -1348,7 +1306,7 @@
       
             <div class="bs-pay-card">
         <div class="pie-chart-container">
-          <img src="asset/img/pieChart.png" alt="Pie Chart">
+                        <img src="{{ asset('asset/img/pieChart.png') }}" alt="Pie Chart">
         </div>
       </div>
     </div>
@@ -1431,11 +1389,58 @@
           </tr>
         </thead>
         <tbody>
+                        <!-- Data akan diisi oleh JavaScript -->
                   </tbody>
       </table>
     </div>
 
-    <!-- Modal Popup -->
+            <!-- Modal Penjemputan Sampah -->
+            <div class="modal-overlay" id="penjemputanModal">
+                <div class="modal-container">
+                    <div class="modal-header">
+                        <h3>Ajukan Penjemputan Sampah</h3>
+                        <button class="modal-close" onclick="closePenjemputanModal()">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="penjemputanForm">
+                            <div class="mb-4">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Kategori Sampah</label>
+                                <select class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                                    <option value="">Pilih Kategori</option>
+                                    <option value="plastik">Plastik</option>
+                                    <option value="besi">Besi</option>
+                                    <option value="kertas">Kertas</option>
+                                    <option value="elektronik">Elektronik</option>
+                                    <option value="kaca">Kaca</option>
+                                    <option value="lainnya">Lainnya</option>
+                                </select>
+                            </div>
+                            <div class="mb-4">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Berat Sampah (kg)</label>
+                                <input type="number" step="0.1" min="0.1" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Masukkan berat sampah" required>
+                            </div>
+                            <div class="mb-4">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Lokasi Penjemputan</label>
+                                <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Masukkan alamat lengkap" required>
+                            </div>
+                            <div class="mb-4">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Tanggal Penjemputan</label>
+                                <input type="date" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                            </div>
+                            <div class="mb-4">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Catatan (Opsional)</label>
+                                <textarea class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" rows="3" placeholder="Tambahkan catatan jika diperlukan"></textarea>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="modal-btn modal-btn-close" onclick="closePenjemputanModal()">Batal</button>
+                        <button class="modal-btn modal-btn-primary" onclick="submitPenjemputan()">Ajukan Penjemputan</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Detail Transaksi -->
   <div class="modal-overlay" id="detailModal">
     <div class="modal-container">
       <div class="modal-header">
@@ -1447,6 +1452,13 @@
       </div>
       <div class="modal-footer">
         <button class="modal-btn modal-btn-close" id="modalBtnClose">Tutup</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer">
+                Created by <strong>TEK(G)</strong> | All Right Reserved!
+            </div>
       </div>
     </div>
   </div>
@@ -1480,125 +1492,58 @@
         document.body.appendChild(modal);
     }
 
-    $(document).ready(function () {
-      // [Previous JavaScript code remains the same until the action button click handler...]
+    // Modal Penjemputan functions
+    function showPenjemputanModal() {
+        document.getElementById('penjemputanModal').classList.add('active');
+    }
 
-      // Aksi tombol di tabel dengan popup detail
-      $(document).on('click', '.action-btn', function() {
-        const row = $(this).closest('tr');
-        const date = row.find('td:nth-child(2)').text();
-        const category = row.find('td:nth-child(3)').text().trim();
-        const weight = row.find('td:nth-child(4)').text();
-        const points = row.find('td:nth-child(5)').text();
+    function closePenjemputanModal() {
+        document.getElementById('penjemputanModal').classList.remove('active');
+    }
+
+    function submitPenjemputan() {
+        // Simulasi submit
+        alert('Penjemputan sampah berhasil diajukan!');
+        closePenjemputanModal();
         
-        // Extract category name (remove icon)
-        const categoryName = category.replace(/<[^>]*>/g, '').trim();
+        // Tambahkan data dummy ke tabel
+        addDummyData();
+    }
+
+    function addDummyData() {
+        const newData = {
+            date: new Date().toLocaleDateString('id-ID'),
+            day: new Date().toLocaleDateString('id-ID', { weekday: 'long' }),
+            category: 'Plastik',
+            weight: 2.5,
+            pointsPerKg: 116
+        };
         
-        // Get category icon
-        const categoryIcon = $(row.find('td:nth-child(3) i')).attr('class');
-        
-        // Calculate points per kg
-        const weightValue = parseFloat(weight);
-        const pointsValue = parseInt(points.replace(/\./g, ''));
-        const pointsPerKg = (pointsValue / weightValue).toFixed(0);
-        
-        // Format modal content
-        const modalContent = `
-          <div class="detail-row">
-            <div class="detail-icon"><i class="${categoryIcon}"></i></div>
-            <div style="flex:1">
-              <div class="detail-category">
-                <div style="font-weight:600;color:#05445E;font-size:18px">${categoryName}</div>
-              </div>
-              <div style="font-size:14px;color:#666">${date}</div>
-            </div>
-          </div>
-          
-          <div class="detail-points">
-            ${points} Koin
-            <small>${weight} × ${pointsPerKg} koin/kg</small>
-          </div>
-          
-          <div class="detail-row">
-            <div class="detail-label">Status</div>
-            <div class="detail-value"><span style="display:inline-block;padding:4px 10px;background:#e3f9e5;color:#1a7a2e;border-radius:20px;font-size:13px;font-weight:500"><i class="fas fa-check-circle"></i> Selesai</span></div>
-          </div>
-          
-          <div class="detail-row">
-            <div class="detail-label">Waktu Transaksi</div>
-            <div class="detail-value">${getRandomTime()}</div>
-          </div>
-          
-          <div class="detail-row">
-            <div class="detail-label">Lokasi</div>
-            <div class="detail-value">Bank Sampah ${getRandomLocation()}</div>
-          </div>
-          
-          <div class="detail-row">
-            <div class="detail-label">ID Transaksi</div>
-            <div class="detail-value">BS-${Math.random().toString(36).substr(2, 8).toUpperCase()}</div>
-          </div>
+        const points = (newData.weight * newData.pointsPerKg).toFixed(0);
+        const newRow = `
+            <tr>
+                <td>1</td>
+                <td>${newData.day}, ${newData.date}</td>
+                <td>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <i class="fas fa-bottle-water" style="color: #05445E;"></i>
+                        ${newData.category}
+    </div>
+                </td>
+                <td>${newData.weight.toFixed(1)} kg</td>
+                <td><strong>${points}</strong></td>
+                <td>
+                    <div class="tooltip">
+                        <button class="action-btn" title="Detail"><i class="fas fa-eye"></i></button>
+                        <span class="tooltiptext">Lihat Detail</span>
+    </div>
+                </td>
+            </tr>
         `;
         
-        // Insert content and show modal
-        $('#modalBody').html(modalContent);
-        $('#detailModal').addClass('active');
-        
-        // Add animation class
-        setTimeout(() => {
-          $('.modal-container').addClass('animated');
-        }, 10);
-      });
+        $('#riwayatTable tbody').prepend(newRow);
+    }
 
-      // Function to generate random time
-      function getRandomTime() {
-        const hours = Math.floor(Math.random() * 12) + 8; // Between 8-19
-        const minutes = Math.floor(Math.random() * 60);
-        return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')} WIB`;
-      }
-
-      // Function to generate random location
-      function getRandomLocation() {
-        const locations = [
-          "Sudirman", 
-          "Thamrin", 
-          "Kebayoran", 
-          "Pondok Indah", 
-          "Grogol", 
-          "Cipete", 
-          "Kemang"
-        ];
-        return locations[Math.floor(Math.random() * locations.length)];
-      }
-
-      // Close modal
-      $('#modalClose, #modalBtnClose').click(function() {
-        $('#detailModal').removeClass('active');
-      });
-
-      // Close modal when clicking outside
-      $('#detailModal').click(function(e) {
-        if ($(e.target).hasClass('modal-overlay')) {
-          $(this).removeClass('active');
-        }
-      });
-
-      // [Rest of the previous JavaScript code remains the same...]
-    });
-  </script>
-
-
-        <div class="footer">
-      Created by <strong>TEK(G)</strong> | All Right Reserved!
-    </div>
-    </div>
-</div>
-
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-  <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-  <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/id.js"></script>
-  <script>
     $(document).ready(function () {
       // Data dummy yang lebih realistis dengan variasi tanggal dan berat pecahan
       const dummyData = [
@@ -1753,44 +1698,105 @@
         }
       );
 
-      // Note: Sidebar toggle is now handled by Alpine.js
-      // Update table when sidebar state changes
-      setTimeout(() => {
-        table.columns.adjust().draw();
-      }, 300);
-
-      // Tombol aksi profil dengan animasi
-      $('#notifBtn, #searchBtn, #profileBtn').click(function() {
-        $(this).addClass('pulse-animation');
-        setTimeout(() => {
-          $(this).removeClass('pulse-animation');
-          // Simulasikan notifikasi
-          if ($(this).attr('id') === 'notifBtn') {
-            alert('Anda memiliki 3 notifikasi baru!');
-          } else if ($(this).attr('id') === 'searchBtn') {
-            alert('Fitur pencarian akan segera tersedia!');
-          } else {
-            alert('Profil pengguna akan ditampilkan!');
-          }
-        }, 500);
-      });
-      
-      // Aksi tombol di tabel dengan feedback visual
+        // Aksi tombol di tabel dengan popup detail
       $(document).on('click', '.action-btn', function() {
         const row = $(this).closest('tr');
-        row.css('background-color', '#f0f8ff');
-        setTimeout(() => {
-          row.css('background-color', '');
-          // Tampilkan detail transaksi
           const date = row.find('td:nth-child(2)').text();
           const category = row.find('td:nth-child(3)').text().trim();
           const weight = row.find('td:nth-child(4)').text();
           const points = row.find('td:nth-child(5)').text();
           
-  
-        }, 200);
-      });
+            // Extract category name (remove icon)
+            const categoryName = category.replace(/<[^>]*>/g, '').trim();
+            
+            // Get category icon
+            const categoryIcon = $(row.find('td:nth-child(3) i')).attr('class');
+            
+            // Calculate points per kg
+            const weightValue = parseFloat(weight);
+            const pointsValue = parseInt(points.replace(/\./g, ''));
+            const pointsPerKg = (pointsValue / weightValue).toFixed(0);
+            
+            // Format modal content
+            const modalContent = `
+                <div class="detail-row">
+                    <div class="detail-icon"><i class="${categoryIcon}"></i></div>
+                    <div style="flex:1">
+                        <div class="detail-category">
+                            <div style="font-weight:600;color:#05445E;font-size:18px">${categoryName}</div>
+                        </div>
+                        <div style="font-size:14px;color:#666">${date}</div>
+                    </div>
+                </div>
+                
+                <div class="detail-points">
+                    ${points} Koin
+                    <small>${weight} × ${pointsPerKg} koin/kg</small>
+                </div>
+                
+                <div class="detail-row">
+                    <div class="detail-label">Status</div>
+                    <div class="detail-value"><span style="display:inline-block;padding:4px 10px;background:#e3f9e5;color:#1a7a2e;border-radius:20px;font-size:13px;font-weight:500"><i class="fas fa-check-circle"></i> Selesai</span></div>
+                </div>
+                
+                <div class="detail-row">
+                    <div class="detail-label">Waktu Transaksi</div>
+                    <div class="detail-value">${getRandomTime()}</div>
+                </div>
+                
+                <div class="detail-row">
+                    <div class="detail-label">Lokasi</div>
+                    <div class="detail-value">Bank Sampah ${getRandomLocation()}</div>
+                </div>
+                
+                <div class="detail-row">
+                    <div class="detail-label">ID Transaksi</div>
+                    <div class="detail-value">BS-${Math.random().toString(36).substr(2, 8).toUpperCase()}</div>
+                </div>
+            `;
+            
+            // Insert content and show modal
+            $('#modalBody').html(modalContent);
+            $('#detailModal').addClass('active');
+        });
+
+        // Function to generate random time
+        function getRandomTime() {
+            const hours = Math.floor(Math.random() * 12) + 8; // Between 8-19
+            const minutes = Math.floor(Math.random() * 60);
+            return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')} WIB`;
+        }
+
+        // Function to generate random location
+        function getRandomLocation() {
+            const locations = [
+                "Sudirman", 
+                "Thamrin", 
+                "Kebayoran", 
+                "Pondok Indah", 
+                "Grogol", 
+                "Cipete", 
+                "Kemang"
+            ];
+            return locations[Math.floor(Math.random() * locations.length)];
+        }
+
+        // Close modal
+        $('#modalClose, #modalBtnClose').click(function() {
+            $('#detailModal').removeClass('active');
+        });
+
+        // Close modal when clicking outside
+        $('#detailModal').click(function(e) {
+            if ($(e.target).hasClass('modal-overlay')) {
+                $(this).removeClass('active');
+            }
+        });
+
+        // Update table when sidebar state changes
+        setTimeout(() => {
+            table.columns.adjust().draw();
+        }, 300);
     });
   </script>
-</div>
 @endsection

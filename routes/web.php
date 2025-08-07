@@ -7,6 +7,14 @@ Route::get('/', function () {
     return view('home');
 })->name('home');
 
+Route::get('/login', function () {
+    return view('pilihan-login');
+})->name('login');
+
+Route::get('/register', function () {
+    return view('pilihan-login');
+})->name('register');
+
 Route::get('/profile', function () {
     return view('profile');
 })->name('profile');
@@ -107,6 +115,10 @@ Route::get('/settings', function () {
     return view('settings');
 })->name('settings');
 
+Route::get('/test-settings', function () {
+    return view('test-settings');
+})->name('test-settings');
+
 Route::get('/logout', function () {
     // Logika logout bisa ditambahkan di sini
     return redirect('/')->with('success', 'Berhasil logout!');
@@ -185,6 +197,10 @@ Route::get('/nasabahkomunitas', function () {
     return view('nasabahkomunitas');
 })->name('nasabahkomunitas');
 
+Route::get('/profilenasabah', function () {
+    return view('profilenasabah');
+})->name('profilenasabah');
+
 Route::get('/riwayattransaksinasabah', function () {
     return view('riwayattransaksinasabah');
 })->name('riwayattransaksinasabah');
@@ -192,6 +208,26 @@ Route::get('/riwayattransaksinasabah', function () {
 Route::get('/tokou', function () {
     return view('tokou');
 })->name('tokou');
+
+Route::get('/tokon', function () {
+    return view('tokon');
+})->name('tokon');
+
+Route::get('/wishlist', function () {
+    return view('wishlist');
+})->name('wishlist');
+
+Route::get('/riwayat', function () {
+    return view('riwayat');
+})->name('riwayat');
+
+Route::get('/settings-non-nasabah', function () {
+    return view('settings-non-nasabah');
+})->name('settings-non-nasabah');
+
+Route::get('/settingsnasab', function () {
+    return view('settings');
+})->name('settingsnasab');
 
 
 Route::get('/penimbangansampah-banksampah', function () {

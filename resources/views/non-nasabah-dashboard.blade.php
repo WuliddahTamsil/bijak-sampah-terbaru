@@ -51,6 +51,9 @@
             width: 100%;
             margin-left: 0;
             margin-right: 0;
+            padding-left: 0;
+            padding-right: 0;
+            padding-bottom: 0;
         }
 
         /* Chart Container */
@@ -344,6 +347,9 @@
             height: 220px;
             padding-top: 40px;
             padding-bottom: 30px;
+            background: linear-gradient(180deg, rgba(117, 230, 218, 0.05) 0%, rgba(5, 68, 94, 0.02) 100%);
+            border-radius: 12px;
+            margin: 20px 0;
         }
 
         .chart-content::before {
@@ -353,7 +359,7 @@
             left: 0;
             width: 100%;
             height: 2px;
-            background: #eee;
+            background: linear-gradient(90deg, transparent 0%, #e2e8f0 20%, #e2e8f0 80%, transparent 100%);
         }
 
         .chart-bar-item {
@@ -366,6 +372,7 @@
             position: relative;
             height: var(--height); /* Tinggi item akan disesuaikan dengan data */
             transition: height 0.3s ease;
+            margin: 0 4px;
         }
 
         .bar {
@@ -379,10 +386,22 @@
             transform-origin: bottom;
             animation: grow-scale 1.5s ease-out forwards;
             animation-delay: calc(var(--order) * 0.2s);
+            box-shadow: 0 2px 8px rgba(5, 68, 94, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .bar:hover {
+            transform: scaleY(1.05);
+            box-shadow: 0 4px 16px rgba(5, 68, 94, 0.3);
         }
 
         .bar.green {
             background: linear-gradient(to top, #10B981, #059669); /* Warna hijau untuk bar tertinggi */
+            box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+        }
+
+        .bar.green:hover {
+            box-shadow: 0 4px 16px rgba(16, 185, 129, 0.4);
         }
 
         @keyframes grow-scale {
@@ -392,20 +411,29 @@
 
         .bar-label {
             position: absolute;
-            top: -40px;
+            top: -45px;
             left: 50%;
             transform: translateX(-50%);
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 600;
             background: white;
-            padding: 6px 12px;
+            padding: 6px 10px;
             border-radius: 20px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
             white-space: nowrap;
             opacity: 0;
             animation: fadeIn 0.5s ease-out forwards;
             animation-delay: calc(var(--order) * 0.2s + 1s);
-            color: #05445E; /* Warna label agar terlihat di atas bar */
+            color: #05445E;
+            border: 1px solid #e2e8f0;
+            min-width: 60px;
+            text-align: center;
+        }
+
+        .bar.green + .bar-label {
+            color: #10B981;
+            background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+            border-color: #10B981;
         }
 
         @keyframes fadeIn {
@@ -415,11 +443,68 @@
         
         .day {
             position: absolute;
-            bottom: -40px; /* Nilai negatif untuk memposisikan lebih ke bawah dari batas parent */
+            bottom: -35px;
             width: 100%;
             text-align: center;
+            font-size: 11px;
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        /* Chart Grid Lines */
+        .chart-grid {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .grid-line {
+            position: absolute;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent 0%, #e2e8f0 20%, #e2e8f0 80%, transparent 100%);
+        }
+
+        .grid-line:nth-child(1) { top: 20%; }
+        .grid-line:nth-child(2) { top: 40%; }
+        .grid-line:nth-child(3) { top: 60%; }
+        .grid-line:nth-child(4) { top: 80%; }
+
+        /* Chart Legend */
+        .chart-legend {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8fafc;
+            border-radius: 8px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
             font-size: 12px;
-            color: #555; /* Warna teks yang sedikit lebih gelap untuk kontras */
+            color: #64748b;
+        }
+
+        .legend-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 2px;
+        }
+
+        .legend-color.blue {
+            background: linear-gradient(135deg, #05445E, #189AB4);
+        }
+
+        .legend-color.green {
+            background: linear-gradient(135deg, #10B981, #059669);
         }
 
         /* Modal untuk CRUD */
@@ -601,17 +686,19 @@
 
         /* Content Container */
         .content-container {
-            padding: 2rem;
-            max-width: 1200px;
-            margin: 0 auto;
+            padding: 0;
+            max-width: none;
+            margin: 0;
+            width: 100%;
         }
 
         /* Welcome Section */
         .welcome-section {
             background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-            border-radius: 20px;
+            border-radius: 0;
             padding: 2rem;
-            margin-bottom: 2rem;
+            margin-bottom: 0;
+            width: 100%;
         }
 
         .eco-score-card {
@@ -651,6 +738,7 @@
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 1.5rem;
             margin-bottom: 2rem;
+            padding: 0;
         }
 
         .action-card {
@@ -724,6 +812,7 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 1.5rem;
+            padding: 0;
         }
 
         .section-title {
@@ -756,6 +845,7 @@
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 1.5rem;
+            padding: 0;
         }
 
         .challenge-card {
@@ -851,6 +941,7 @@
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 2rem;
+            padding: 0;
         }
 
         .calculator-card {
@@ -963,6 +1054,7 @@
         .tips-carousel {
             position: relative;
             margin-bottom: 1rem;
+            padding: 0;
         }
 
         .tip-card {
@@ -1036,6 +1128,7 @@
             align-items: center;
             justify-content: center;
             gap: 1rem;
+            padding: 0;
         }
 
         .nav-btn {
@@ -1081,6 +1174,7 @@
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
             gap: 1.5rem;
+            padding: 0;
         }
 
         .event-card {
@@ -1170,18 +1264,22 @@
         @media (max-width: 768px) {
             .quick-actions-grid {
                 grid-template-columns: 1fr;
+                padding: 0;
             }
             
             .challenge-cards {
                 grid-template-columns: 1fr;
+                padding: 0;
             }
             
             .calculator-grid {
                 grid-template-columns: 1fr;
+                padding: 0;
             }
             
             .events-grid {
                 grid-template-columns: 1fr;
+                padding: 0;
             }
             
             .tip-card.active {
@@ -1191,6 +1289,18 @@
             
             .tip-stats {
                 justify-content: center;
+            }
+            
+            .section-header {
+                padding: 0;
+            }
+            
+            .tips-carousel {
+                padding: 0;
+            }
+            
+            .tips-navigation {
+                padding: 0;
             }
         }
 
@@ -1204,6 +1314,144 @@
         @media (max-width: 1199px) {
             .main-content {
                 padding-left: 4rem !important;
+            }
+        }
+
+        /* Chart Tooltip */
+        .chart-bar-item:hover .bar-label {
+            transform: translateX(-50%) translateY(-5px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 10;
+        }
+
+        .chart-bar-item:hover .day {
+            color: #05445E;
+            font-weight: 600;
+        }
+
+        /* Chart Animation Enhancements */
+        .chart-content {
+            animation: chartFadeIn 0.8s ease-out;
+        }
+
+        @keyframes chartFadeIn {
+            from { 
+                opacity: 0; 
+                transform: translateY(20px); 
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0); 
+            }
+        }
+
+        /* Responsive Chart */
+        @media (max-width: 768px) {
+            .chart-content {
+                height: 180px;
+                padding-top: 30px;
+                padding-bottom: 25px;
+            }
+            
+            .bar {
+                max-width: 35px;
+            }
+            
+            .bar-label {
+                font-size: 10px;
+                padding: 4px 8px;
+                min-width: 50px;
+            }
+            
+            .day {
+                font-size: 10px;
+                bottom: -30px;
+            }
+            
+            .chart-legend {
+                flex-direction: column;
+                gap: 10px;
+                align-items: center;
+            }
+        }
+
+        /* Chart Statistics */
+        .chart-stats {
+            display: flex;
+            justify-content: space-around;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .stat-card {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+            flex: 1;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .stat-icon {
+            font-size: 24px;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #75E6DA 0%, #05445E 100%);
+            border-radius: 50%;
+            color: white;
+        }
+
+        .stat-content {
+            flex: 1;
+        }
+
+        .stat-value {
+            font-size: 18px;
+            font-weight: 700;
+            color: #05445E;
+            line-height: 1;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #64748b;
+            margin-top: 2px;
+        }
+
+        /* Responsive Chart Stats */
+        @media (max-width: 768px) {
+            .chart-stats {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .stat-card {
+                padding: 10px 12px;
+            }
+            
+            .stat-icon {
+                font-size: 20px;
+                width: 35px;
+                height: 35px;
+            }
+            
+            .stat-value {
+                font-size: 16px;
             }
         }
     </style>
@@ -1266,48 +1514,39 @@
                     @click="activeMenu = 'marketplace'"
                 >
                     <i class="fas fa-store text-lg"></i>
-                    <span x-show="sidebarOpen" class="text-sm font-medium">Marketplace</span>
+                    <span x-show="sidebarOpen" class="text-sm font-medium">Toko</span>
                 </a>
 
-                <button 
-                    onclick="showDevelopmentModal('Belanja')"
-                    class="flex items-center p-3 font-medium rounded-lg whitespace-nowrap w-full transition-colors duration-200 hover:bg-white/10 hover:shadow-sm"
-                    :style="sidebarOpen ? 'gap: 12px;' : 'justify-content: center;'"
-                    @click="activeMenu = 'belanja'"
-                >
-                    <i class="fas fa-shopping-bag text-lg"></i>
-                    <span x-show="sidebarOpen" class="text-sm font-medium">Belanja</span>
-                </button>
 
-                <button 
-                    onclick="showDevelopmentModal('Wishlist')"
+                <a 
+                    href="{{ route('wishlist') }}" 
                     class="flex items-center p-3 font-medium rounded-lg whitespace-nowrap w-full transition-colors duration-200 hover:bg-white/10 hover:shadow-sm"
                     :style="sidebarOpen ? 'gap: 12px;' : 'justify-content: center;'"
                     @click="activeMenu = 'wishlist'"
                 >
                     <i class="fas fa-heart text-lg"></i>
                     <span x-show="sidebarOpen" class="text-sm font-medium">Wishlist</span>
-                </button>
+                </a>
 
-                <button 
-                    onclick="showDevelopmentModal('Riwayat')"
+                <a 
+                    href="{{ route('riwayat') }}" 
                     class="flex items-center p-3 font-medium rounded-lg whitespace-nowrap w-full transition-colors duration-200 hover:bg-white/10 hover:shadow-sm"
                     :style="sidebarOpen ? 'gap: 12px;' : 'justify-content: center;'"
                     @click="activeMenu = 'riwayat'"
                 >
                     <i class="fas fa-history text-lg"></i>
                     <span x-show="sidebarOpen" class="text-sm font-medium">Riwayat</span>
-                </button>
+                </a>
 
-                <button 
-                    onclick="showDevelopmentModal('Settings')"
+                <a 
+                    href="{{ route('settings-non-nasabah') }}" 
                     class="flex items-center p-3 font-medium rounded-lg whitespace-nowrap w-full transition-colors duration-200 hover:bg-white/10 hover:shadow-sm"
                     :style="sidebarOpen ? 'gap: 12px;' : 'justify-content: center;'"
                     @click="activeMenu = 'settings'"
                 >
                     <i class="fas fa-cog text-lg"></i>
                     <span x-show="sidebarOpen" class="text-sm font-medium">Settings</span>
-                </button>
+                </a>
             </nav>
             
             {{-- Logout Section --}}
@@ -1330,7 +1569,7 @@
         <div class="fixed top-0 left-0 right-0 h-12 z-40 flex items-center justify-between px-6 text-white" :style="'padding-left:' + (sidebarOpen ? '16rem' : '4rem') + '; background: linear-gradient(135deg, #75E6DA 0%, #05445E 30%, #05445E 100%);'">
             <h1 class="text-white font-semibold text-lg" style="position: absolute; left: 1.5rem;">BijakSampah</h1>
             <div class="flex items-center gap-4" style="position: absolute; right: 1.5rem;">
-                <button onclick="showDevelopmentModal('Sign In')" class="bg-white/20 hover:bg-white/30 text-white px-4 py-1 rounded-full text-sm font-medium transition-colors duration-200">Sign in</button>
+                
                 <button onclick="showNotifModal()" class="relative hover:text-white/80 transition-colors">
                     <i class="far fa-bell text-white text-sm"></i>
                     <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center font-medium">2</span>
@@ -1573,8 +1812,7 @@
                 <div class="events-grid">
                     <div class="event-card">
                         <div class="event-date">
-                            <span class="day">25</span>
-                            <span class="month">Jun</span>
+                            <span class="month">25 Jun</span>
                         </div>
                         <div class="event-content">
                             <h3>Clean Up Day</h3>
@@ -1593,8 +1831,7 @@
                     
                     <div class="event-card">
                         <div class="event-date">
-                            <span class="day">28</span>
-                            <span class="month">Jun</span>
+                            <span class="month">28 Jun</span>
                         </div>
                         <div class="event-content">
                             <h3>Workshop Kompos</h3>
@@ -1896,6 +2133,53 @@
         function generateChart() {
             chartContent.innerHTML = '';
             
+            // Calculate chart statistics
+            const totalActivity = chartData.reduce((sum, data) => sum + parseInt(data.value), 0);
+            const averageActivity = Math.round(totalActivity / chartData.length);
+            const maxActivity = Math.max(...chartData.map(data => parseInt(data.value)));
+            const minActivity = Math.min(...chartData.map(data => parseInt(data.value)));
+            
+            // Add statistics summary
+            const statsContainer = document.createElement('div');
+            statsContainer.className = 'chart-stats';
+            statsContainer.innerHTML = `
+                <div class="stat-card">
+                    <div class="stat-icon">📊</div>
+                    <div class="stat-content">
+                        <div class="stat-value">${averageActivity}%</div>
+                        <div class="stat-label">Rata-rata</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">📈</div>
+                    <div class="stat-content">
+                        <div class="stat-value">${maxActivity}%</div>
+                        <div class="stat-label">Tertinggi</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">📉</div>
+                    <div class="stat-content">
+                        <div class="stat-value">${minActivity}%</div>
+                        <div class="stat-label">Terendah</div>
+                    </div>
+                </div>
+            `;
+            
+            // Insert stats before chart content
+            const chartContainer = chartContent.parentElement;
+            chartContainer.insertBefore(statsContainer, chartContent);
+            
+            // Add grid lines
+            const gridContainer = document.createElement('div');
+            gridContainer.className = 'chart-grid';
+            for (let i = 0; i < 4; i++) {
+                const gridLine = document.createElement('div');
+                gridLine.className = 'grid-line';
+                gridContainer.appendChild(gridLine);
+            }
+            chartContent.appendChild(gridContainer);
+            
             // Generate bars for each day
             chartData.forEach((data, index) => {
                 const chartBarItem = document.createElement('div');
@@ -1916,6 +2200,23 @@
                 `;
                 chartContent.appendChild(chartBarItem);
             });
+            
+            // Add legend
+            const legendContainer = document.createElement('div');
+            legendContainer.className = 'chart-legend';
+            legendContainer.innerHTML = `
+                <div class="legend-item">
+                    <div class="legend-color blue"></div>
+                    <span>Aktivitas Normal</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color green"></div>
+                    <span>Puncak Aktivitas</span>
+                </div>
+            `;
+            
+            // Insert legend after chart content
+            chartContainer.appendChild(legendContainer);
         }
 
         // Update Notification Count in Topbar
@@ -2005,7 +2306,14 @@
                 notifInput.value = '';
                 loadNotifications();
                 loadNotifModal();
-                showToast('Notifikasi berhasil ditambahkan!', 'success');
+                
+                // Show success pop-up
+                showSuccessPopup(
+                    'achievement',
+                    'Notifikasi berhasil ditambahkan!',
+                    'Notifikasi baru telah disimpan ke dalam sistem'
+                );
+                
                 updateNotificationCount();
             }
         });
@@ -2030,7 +2338,14 @@
         // Save Profile Changes
         saveProfile.addEventListener('click', function() {
             // In a real app, you would save to database here
-            alert('Perubahan profil berhasil disimpan!');
+            
+            // Show success pop-up
+            showSuccessPopup(
+                'success',
+                'Profil berhasil diperbarui!',
+                'Perubahan profil telah disimpan dengan aman'
+            );
+            
             profileModal.style.display = 'none';
         });
 
@@ -2048,8 +2363,12 @@
                 // Reload notifications display
                 loadNotifications();
                 
-                // Show success message
-                showToast('Notifikasi berhasil dihapus!', 'success');
+                // Show success pop-up
+                showSuccessPopup(
+                    'success',
+                    'Notifikasi berhasil dihapus!',
+                    'Notifikasi telah dihapus dari sistem'
+                );
                 
                 // Update notification count in topbar
                 updateNotificationCount();
@@ -2087,10 +2406,201 @@
 
         // Show Development Modal
         function showDevelopmentModal(feature) {
-            const modal = document.getElementById('developmentModal');
-            const title = modal.querySelector('.modal-title');
-            title.textContent = feature + ' - Fitur Dalam Pengembangan';
+            // Create success/achievement pop-up based on feature
+            const modal = document.createElement('div');
+            modal.className = 'modal';
             modal.style.display = 'flex';
+            
+            let modalContent = '';
+            let icon = '';
+            let title = '';
+            let message = '';
+            let buttonText = '';
+            
+            switch(feature) {
+                case 'Sign In':
+                    icon = '🔐';
+                    title = 'Fitur Sign In';
+                    message = 'Fitur login dan registrasi sedang dalam pengembangan. Tim kami sedang menyiapkan sistem autentikasi yang aman dan mudah digunakan.';
+                    buttonText = 'Mengerti';
+                    break;
+                case 'Profile Menu':
+                    icon = '👤';
+                    title = 'Menu Profil';
+                    message = 'Fitur pengaturan profil, edit foto, dan informasi pribadi akan segera hadir. Kami sedang menyiapkan interface yang user-friendly.';
+                    buttonText = 'Oke';
+                    break;
+                case 'Belanja':
+                    icon = '🛒';
+                    title = 'Fitur Belanja';
+                    message = 'Sistem belanja online dengan berbagai produk ramah lingkungan sedang disiapkan. Akan ada diskon khusus untuk member!';
+                    buttonText = 'Tunggu Saja';
+                    break;
+                case 'Wishlist':
+                    icon = '❤️';
+                    title = 'Wishlist';
+                    message = 'Fitur wishlist untuk menyimpan produk favorit sedang dikembangkan. Kamu bisa bookmark produk yang ingin dibeli nanti.';
+                    buttonText = 'Siap Menunggu';
+                    break;
+                case 'Riwayat':
+                    icon = '📋';
+                    title = 'Riwayat Transaksi';
+                    message = 'Fitur riwayat pembelian dan aktivitas akan segera hadir. Kamu bisa melacak semua transaksi dan aktivitas eco-friendly.';
+                    buttonText = 'Mengerti';
+                    break;
+                case 'Settings':
+                    icon = '⚙️';
+                    title = 'Pengaturan';
+                    message = 'Menu pengaturan aplikasi sedang disiapkan. Akan ada opsi tema, notifikasi, bahasa, dan pengaturan privasi.';
+                    buttonText = 'Oke';
+                    break;
+                case 'Bergabung Event':
+                    icon = '🎉';
+                    title = 'Bergabung Event';
+                    message = 'Fitur bergabung dengan event komunitas sedang dikembangkan. Kamu bisa mendaftar dan berpartisipasi dalam berbagai kegiatan ramah lingkungan.';
+                    buttonText = 'Siap Bergabung';
+                    break;
+                default:
+                    icon = '🚀';
+                    title = 'Fitur Baru';
+                    message = 'Fitur ini sedang dalam tahap pengembangan. Tim kami sedang bekerja keras untuk menghadirkan pengalaman terbaik untuk Anda.';
+                    buttonText = 'Mengerti';
+            }
+            
+            modal.innerHTML = `
+                <div class="modal-content success-modal" style="max-width: 500px;">
+                    <div class="modal-header">
+                        <h3 class="modal-title">${icon} ${title}</h3>
+                        <button class="close-modal" onclick="this.closest('.modal').remove()">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div style="text-align: center; padding: 20px;">
+                            <div class="feature-icon" style="font-size: 64px; margin-bottom: 20px;">${icon}</div>
+                            <h4 style="color: #05445E; font-size: 20px; margin-bottom: 15px; font-weight: 600;">${title}</h4>
+                            <p style="color: #666; font-size: 16px; line-height: 1.6; margin-bottom: 20px;">
+                                ${message}
+                            </p>
+                            <div class="feature-status">
+                                <div class="status-badge">
+                                    <i class="fas fa-clock"></i>
+                                    <span>Sedang Dikembangkan</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill"></div>
+                                </div>
+                                <p class="eta-text">Estimasi rilis: 2-3 minggu ke depan</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-primary success-btn" onclick="this.closest('.modal').remove()">${buttonText}</button>
+                    </div>
+                </div>
+            `;
+            
+            // Add styles for success modal
+            const style = document.createElement('style');
+            style.textContent = `
+                .success-modal {
+                    animation: modalSlideIn 0.3s ease-out;
+                }
+                
+                @keyframes modalSlideIn {
+                    from { 
+                        opacity: 0; 
+                        transform: translateY(-30px) scale(0.9); 
+                    }
+                    to { 
+                        opacity: 1; 
+                        transform: translateY(0) scale(1); 
+                    }
+                }
+                
+                .feature-icon {
+                    animation: iconBounce 0.6s ease-out;
+                }
+                
+                @keyframes iconBounce {
+                    0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+                    40% { transform: translateY(-10px); }
+                    60% { transform: translateY(-5px); }
+                }
+                
+                .feature-status {
+                    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+                    border-radius: 12px;
+                    padding: 20px;
+                    margin-top: 20px;
+                    border: 2px solid #75E6DA;
+                }
+                
+                .status-badge {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 8px;
+                    color: #05445E;
+                    font-weight: 600;
+                    font-size: 14px;
+                    margin-bottom: 15px;
+                }
+                
+                .progress-bar {
+                    width: 100%;
+                    height: 8px;
+                    background: #e2e8f0;
+                    border-radius: 4px;
+                    overflow: hidden;
+                    margin-bottom: 10px;
+                }
+                
+                .progress-fill {
+                    height: 100%;
+                    background: linear-gradient(90deg, #75E6DA, #05445E);
+                    border-radius: 4px;
+                    width: 65%;
+                    animation: progressPulse 2s ease-in-out infinite;
+                }
+                
+                @keyframes progressPulse {
+                    0%, 100% { opacity: 1; }
+                    50% { opacity: 0.7; }
+                }
+                
+                .eta-text {
+                    color: #666;
+                    font-size: 12px;
+                    margin: 0;
+                    text-align: center;
+                }
+                
+                .success-btn {
+                    background: linear-gradient(135deg, #75E6DA 0%, #05445E 100%);
+                    color: white;
+                    padding: 12px 24px;
+                    border: none;
+                    border-radius: 8px;
+                    font-weight: 600;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                }
+                
+                .success-btn:hover {
+                    background: linear-gradient(135deg, #05445E 0%, #75E6DA 100%);
+                    transform: translateY(-2px);
+                    box-shadow: 0 4px 12px rgba(117, 230, 218, 0.3);
+                }
+            `;
+            document.head.appendChild(style);
+            
+            document.body.appendChild(modal);
+            
+            // Close modal when clicking outside
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    modal.remove();
+                }
+            });
         }
 
         // Close Development Modal
@@ -2104,11 +2614,172 @@
             generateChart();
             initializeTipsCarousel();
             initializeEcoScore();
+            updateDashboardChallenges(); // Add this line
         });
 
         // Eco Challenge Functions
         function showEcoChallenge() {
-            showDevelopmentModal('Eco Challenge');
+            // Create and show eco challenge modal
+            const modal = document.createElement('div');
+            modal.className = 'modal';
+            modal.style.display = 'flex';
+            modal.innerHTML = `
+                <div class="modal-content" style="max-width: 600px;">
+                    <div class="modal-header">
+                        <h3 class="modal-title">🌱 Eco Challenge</h3>
+                        <button class="close-modal" onclick="this.closest('.modal').remove()">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="eco-challenge-content">
+                            <div class="challenge-intro mb-4">
+                                <h4 style="color: #05445E; font-size: 18px; margin-bottom: 10px;">Tantangan Ramah Lingkungan</h4>
+                                <p style="color: #666; line-height: 1.6;">Pilih tantangan yang ingin kamu ikuti dan dapatkan poin eco!</p>
+                            </div>
+                            
+                            <div class="challenge-list">
+                                <div class="challenge-item" onclick="startChallenge('plastic-free')">
+                                    <div class="challenge-icon">🥤</div>
+                                    <div class="challenge-details">
+                                        <h5>Kurangi Sampah Plastik</h5>
+                                        <p>Gunakan tas belanja reusable selama 7 hari</p>
+                                        <div class="challenge-reward">+50 Poin Eco</div>
+                                    </div>
+                                    <div class="challenge-status">Belum Dimulai</div>
+                                </div>
+                                
+                                <div class="challenge-item" onclick="startChallenge('compost')">
+                                    <div class="challenge-icon">🌱</div>
+                                    <div class="challenge-details">
+                                        <h5>Kompos Organik</h5>
+                                        <p>Buat kompos dari sampah dapur</p>
+                                        <div class="challenge-reward">+100 Poin Eco</div>
+                                    </div>
+                                    <div class="challenge-status">Belum Dimulai</div>
+                                </div>
+                                
+                                <div class="challenge-item" onclick="startChallenge('bike')">
+                                    <div class="challenge-icon">🚲</div>
+                                    <div class="challenge-details">
+                                        <h5>Bersepeda ke Pasar</h5>
+                                        <p>Gunakan sepeda untuk belanja selama 5 hari</p>
+                                        <div class="challenge-reward">+75 Poin Eco</div>
+                                    </div>
+                                    <div class="challenge-status">Belum Dimulai</div>
+                                </div>
+                                
+                                <div class="challenge-item" onclick="startChallenge('water')">
+                                    <div class="challenge-icon">💧</div>
+                                    <div class="challenge-details">
+                                        <h5>Minum Air Keran</h5>
+                                        <p>Hindari botol plastik selama 10 hari</p>
+                                        <div class="challenge-reward">+80 Poin Eco</div>
+                                    </div>
+                                    <div class="challenge-status">Belum Dimulai</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-outline" onclick="this.closest('.modal').remove()">Tutup</button>
+                    </div>
+                </div>
+            `;
+            
+            // Add styles for eco challenge
+            const style = document.createElement('style');
+            style.textContent = `
+                .eco-challenge-content {
+                    max-height: 400px;
+                    overflow-y: auto;
+                }
+                
+                .challenge-list {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 15px;
+                }
+                
+                .challenge-item {
+                    display: flex;
+                    align-items: center;
+                    gap: 15px;
+                    padding: 15px;
+                    background: #f8fafc;
+                    border-radius: 12px;
+                    border: 2px solid transparent;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                }
+                
+                .challenge-item:hover {
+                    border-color: #75E6DA;
+                    background: #f0f9ff;
+                    transform: translateY(-2px);
+                }
+                
+                .challenge-icon {
+                    font-size: 2rem;
+                    width: 50px;
+                    height: 50px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    background: white;
+                    border-radius: 50%;
+                    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+                }
+                
+                .challenge-details {
+                    flex: 1;
+                }
+                
+                .challenge-details h5 {
+                    color: #05445E;
+                    font-size: 16px;
+                    font-weight: 600;
+                    margin-bottom: 5px;
+                }
+                
+                .challenge-details p {
+                    color: #666;
+                    font-size: 14px;
+                    margin-bottom: 8px;
+                }
+                
+                .challenge-reward {
+                    color: #f16728;
+                    font-size: 12px;
+                    font-weight: 600;
+                }
+                
+                .challenge-status {
+                    font-size: 12px;
+                    color: #666;
+                    padding: 4px 8px;
+                    background: #e5e7eb;
+                    border-radius: 12px;
+                }
+                
+                .challenge-status.active {
+                    background: #dcfce7;
+                    color: #166534;
+                }
+                
+                .challenge-status.completed {
+                    background: #dbeafe;
+                    color: #1e40af;
+                }
+            `;
+            document.head.appendChild(style);
+            
+            document.body.appendChild(modal);
+            
+            // Close modal when clicking outside
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    modal.remove();
+                }
+            });
         }
 
         function showAllChallenges() {
@@ -2155,6 +2826,13 @@
 
             // Animate the results
             impactResults.style.animation = 'fadeIn 0.5s ease';
+            
+            // Show success pop-up for calculator usage
+            showSuccessPopup(
+                'eco_score',
+                'Perhitungan dampak lingkungan berhasil!',
+                'Kamu telah menghitung dampak sampah harianmu'
+            );
         }
 
         // Eco Tips Functions
@@ -2229,11 +2907,25 @@
         function nextTip() {
             currentTipIndex = (currentTipIndex + 1) % tips.length;
             showTip(currentTipIndex);
+            
+            // Show success pop-up for learning new tip
+            showSuccessPopup(
+                'level_up',
+                'Tips baru dipelajari!',
+                'Kamu telah mempelajari tips ramah lingkungan yang baru'
+            );
         }
 
         function previousTip() {
             currentTipIndex = (currentTipIndex - 1 + tips.length) % tips.length;
             showTip(currentTipIndex);
+            
+            // Show success pop-up for reviewing tip
+            showSuccessPopup(
+                'streak',
+                'Mengulang tips sebelumnya!',
+                'Bagus! Kamu mengingat tips ramah lingkungan'
+            );
         }
 
         // Community Events Functions
@@ -2247,7 +2939,12 @@
         // Add event listeners for join buttons
         document.addEventListener('click', function(e) {
             if (e.target.classList.contains('join-event-btn')) {
-                showDevelopmentModal('Bergabung Event');
+                // Show success pop-up for joining event
+                showSuccessPopup(
+                    'achievement',
+                    'Berhasil bergabung dengan event!',
+                    'Kamu telah mendaftar untuk berpartisipasi dalam kegiatan ramah lingkungan'
+                );
             }
         });
 
@@ -2314,6 +3011,349 @@
         document.addEventListener('DOMContentLoaded', function() {
             setTimeout(addLoadingAnimations, 500);
         });
+
+        // Start Challenge Function
+        function startChallenge(challengeType) {
+            const challenges = {
+                'plastic-free': {
+                    name: 'Kurangi Sampah Plastik',
+                    duration: 7,
+                    reward: 50,
+                    icon: '🥤'
+                },
+                'compost': {
+                    name: 'Kompos Organik',
+                    duration: 14,
+                    reward: 100,
+                    icon: '🌱'
+                },
+                'bike': {
+                    name: 'Bersepeda ke Pasar',
+                    duration: 5,
+                    reward: 75,
+                    icon: '🚲'
+                },
+                'water': {
+                    name: 'Minum Air Keran',
+                    duration: 10,
+                    reward: 80,
+                    icon: '💧'
+                }
+            };
+            
+            const challenge = challenges[challengeType];
+            const startDate = new Date();
+            const endDate = new Date(startDate.getTime() + (challenge.duration * 24 * 60 * 60 * 1000));
+            
+            // Save challenge to localStorage
+            const userChallenges = JSON.parse(localStorage.getItem('userChallenges') || '{}');
+            userChallenges[challengeType] = {
+                name: challenge.name,
+                startDate: startDate.toISOString(),
+                endDate: endDate.toISOString(),
+                duration: challenge.duration,
+                reward: challenge.reward,
+                icon: challenge.icon,
+                status: 'active',
+                progress: 0
+            };
+            localStorage.setItem('userChallenges', JSON.stringify(userChallenges));
+            
+            // Show success message
+            showSuccessPopup(
+                'level_up',
+                `Tantangan "${challenge.name}" dimulai!`,
+                `Kamu telah memulai tantangan ramah lingkungan selama ${challenge.duration} hari`
+            );
+            
+            // Close modal
+            document.querySelector('.modal').remove();
+            
+            // Update dashboard challenges
+            updateDashboardChallenges();
+        }
+        
+        // Update Dashboard Challenges
+        function updateDashboardChallenges() {
+            const userChallenges = JSON.parse(localStorage.getItem('userChallenges') || '{}');
+            const challengeCards = document.querySelectorAll('.challenge-card');
+            
+            challengeCards.forEach((card, index) => {
+                const challengeTypes = ['plastic-free', 'compost'];
+                const challengeType = challengeTypes[index];
+                const challenge = userChallenges[challengeType];
+                
+                if (challenge && challenge.status === 'active') {
+                    const startDate = new Date(challenge.startDate);
+                    const endDate = new Date(challenge.endDate);
+                    const now = new Date();
+                    
+                    // Calculate progress
+                    const totalDuration = endDate - startDate;
+                    const elapsed = now - startDate;
+                    const progress = Math.min(100, Math.max(0, (elapsed / totalDuration) * 100));
+                    
+                    // Update progress circle
+                    const progressCircle = card.querySelector('.progress-circle svg path:last-child');
+                    const progressText = card.querySelector('.progress-text');
+                    
+                    if (progressCircle && progressText) {
+                        const circumference = 2 * Math.PI * 15.9155;
+                        const offset = circumference - (progress / 100) * circumference;
+                        progressCircle.style.strokeDasharray = `${circumference} ${circumference}`;
+                        progressCircle.style.strokeDashoffset = offset;
+                        progressText.textContent = `${Math.round(progress)}%`;
+                    }
+                    
+                    // Update status
+                    const statusElement = card.querySelector('.challenge-status');
+                    if (statusElement) {
+                        statusElement.textContent = 'Sedang Berlangsung';
+                        statusElement.className = 'challenge-status active';
+                    }
+                    
+                    // Check if completed
+                    if (progress >= 100) {
+                        completeChallenge(challengeType);
+                    }
+                }
+            });
+        }
+        
+        // Complete Challenge
+        function completeChallenge(challengeType) {
+            const userChallenges = JSON.parse(localStorage.getItem('userChallenges') || '{}');
+            const challenge = userChallenges[challengeType];
+            
+            if (challenge && challenge.status === 'active') {
+                challenge.status = 'completed';
+                localStorage.setItem('userChallenges', JSON.stringify(userChallenges));
+                
+                // Update eco score
+                const currentScore = parseInt(localStorage.getItem('ecoScore') || '75');
+                const newScore = currentScore + challenge.reward;
+                localStorage.setItem('ecoScore', newScore.toString());
+                
+                // Update eco score display
+                const ecoScoreElement = document.querySelector('.eco-score-number');
+                if (ecoScoreElement) {
+                    ecoScoreElement.textContent = newScore;
+                }
+                
+                // Show success pop-up
+                showSuccessPopup(
+                    'challenge_complete',
+                    `Selamat! Tantangan "${challenge.name}" berhasil diselesaikan!`,
+                    `Kamu mendapatkan +${challenge.reward} Poin Eco`
+                );
+                
+                // Update dashboard
+                updateDashboardChallenges();
+            }
+        }
+
+        // Show Success/Achievement Pop-up
+        function showSuccessPopup(type, message, details = '') {
+            const modal = document.createElement('div');
+            modal.className = 'modal';
+            modal.style.display = 'flex';
+            
+            let icon = '';
+            let title = '';
+            let color = '';
+            let animation = '';
+            
+            switch(type) {
+                case 'challenge_complete':
+                    icon = '🏆';
+                    title = 'Tantangan Selesai!';
+                    color = '#10B981';
+                    animation = 'trophyBounce';
+                    break;
+                case 'eco_score':
+                    icon = '⭐';
+                    title = 'Eco Score Bertambah!';
+                    color = '#F59E0B';
+                    animation = 'starShine';
+                    break;
+                case 'level_up':
+                    icon = '🚀';
+                    title = 'Level Up!';
+                    color = '#8B5CF6';
+                    animation = 'rocketLaunch';
+                    break;
+                case 'achievement':
+                    icon = '🎖️';
+                    title = 'Achievement Unlocked!';
+                    color = '#EF4444';
+                    animation = 'achievementUnlock';
+                    break;
+                case 'streak':
+                    icon = '🔥';
+                    title = 'Streak Berlanjut!';
+                    color = '#F97316';
+                    animation = 'fireStreak';
+                    break;
+                default:
+                    icon = '✅';
+                    title = 'Berhasil!';
+                    color = '#10B981';
+                    animation = 'successPulse';
+            }
+            
+            modal.innerHTML = `
+                <div class="modal-content success-popup" style="max-width: 450px;">
+                    <div class="modal-header">
+                        <h3 class="modal-title">${title}</h3>
+                        <button class="close-modal" onclick="this.closest('.modal').remove()">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div style="text-align: center; padding: 20px;">
+                            <div class="success-icon ${animation}" style="font-size: 80px; margin-bottom: 20px; color: ${color};">${icon}</div>
+                            <h4 style="color: #05445E; font-size: 22px; margin-bottom: 15px; font-weight: 700;">${title}</h4>
+                            <p style="color: #666; font-size: 16px; line-height: 1.6; margin-bottom: 20px;">
+                                ${message}
+                            </p>
+                            ${details ? `<p style="color: #888; font-size: 14px; font-style: italic;">${details}</p>` : ''}
+                            <div class="success-stats">
+                                <div class="stat-item">
+                                    <i class="fas fa-leaf"></i>
+                                    <span>+25 Poin Eco</span>
+                                </div>
+                                <div class="stat-item">
+                                    <i class="fas fa-star"></i>
+                                    <span>+1 Achievement</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-primary success-btn" onclick="this.closest('.modal').remove()">Lanjutkan</button>
+                    </div>
+                </div>
+            `;
+            
+            // Add styles for success popup
+            const style = document.createElement('style');
+            style.textContent = `
+                .success-popup {
+                    animation: popupSlideIn 0.4s ease-out;
+                }
+                
+                @keyframes popupSlideIn {
+                    from { 
+                        opacity: 0; 
+                        transform: translateY(-50px) scale(0.8); 
+                    }
+                    to { 
+                        opacity: 1; 
+                        transform: translateY(0) scale(1); 
+                    }
+                }
+                
+                .success-icon {
+                    animation-duration: 1s;
+                    animation-fill-mode: both;
+                }
+                
+                @keyframes trophyBounce {
+                    0%, 20%, 50%, 80%, 100% { transform: translateY(0) rotate(0deg); }
+                    40% { transform: translateY(-15px) rotate(5deg); }
+                    60% { transform: translateY(-8px) rotate(-3deg); }
+                }
+                
+                @keyframes starShine {
+                    0% { transform: scale(1) rotate(0deg); }
+                    50% { transform: scale(1.2) rotate(180deg); }
+                    100% { transform: scale(1) rotate(360deg); }
+                }
+                
+                @keyframes rocketLaunch {
+                    0% { transform: translateY(0) scale(1); }
+                    50% { transform: translateY(-20px) scale(1.1); }
+                    100% { transform: translateY(0) scale(1); }
+                }
+                
+                @keyframes achievementUnlock {
+                    0% { transform: scale(0.5) rotate(0deg); opacity: 0; }
+                    50% { transform: scale(1.3) rotate(180deg); opacity: 1; }
+                    100% { transform: scale(1) rotate(360deg); opacity: 1; }
+                }
+                
+                @keyframes fireStreak {
+                    0% { transform: scale(1) rotate(0deg); }
+                    25% { transform: scale(1.1) rotate(5deg); }
+                    50% { transform: scale(1.2) rotate(-5deg); }
+                    75% { transform: scale(1.1) rotate(3deg); }
+                    100% { transform: scale(1) rotate(0deg); }
+                }
+                
+                @keyframes successPulse {
+                    0% { transform: scale(1); }
+                    50% { transform: scale(1.1); }
+                    100% { transform: scale(1); }
+                }
+                
+                .success-stats {
+                    display: flex;
+                    justify-content: center;
+                    gap: 20px;
+                    margin-top: 20px;
+                    padding: 15px;
+                    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+                    border-radius: 12px;
+                    border: 2px solid #75E6DA;
+                }
+                
+                .stat-item {
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                    color: #05445E;
+                    font-weight: 600;
+                    font-size: 14px;
+                }
+                
+                .stat-item i {
+                    color: #75E6DA;
+                    font-size: 16px;
+                }
+                
+                .success-btn {
+                    background: linear-gradient(135deg, #75E6DA 0%, #05445E 100%);
+                    color: white;
+                    padding: 12px 24px;
+                    border: none;
+                    border-radius: 8px;
+                    font-weight: 600;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                }
+                
+                .success-btn:hover {
+                    background: linear-gradient(135deg, #05445E 0%, #75E6DA 100%);
+                    transform: translateY(-2px);
+                    box-shadow: 0 4px 12px rgba(117, 230, 218, 0.3);
+                }
+            `;
+            document.head.appendChild(style);
+            
+            document.body.appendChild(modal);
+            
+            // Auto close after 3 seconds
+            setTimeout(() => {
+                if (modal.parentNode) {
+                    modal.remove();
+                }
+            }, 3000);
+            
+            // Close modal when clicking outside
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    modal.remove();
+                }
+            });
+        }
     </script>
 </body>
 </html>

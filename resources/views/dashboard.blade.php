@@ -179,12 +179,12 @@
                 {{-- Dashboard Link --}}
                 <a href="/dashboard" class="flex items-center gap-3 p-3 font-medium sidebar-nav-item whitespace-nowrap w-full" :class="open ? (active === 'dashboard' ? 'active text-white' : 'text-white') : (active === 'dashboard' ? 'active text-white justify-center' : 'text-white justify-center')">
                     <i class="fas fa-home text-lg"></i>
-                    <span x-show="open" class="text-sm font-medium">BijakSampah</span>
+                    <span x-show="open" class="text-sm font-medium">Dashboard</span>
                 </a>
                 
                 {{-- Bank Sampah Link --}}
                 <a href="/bank-sampah" class="flex items-center gap-3 p-3 rounded-lg sidebar-item-hover whitespace-nowrap w-full" :class="open ? (active === 'bank-sampah' ? 'bg-white/20 text-white shadow-lg' : 'hover:bg-white/20 text-white') : (active === 'bank-sampah' ? 'bg-white/20 text-white justify-center' : 'hover:bg-white/20 text-white justify-center')">
-                    <i class="fas fa-balance-scale text-lg"></i>
+                    <i class="fas fa-tachometer-alt text-lg"></i>
                     <span x-show="open" class="text-sm font-medium">Bank Sampah</span>
                 </a>
                 
@@ -266,7 +266,7 @@
         {{-- Content Container --}}
         <div class="content-container">
             {{-- Welcome Section --}}
-            <div class="mb-8">
+            <div class="mb-8 text-content">
                 <h1 class="text-4xl font-bold text-gray-900 mb-2">Selamat Datang di BijakSampah! 🌱</h1>
                 <p class="text-gray-600 text-lg">Platform inovatif untuk mendukung UMKM dan mengurangi sampah</p>
             </div>
@@ -275,13 +275,13 @@
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start w-full mb-12">
                 
                 {{-- Left Content Section --}}
-                <div class="space-y-8 w-full">
+                <div class="space-y-8 w-full text-content">
                     {{-- Main Heading --}}
                     <div>
-                        <h2 class="text-5xl lg:text-6xl font-black text-[#181F2A] leading-tight">
-                            Dukung <span class="text-highlight">UMKM</span>,<br>
+                        <h2 class="text-6xl lg:text-8xl font-black text-[#181F2A] leading-tight">
+                            Dukung <span class="text-highlight text-6xl lg:text-8xl font-black">UMKM</span>,<br>
                             Kurangi Sampah,<br>
-                            Rawat <span class="text-highlight">Bumi</span>
+                            Rawat <span class="text-highlight text-6xl lg:text-8xl font-black">Bumi</span>
                         </h2>
                         <p class="text-gray-600 text-lg mt-6 leading-relaxed max-w-lg font-medium">
                             Inovasi ramah lingkungan kini hadir lewat produk UMKM kreatif yang mendukung ekonomi sirkular dan keberlanjutan lingkungan.
@@ -333,7 +333,7 @@
 
             {{-- Statistics Cards Section --}}
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-                <div class="stat-card p-6">
+                <div class="stat-card p-6 text-content">
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-gray-600 text-sm font-medium">Total Pendapatan</p>
@@ -346,7 +346,7 @@
                     </div>
                 </div>
 
-                <div class="stat-card p-6">
+                <div class="stat-card p-6 text-content">
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-gray-600 text-sm font-medium">Sampah Terdaur</p>
@@ -359,7 +359,7 @@
                     </div>
                 </div>
 
-                <div class="stat-card p-6">
+                <div class="stat-card p-6 text-content">
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-gray-600 text-sm font-medium">UMKM Terdaftar</p>
@@ -372,7 +372,7 @@
                     </div>
                 </div>
 
-                <div class="stat-card p-6">
+                <div class="stat-card p-6 text-content">
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-gray-600 text-sm font-medium">Produk Terjual</p>
@@ -389,7 +389,7 @@
             {{-- Quick Actions & Recent Activities --}}
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
                 {{-- Quick Actions --}}
-                <div class="lg:col-span-1">
+                <div class="lg:col-span-1 text-content">
                     <h3 class="text-2xl font-bold text-gray-900 mb-6">Aksi Cepat</h3>
                     <div class="space-y-4">
                         <button class="quick-action-btn w-full flex items-center justify-between">
@@ -427,7 +427,7 @@
                 </div>
 
                 {{-- Recent Activities --}}
-                <div class="lg:col-span-2">
+                <div class="lg:col-span-2 text-content">
                     <h3 class="text-2xl font-bold text-gray-900 mb-6">Aktivitas Terbaru</h3>
                     <div class="space-y-4">
                         <div class="activity-card p-4">
@@ -492,7 +492,7 @@
             {{-- Progress & Goals Section --}}
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
                 {{-- Monthly Goals --}}
-                <div class="chart-container p-6">
+                <div class="chart-container p-6 text-content">
                     <h3 class="text-2xl font-bold text-gray-900 mb-6">Target Bulanan</h3>
                     <div class="space-y-6">
                         <div>
@@ -531,7 +531,7 @@
                 </div>
 
                 {{-- Environmental Impact --}}
-                <div class="chart-container p-6">
+                <div class="chart-container p-6 text-content">
                     <h3 class="text-2xl font-bold text-gray-900 mb-6">Dampak Lingkungan</h3>
                     <div class="space-y-6">
                         <div class="flex items-center justify-between p-4 bg-green-50 rounded-lg">
@@ -571,7 +571,7 @@
             </div>
 
             {{-- Featured Products --}}
-            <div class="mb-12">
+            <div class="mb-12 text-content">
                 <h3 class="text-2xl font-bold text-gray-900 mb-6">Produk Unggulan</h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                     <div class="stat-card p-4">

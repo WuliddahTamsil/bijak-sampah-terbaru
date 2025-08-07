@@ -27,8 +27,8 @@
     .main-content-wrapper {
         min-height: 100vh;
         background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #f1f5f9 100%);
-        padding-top: 60px; 
-        padding-left: 4rem; 
+        padding-top: 30px; 
+        padding-left: 2rem; 
         padding-right: 0;
         transition: padding-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         position: relative; 
@@ -380,36 +380,46 @@
         left: 0;
         width: 100%;
         height: 100%;
-        background: rgba(0,0,0,0.5);
+        background: rgba(0,0,0,0.6);
         z-index: 1000;
         justify-content: center;
         align-items: center;
+        backdrop-filter: blur(4px);
     }
 
     .modal-content {
         background: white;
-        border-radius: 16px;
+        border-radius: 20px;
         width: 90%;
-        max-width: 500px;
-        padding: 30px;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        max-width: 400px;
+        padding: 0;
+        box-shadow: 0 25px 50px rgba(0,0,0,0.25);
         animation: modalFadeIn 0.3s ease-out;
+        overflow: hidden;
     }
 
     @keyframes modalFadeIn {
-        from { opacity: 0; transform: translateY(-20px); }
-        to { opacity: 1; transform: translateY(0); }
+        from { 
+            opacity: 0; 
+            transform: translateY(-30px) scale(0.95); 
+        }
+        to { 
+            opacity: 1; 
+            transform: translateY(0) scale(1); 
+        }
     }
 
     .modal-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 20px;
+        padding: 20px 24px 16px 24px;
+        border-bottom: 1px solid #e5e7eb;
+        background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%);
     }
 
     .modal-title {
-        font-size: 22px;
+        font-size: 18px;
         color: #05445E;
         font-weight: 700;
     }
@@ -417,19 +427,26 @@
     .close-modal {
         background: none;
         border: none;
-        font-size: 24px;
+        font-size: 20px;
         cursor: pointer;
-        color: #777;
-        transition: all 0.2s;
+        color: #6b7280;
+        transition: all 0.3s ease;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
     .close-modal:hover {
         color: #05445E;
-        transform: rotate(90deg);
+        background-color: #f3f4f6;
+        transform: scale(1.1);
     }
 
     .modal-body {
-        margin-bottom: 25px;
+        padding: 0 24px;
     }
 
     .form-group {
@@ -463,8 +480,193 @@
 
     .modal-footer {
         display: flex;
-        justify-content: flex-end;
+        justify-content: center;
         gap: 15px;
+        padding: 20px 24px 24px 24px;
+        border-top: 1px solid #e5e7eb;
+        background: #f9fafb;
+    }
+
+    /* Notification Modal Styles */
+    .notification-modal-item {
+        display: flex;
+        align-items: flex-start;
+        padding: 20px;
+        border-bottom: 1px solid #e5e7eb;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+
+    .notification-modal-item:hover {
+        background-color: #f8fafc;
+    }
+
+    .notification-modal-item:last-child {
+        border-bottom: none;
+    }
+
+    .notification-modal-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.5rem;
+        margin-right: 16px;
+        flex-shrink: 0;
+    }
+
+    .notification-modal-content {
+        flex: 1;
+    }
+
+    .notification-modal-title {
+        font-weight: 600;
+        color: #05445E;
+        margin-bottom: 4px;
+        font-size: 1.1rem;
+    }
+
+    .notification-modal-message {
+        color: #666;
+        font-size: 0.95rem;
+        line-height: 1.5;
+        margin-bottom: 8px;
+    }
+
+    .notification-modal-meta {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 0.85rem;
+        color: #888;
+    }
+
+    .notification-modal-badge {
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 0.75rem;
+        font-weight: 500;
+    }
+
+    .notification-modal-badge.urgent {
+        background-color: #fee2e2;
+        color: #dc2626;
+    }
+
+    .notification-modal-badge.medium {
+        background-color: #dcfce7;
+        color: #16a34a;
+    }
+
+    .notification-modal-badge.low {
+        background-color: #fef3c7;
+        color: #d97706;
+    }
+
+    /* Search Modal Styles */
+    .search-result-item {
+        display: flex;
+        align-items: center;
+        padding: 12px;
+        border-bottom: 1px solid #e5e7eb;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        border-radius: 8px;
+        margin-bottom: 6px;
+    }
+
+    .search-result-item:hover {
+        background-color: #f8fafc;
+        transform: translateX(4px);
+    }
+
+    .search-result-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1rem;
+        margin-right: 12px;
+        flex-shrink: 0;
+    }
+
+    .search-result-content {
+        flex: 1;
+    }
+
+    .search-result-title {
+        font-weight: 600;
+        color: #05445E;
+        margin-bottom: 2px;
+        font-size: 0.95rem;
+    }
+
+    .search-result-description {
+        color: #666;
+        font-size: 0.85rem;
+        line-height: 1.3;
+        margin-bottom: 4px;
+    }
+
+    .search-result-category {
+        display: inline-block;
+        padding: 2px 6px;
+        border-radius: 8px;
+        font-size: 0.7rem;
+        font-weight: 500;
+        margin-top: 2px;
+    }
+
+    .search-result-category.product {
+        background-color: #dcfce7;
+        color: #16a34a;
+    }
+
+    .search-result-category.service {
+        background-color: #dbeafe;
+        color: #2563eb;
+    }
+
+    .search-result-category.info {
+        background-color: #fef3c7;
+        color: #d97706;
+    }
+
+    .search-empty-state {
+        text-align: center;
+        padding: 40px 20px;
+    }
+
+    .search-empty-state i {
+        font-size: 3rem;
+        color: #d1d5db;
+        margin-bottom: 16px;
+    }
+
+    .search-loading {
+        text-align: center;
+        padding: 20px;
+    }
+
+    .search-loading .spinner {
+        border: 3px solid #f3f4f6;
+        border-top: 3px solid #3b82f6;
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        animation: spin 1s linear infinite;
+        margin: 0 auto 16px;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
     }
 
     .btn {
@@ -479,12 +681,16 @@
     .btn-primary {
         background: linear-gradient(135deg, #05445E 0%, #0A3A60 100%);
         color: white;
+        padding: 12px 32px;
+        font-weight: 600;
+        border-radius: 12px;
+        transition: all 0.3s ease;
     }
 
     .btn-primary:hover {
         background: linear-gradient(135deg, #0A3A60 0%, #05445E 100%);
         transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(5, 68, 94, 0.3);
+        box-shadow: 0 8px 25px rgba(5, 68, 94, 0.4);
     }
 
     .btn-outline {
@@ -576,13 +782,13 @@
                 </a>
                 
                 {{-- Marketplace Link --}}
-                <a href="{{ route('tokou') }}" class="flex items-center gap-3 p-3 rounded-lg sidebar-item-hover whitespace-nowrap w-full" :class="open ? (active === 'marketplace' ? 'bg-white/20 text-white shadow-lg' : 'hover:bg-white/20 text-white') : (active === 'marketplace' ? 'bg-white/20 text-white justify-center' : 'hover:bg-white/20 text-white justify-center')">
+                <a href="{{ route('tokon') }}" class="flex items-center gap-3 p-3 rounded-lg sidebar-item-hover whitespace-nowrap w-full" :class="open ? (active === 'marketplace' ? 'bg-white/20 text-white shadow-lg' : 'hover:bg-white/20 text-white') : (active === 'marketplace' ? 'bg-white/20 text-white justify-center' : 'hover:bg-white/20 text-white justify-center')">
                     <i class="fas fa-store text-lg"></i>
                     <span x-show="open" class="text-sm font-medium">Marketplace</span>
                 </a>
                 
                 {{-- Settings Link --}}
-                <a href="{{ route('settings') }}" class="flex items-center gap-3 p-3 rounded-lg sidebar-item-hover whitespace-nowrap w-full" :class="open ? (active === 'settings' ? 'bg-white/20 text-white shadow-lg' : 'hover:bg-white/20 text-white') : (active === 'settings' ? 'bg-white/20 text-white justify-center' : 'hover:bg-white/20 text-white justify-center')">
+                <a href="{{ route('settingsnasab') }}" class="flex items-center gap-3 p-3 rounded-lg sidebar-item-hover whitespace-nowrap w-full" :class="open ? (active === 'settings' ? 'bg-white/20 text-white shadow-lg' : 'hover:bg-white/20 text-white') : (active === 'settings' ? 'bg-white/20 text-white justify-center' : 'hover:bg-white/20 text-white justify-center')">
                     <i class="fas fa-cog text-lg"></i>
                     <span x-show="open" class="text-sm font-medium">Settings</span>
                 </a>
@@ -604,19 +810,16 @@
         <div class="fixed-header">
             <h1 class="text-white font-semibold text-lg">BijakSampah</h1>
             <div class="flex items-center gap-4">
-                <button onclick="showDevelopmentModal('Notification')" class="relative hover:text-white/80 transition-colors">
+                <button onclick="showNotificationModal()" class="relative hover:text-white/80 transition-colors">
                     <i class="far fa-bell text-white text-sm"></i>
                     <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center font-medium">2</span>
                 </button>
-                <button onclick="showDevelopmentModal('Search')" class="focus:outline-none hover:text-white/80 transition-colors">
+                <button onclick="showSearchModal()" class="focus:outline-none hover:text-white/80 transition-colors">
                     <i class="fas fa-search text-white text-sm"></i>
                 </button>
                 <div class="flex items-center gap-2">
                     <button onclick="showDevelopmentModal('Profile')" class="w-8 h-8 rounded-full overflow-hidden flex items-center justify-center border-2 border-gray-300 cursor-pointer hover:border-white/50 transition-colors">
                         <img src="https://ui-avatars.com/api/?name=Non+Nasabah&background=75E6DA&color=05445E" alt="Profile" class="w-full h-full object-cover">
-                    </button>
-                    <button onclick="showDevelopmentModal('Profile Menu')" class="hover:text-white/80 transition-colors">
-                        <i class="fas fa-chevron-down text-white text-xs"></i>
                     </button>
                 </div>
             </div>
@@ -676,22 +879,68 @@
             <button class="close-modal" id="closeDevelopmentModal">&times;</button>
         </div>
         <div class="modal-body">
-            <div style="text-align: center; padding: 20px;">
-                <i class="fas fa-tools" style="font-size: 48px; color: #05445E; margin-bottom: 20px;"></i>
-                <h4 style="color: #05445E; font-size: 18px; margin-bottom: 10px;">Fitur Sedang Dikembangkan</h4>
-                <p style="color: #666; font-size: 14px; line-height: 1.6;">
+            <div class="text-center py-6">
+                <div class="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <i class="fas fa-tools text-blue-600 text-3xl"></i>
+                </div>
+                <h4 class="text-xl font-bold text-gray-900 mb-4">Fitur Sedang Dikembangkan</h4>
+                <p class="text-gray-600 text-base leading-relaxed mb-6">
                     Fitur ini sedang dalam tahap pengembangan. 
                     Tim kami sedang bekerja keras untuk menghadirkan pengalaman terbaik untuk Anda.
                 </p>
-                <div style="margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 8px;">
-                    <p style="color: #05445E; font-size: 12px; margin: 0;">
-                        <i class="fas fa-clock"></i> Estimasi rilis: 2-3 minggu ke depan
-                    </p>
+                <div class="bg-blue-50 rounded-xl p-4 mb-6">
+                    <div class="flex items-center justify-center gap-2">
+                        <i class="fas fa-clock text-blue-600"></i>
+                        <span class="text-blue-600 font-medium">Estimasi rilis: 2-3 minggu ke depan</span>
+                    </div>
                 </div>
             </div>
         </div>
         <div class="modal-footer">
             <button class="btn btn-primary" id="closeDevModal">Mengerti</button>
+        </div>
+    </div>
+</div>
+
+{{-- Modal untuk search yang sudah berfungsi --}}
+<div class="modal" id="searchModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 class="modal-title">Pencarian</h3>
+            <button class="close-modal" id="closeSearchModal">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="mb-4">
+                <div class="relative">
+                    <input type="text" id="searchInput" placeholder="Cari produk atau layanan..." 
+                           class="w-full px-3 py-2 pl-10 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:outline-none transition-colors text-sm">
+                    <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-sm"></i>
+                </div>
+            </div>
+            <div id="searchResults">
+                <!-- Hasil pencarian akan dimuat di sini -->
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary" id="closeSearchBtn">Tutup</button>
+        </div>
+    </div>
+</div>
+
+{{-- Modal untuk notifikasi yang sudah ada --}}
+<div class="modal" id="notificationModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 class="modal-title">Notifikasi</h3>
+            <button class="close-modal" id="closeNotificationModal">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div id="notificationModalContent">
+                <!-- Notifikasi akan dimuat di sini -->
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary" id="closeNotifModal">Tutup</button>
         </div>
     </div>
 </div>
@@ -730,6 +979,37 @@
         { height: 80, value: '80%', label: '20 Jun' }, 
         { height: 65, value: '65%', label: '21 Jun' }, 
         { height: 70, value: '70%', label: '22 Jun' }  
+    ];
+
+    // Data untuk search
+    const searchData = [
+        {
+            id: 1,
+            title: "Tas Daur Ulang",
+            description: "Tas ramah lingkungan dengan desain menarik",
+            category: "product",
+            icon: "fas fa-shopping-bag",
+            iconBg: "background: linear-gradient(135deg, #10B981, #059669);",
+            price: "Rp 45.000"
+        },
+        {
+            id: 2,
+            title: "Penjemputan Sampah",
+            description: "Layanan penjemputan sampah daur ulang",
+            category: "service",
+            icon: "fas fa-trash-alt",
+            iconBg: "background: linear-gradient(135deg, #3B82F6, #2563EB);",
+            price: "Gratis"
+        },
+        {
+            id: 3,
+            title: "Tukar Poin",
+            description: "Tukar poin dengan hadiah menarik",
+            category: "service",
+            icon: "fas fa-coins",
+            iconBg: "background: linear-gradient(135deg, #8B5CF6, #7C3AED);",
+            price: "Mulai 100 poin"
+        }
     ];
 
     // DOM Elements
@@ -834,37 +1114,99 @@
     function deleteNotification(id) {
         console.log('Deleting notification with ID:', id);
         
-        if (confirm('Apakah Anda yakin ingin menghapus notifikasi ini?')) {
-            // Remove from notifications array
-            const initialLength = notifications.length;
-            notifications = notifications.filter(notif => notif.id !== id);
-            
-            console.log('Notifications before:', initialLength, 'after:', notifications.length);
-            
-            // Reload notifications display
-            loadNotifications();
-            
-            // Show success message
-            showToast('Notifikasi berhasil dihapus!', 'success');
-            
-            // Update notification count in topbar
-            updateNotificationCount();
+        // Create confirmation modal
+        const confirmModal = document.createElement('div');
+        confirmModal.className = 'fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center';
+        confirmModal.innerHTML = `
+            <div class="bg-white rounded-2xl p-8 max-w-md mx-4 text-center shadow-2xl">
+                <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-trash text-red-600 text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 mb-2">Hapus Notifikasi</h3>
+                <p class="text-gray-600 mb-6">Apakah Anda yakin ingin menghapus notifikasi ini?</p>
+                <div class="flex gap-3 justify-center">
+                    <button onclick="this.parentElement.parentElement.parentElement.remove()" class="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-300 transition-colors">
+                        Batal
+                    </button>
+                    <button onclick="confirmDeleteNotification(${id})" class="px-6 py-2 bg-red-600 text-white rounded-lg font-medium hover:bg-red-700 transition-colors">
+                        Hapus
+                    </button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(confirmModal);
+    }
+
+    // Confirm Delete Notification
+    function confirmDeleteNotification(id) {
+        // Remove confirmation modal
+        const confirmModal = document.querySelector('.fixed.inset-0');
+        if (confirmModal) {
+            confirmModal.remove();
         }
+        
+        // Remove from notifications array
+        const initialLength = notifications.length;
+        notifications = notifications.filter(notif => notif.id !== id);
+        
+        console.log('Notifications before:', initialLength, 'after:', notifications.length);
+        
+        // Reload notifications display
+        loadNotifications();
+        
+        // Show success message
+        showToast('Notifikasi berhasil dihapus!', 'success');
+        
+        // Update notification count in topbar
+        updateNotificationCount();
     }
 
     // Show Toast Message
     function showToast(message, type = 'success') {
         // Create toast element
         const toast = document.createElement('div');
-        toast.className = `fixed top-4 right-4 z-50 px-6 py-3 rounded-lg text-white font-medium transition-all duration-300 transform translate-x-full`;
+        toast.className = `fixed top-6 right-6 z-50 max-w-sm w-full bg-white rounded-xl shadow-2xl border border-gray-200 transition-all duration-500 transform translate-x-full`;
         
-        if (type === 'success') {
-            toast.className += ' bg-green-500';
-        } else if (type === 'error') {
-            toast.className += ' bg-red-500';
+        let iconClass = 'fas fa-check-circle';
+        let bgColor = 'bg-green-50';
+        let textColor = 'text-green-600';
+        let borderColor = 'border-green-200';
+        
+        if (type === 'error') {
+            iconClass = 'fas fa-exclamation-circle';
+            bgColor = 'bg-red-50';
+            textColor = 'text-red-600';
+            borderColor = 'border-red-200';
+        } else if (type === 'warning') {
+            iconClass = 'fas fa-exclamation-triangle';
+            bgColor = 'bg-yellow-50';
+            textColor = 'text-yellow-600';
+            borderColor = 'border-yellow-200';
+        } else if (type === 'info') {
+            iconClass = 'fas fa-info-circle';
+            bgColor = 'bg-blue-50';
+            textColor = 'text-blue-600';
+            borderColor = 'border-blue-200';
         }
         
-        toast.textContent = message;
+        toast.innerHTML = `
+            <div class="p-4 ${bgColor} ${borderColor} rounded-xl">
+                <div class="flex items-start">
+                    <div class="flex-shrink-0">
+                        <i class="${iconClass} ${textColor} text-xl"></i>
+                    </div>
+                    <div class="ml-3 w-0 flex-1">
+                        <p class="text-sm font-medium text-gray-900">${message}</p>
+                    </div>
+                    <div class="ml-4 flex-shrink-0 flex">
+                        <button onclick="this.parentElement.parentElement.parentElement.parentElement.remove()" class="bg-white rounded-md inline-flex text-gray-400 hover:text-gray-600 focus:outline-none">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+        
         document.body.appendChild(toast);
         
         // Animate in
@@ -872,13 +1214,15 @@
             toast.classList.remove('translate-x-full');
         }, 100);
         
-        // Remove after 3 seconds
+        // Remove after 4 seconds
         setTimeout(() => {
             toast.classList.add('translate-x-full');
             setTimeout(() => {
-                document.body.removeChild(toast);
-            }, 300);
-        }, 3000);
+                if (document.body.contains(toast)) {
+                    document.body.removeChild(toast);
+                }
+            }, 500);
+        }, 4000);
     }
 
     // Show Development Modal
@@ -886,7 +1230,260 @@
         const modal = document.getElementById('developmentModal');
         const title = modal.querySelector('.modal-title');
         title.textContent = `${featureName} - Fitur Dalam Pengembangan`;
+        
+        // Update modal content based on feature
+        const modalBody = modal.querySelector('.modal-body .text-center');
+        let iconClass = 'fas fa-tools';
+        let bgColor = 'bg-blue-100';
+        let textColor = 'text-blue-600';
+        
+        if (featureName === 'Notification') {
+            iconClass = 'fas fa-bell';
+            bgColor = 'bg-green-100';
+            textColor = 'text-green-600';
+        } else if (featureName === 'Search') {
+            iconClass = 'fas fa-search';
+            bgColor = 'bg-purple-100';
+            textColor = 'text-purple-600';
+        } else if (featureName === 'Profile') {
+            iconClass = 'fas fa-user';
+            bgColor = 'bg-orange-100';
+            textColor = 'text-orange-600';
+        }
+        
+        modalBody.innerHTML = `
+            <div class="w-20 h-20 ${bgColor} rounded-full flex items-center justify-center mx-auto mb-6">
+                <i class="${iconClass} ${textColor} text-3xl"></i>
+            </div>
+            <h4 class="text-xl font-bold text-gray-900 mb-4">Fitur Sedang Dikembangkan</h4>
+            <p class="text-gray-600 text-base leading-relaxed mb-6">
+                Fitur ${featureName} sedang dalam tahap pengembangan. 
+                Tim kami sedang bekerja keras untuk menghadirkan pengalaman terbaik untuk Anda.
+            </p>
+            <div class="bg-blue-50 rounded-xl p-4 mb-6">
+                <div class="flex items-center justify-center gap-2">
+                    <i class="fas fa-clock text-blue-600"></i>
+                    <span class="text-blue-600 font-medium">Estimasi rilis: 2-3 minggu ke depan</span>
+                </div>
+            </div>
+        `;
+        
         modal.style.display = 'flex';
+        
+        // Show toast notification
+        setTimeout(() => {
+            showHeaderActionNotification(featureName);
+        }, 500);
+    }
+
+    // Show Activity Notification
+    function showActivityNotification() {
+        const activities = [
+            'Anda telah mengumpulkan 150 poin hari ini!',
+            'Selamat! Anda telah menyelesaikan 3 penjemputan sampah',
+            'Poin Anda telah bertambah 25 poin',
+            'Anda telah membantu menyelamatkan lingkungan!'
+        ];
+        
+        const randomActivity = activities[Math.floor(Math.random() * activities.length)];
+        showToast(randomActivity, 'success');
+    }
+
+    // Show Welcome Notification
+    function showWelcomeNotification() {
+        const welcomeMessages = [
+            'Selamat datang kembali di BijakSampah!',
+            'Terima kasih telah berkontribusi untuk lingkungan',
+            'Mari kita jaga bumi bersama-sama!',
+            'Aktivitas Anda hari ini sangat menginspirasi!'
+        ];
+        
+        const randomMessage = welcomeMessages[Math.floor(Math.random() * welcomeMessages.length)];
+        showToast(randomMessage, 'info');
+    }
+
+    // Show Header Action Notification
+    function showHeaderActionNotification(action) {
+        const notifications = {
+            'Notification': {
+                message: 'Anda memiliki 2 notifikasi baru',
+                type: 'info',
+                icon: 'fas fa-bell'
+            },
+            'Search': {
+                message: 'Fitur pencarian sedang dalam pengembangan',
+                type: 'warning',
+                icon: 'fas fa-search'
+            },
+            'Profile': {
+                message: 'Profil Anda sedang diperbarui',
+                type: 'info',
+                icon: 'fas fa-user'
+            },
+            'Profile Menu': {
+                message: 'Menu profil sedang dalam pengembangan',
+                type: 'warning',
+                icon: 'fas fa-chevron-down'
+            }
+        };
+        
+        const notification = notifications[action];
+        if (notification) {
+            showToast(notification.message, notification.type);
+        }
+    }
+
+    // Show Notification Modal
+    function showNotificationModal() {
+        const modal = document.getElementById('notificationModal');
+        const modalContent = document.getElementById('notificationModalContent');
+        
+        // Generate notification modal content
+        let modalHTML = '';
+        
+        if (notifications.length === 0) {
+            modalHTML = `
+                <div class="text-center py-12">
+                    <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-bell-slash text-gray-400 text-2xl"></i>
+                    </div>
+                    <h4 class="text-lg font-semibold text-gray-600 mb-2">Tidak Ada Notifikasi</h4>
+                    <p class="text-gray-500">Anda tidak memiliki notifikasi baru saat ini.</p>
+                </div>
+            `;
+        } else {
+            notifications.forEach(notif => {
+                let iconBg = '';
+                let badgeClass = '';
+                
+                if (notif.priority === 'Urgent') {
+                    iconBg = 'background: linear-gradient(135deg, #EF4444, #DC2626);';
+                    badgeClass = 'urgent';
+                } else if (notif.priority === 'Medium') {
+                    iconBg = 'background: linear-gradient(135deg, #10B981, #059669);';
+                    badgeClass = 'medium';
+                } else {
+                    iconBg = 'background: linear-gradient(135deg, #F59E0B, #D97706);';
+                    badgeClass = 'low';
+                }
+                
+                modalHTML += `
+                    <div class="notification-modal-item" onclick="viewNotification(${notif.id})">
+                        <div class="notification-modal-icon" style="${iconBg}">
+                            <i class="${notif.icon}"></i>
+                        </div>
+                        <div class="notification-modal-content">
+                            <div class="notification-modal-title">${notif.title}</div>
+                            <div class="notification-modal-message">${notif.message}</div>
+                            <div class="notification-modal-meta">
+                                <span class="notification-modal-badge ${badgeClass}">${notif.priority}</span>
+                                <span><i class="fas fa-calendar text-xs"></i> ${notif.date}</span>
+                                <span><i class="fas fa-clock text-xs"></i> ${notif.time}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+        
+        modalContent.innerHTML = modalHTML;
+        modal.style.display = 'flex';
+    }
+
+    // View Notification Details
+    function viewNotification(id) {
+        const notification = notifications.find(n => n.id === id);
+        if (notification) {
+            showToast(`Melihat detail: ${notification.title}`, 'info');
+            // Here you can add more detailed view logic
+        }
+    }
+
+    // Show Search Modal
+    function showSearchModal() {
+        const modal = document.getElementById('searchModal');
+        const searchInput = document.getElementById('searchInput');
+        const searchResults = document.getElementById('searchResults');
+        
+        modal.style.display = 'flex';
+        
+        // Focus on search input
+        setTimeout(() => {
+            searchInput.focus();
+        }, 300);
+        
+        // Show initial results
+        displaySearchResults(searchData);
+        
+        // Add event listener for search input
+        searchInput.addEventListener('input', function() {
+            const query = this.value.toLowerCase();
+            if (query.length > 0) {
+                const filteredResults = searchData.filter(item => 
+                    item.title.toLowerCase().includes(query) ||
+                    item.description.toLowerCase().includes(query) ||
+                    item.category.toLowerCase().includes(query)
+                );
+                displaySearchResults(filteredResults);
+            } else {
+                displaySearchResults(searchData);
+            }
+        });
+    }
+
+    // Display Search Results
+    function displaySearchResults(results) {
+        const searchResults = document.getElementById('searchResults');
+        
+        if (results.length === 0) {
+            searchResults.innerHTML = `
+                <div class="search-empty-state">
+                    <i class="fas fa-search"></i>
+                    <h4 class="text-lg font-semibold text-gray-600 mb-2">Tidak Ada Hasil</h4>
+                    <p class="text-gray-500">Coba kata kunci yang berbeda</p>
+                </div>
+            `;
+        } else {
+            let resultsHTML = '';
+            results.forEach(item => {
+                resultsHTML += `
+                    <div class="search-result-item" onclick="selectSearchResult(${item.id})">
+                        <div class="search-result-icon" style="${item.iconBg}">
+                            <i class="${item.icon}"></i>
+                        </div>
+                        <div class="search-result-content">
+                            <div class="search-result-title">${item.title}</div>
+                            <div class="search-result-description">${item.description}</div>
+                            <div class="flex items-center justify-between mt-2">
+                                <span class="search-result-category ${item.category}">${getCategoryLabel(item.category)}</span>
+                                <span class="text-sm font-medium text-gray-600">${item.price}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            searchResults.innerHTML = resultsHTML;
+        }
+    }
+
+    // Get Category Label
+    function getCategoryLabel(category) {
+        const labels = {
+            'product': 'Produk',
+            'service': 'Layanan',
+            'info': 'Informasi'
+        };
+        return labels[category] || category;
+    }
+
+    // Select Search Result
+    function selectSearchResult(id) {
+        const item = searchData.find(item => item.id === id);
+        if (item) {
+            showToast(`Membuka: ${item.title}`, 'success');
+            // Here you can add navigation logic
+            document.getElementById('searchModal').style.display = 'none';
+        }
     }
 
     // Close Development Modal
@@ -898,11 +1495,40 @@
         document.getElementById('developmentModal').style.display = 'none';
     });
 
+    // Close Notification Modal
+    document.getElementById('closeNotificationModal').addEventListener('click', function() {
+        document.getElementById('notificationModal').style.display = 'none';
+    });
+
+    document.getElementById('closeNotifModal').addEventListener('click', function() {
+        document.getElementById('notificationModal').style.display = 'none';
+    });
+
+    // Close Search Modal
+    document.getElementById('closeSearchModal').addEventListener('click', function() {
+        document.getElementById('searchModal').style.display = 'none';
+    });
+
+    document.getElementById('closeSearchBtn').addEventListener('click', function() {
+        document.getElementById('searchModal').style.display = 'none';
+    });
+
     // Close modal when clicking outside
     window.addEventListener('click', function(event) {
         const developmentModal = document.getElementById('developmentModal');
+        const notificationModal = document.getElementById('notificationModal');
+        const searchModal = document.getElementById('searchModal');
+        
         if (event.target === developmentModal) {
             developmentModal.style.display = 'none';
+        }
+        
+        if (event.target === notificationModal) {
+            notificationModal.style.display = 'none';
+        }
+        
+        if (event.target === searchModal) {
+            searchModal.style.display = 'none';
         }
     });
 
@@ -912,6 +1538,16 @@
         loadNotifications();
         generateChart();
         updateNotificationCount();
+        
+        // Add welcome toast
+        setTimeout(() => {
+            showWelcomeNotification();
+        }, 1000);
+        
+        // Add activity notification after 3 seconds
+        setTimeout(() => {
+            showActivityNotification();
+        }, 4000);
     });
 </script>
 @endsection
