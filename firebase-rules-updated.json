@@ -1,0 +1,32 @@
+{
+  "rules": {
+    "AlatData": {
+      ".read": true,
+      ".write": true
+    },
+    "UsersData": {
+      ".read": true,
+      ".write": false
+    },
+    "users verification": {
+      ".read": true,
+      ".write": true
+    },
+    "nasabah_registrations": {
+      ".read": true,
+      ".write": true
+    },
+    "email_logs": {
+      ".read": true,
+      ".write": true
+    },
+    "users": {
+      ".read": true,
+      ".write": true
+    },
+    "$other": {
+      ".read": false,
+      ".write": false
+    }
+  }
+}

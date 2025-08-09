@@ -1770,9 +1770,14 @@
             bgColor = 'bg-purple-100';
             textColor = 'text-purple-600';
         } else if (featureName === 'Profile') {
-            iconClass = 'fas fa-user';
-            bgColor = 'bg-orange-100';
-            textColor = 'text-orange-600';
+            // Untuk Profile, langsung redirect ke halaman registrasi nasabah
+            showToast('Mengalihkan ke halaman registrasi nasabah...', 'info');
+            
+            setTimeout(() => {
+                window.location.href = '/nasabahregister';
+            }, 1000);
+            
+            return; // Keluar dari fungsi untuk Profile
         }
         
         modalBody.innerHTML = `
@@ -1840,13 +1845,13 @@
                 icon: 'fas fa-search'
             },
             'Profile': {
-                message: 'Profil Anda sedang diperbarui',
+                message: 'Mengalihkan ke halaman registrasi nasabah...',
                 type: 'info',
                 icon: 'fas fa-user'
             },
             'Profile Menu': {
-                message: 'Menu profil sedang dalam pengembangan',
-                type: 'warning',
+                message: 'Mengalihkan ke halaman registrasi nasabah...',
+                type: 'info',
                 icon: 'fas fa-chevron-down'
             }
         };
@@ -2071,7 +2076,10 @@
     });
 
     // Navigation function
-    function navigateTo(route) {
+    function navigateTo(
+        
+        
+    ) {
         // Show loading toast
         showToast('Mengalihkan ke halaman...', 'info');
         
@@ -2326,6 +2334,25 @@
                 bar.style.width = width;
             }, 500);
         });
+    }
+
+    // Function to go to Nasabah Register page
+    function goToNasabahRegister() {
+        // Show loading toast
+        showToast('Mengalihkan ke halaman registrasi nasabah...', 'info');
+        
+        // Simulate navigation delay
+        setTimeout(() => {
+            window.location.href = '/nasabahregister';
+        }, 1000);
+    }
+
+    // Function to close feature modal
+    function closeFeatureModal() {
+        const modal = document.getElementById('featureModal');
+        if (modal) {
+            modal.style.display = 'none';
+        }
     }
 
     // Initialize when DOM is ready

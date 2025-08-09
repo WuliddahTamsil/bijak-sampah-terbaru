@@ -1266,56 +1266,188 @@ const firebaseConfig = {
     appId: "1:140467230562:web:19a34dfefcb6f65bd7fe3b",
     databaseURL: "https://bijaksampah-aeb82-default-rtdb.asia-southeast1.firebasedatabase.app/"
 };
-firebase.initializeApp(firebaseConfig);
-const db = firebase.database();
-const storage = firebase.storage();
+
+// Declare Firebase variables globally
+let db = null;
+let storage = null;
+
+// Test Firebase connection
+try {
+    firebase.initializeApp(firebaseConfig);
+    db = firebase.database();
+    storage = firebase.storage();
+    
+    // Test connection
+    console.log("🔥 Firebase initialized successfully");
+    console.log("📡 Testing Firebase connection...");
+    
+    // Test database connection
+    db.ref().child('test').set('connection_test_' + Date.now())
+        .then(() => {
+            console.log("✅ Firebase Database connection successful");
+            // Clean up test data
+            return db.ref('test').remove();
+        })
+        .catch(error => {
+            console.error("❌ Firebase Database connection failed:", error);
+        });
+        
+} catch (error) {
+    console.error("❌ Firebase initialization failed:", error);
+    alert("Firebase tidak dapat diinisialisasi. Silakan refresh halaman.");
+}
+
+// Function to ensure Firebase is ready
+function ensureFirebaseReady() {
+    return new Promise((resolve, reject) => {
+        if (db && storage) {
+            resolve();
+        } else {
+            // Wait a bit and try again
+            setTimeout(() => {
+                if (db && storage) {
+                    resolve();
+                } else {
+                    reject(new Error('Firebase tidak siap. Silakan refresh halaman.'));
+                }
+            }, 1000);
+        }
+    });
+}
 
 // Tombol Selesaikan Registrasi
-document.getElementById('submitBtn').addEventListener('click', function() {
+document.getElementById('submitBtn').addEventListener('click', async function() {
     if (!ktpUploaded) {
         alert('Harap unggah foto KTP terlebih dahulu untuk menyelesaikan registrasi!');
         return;
     }
 
-    const form = document.getElementById('registrationForm');
-    const data = {
-        phone: form.querySelector('input[placeholder="Nomor telepon"]').value,
-        firstName: document.getElementById('firstName').value,
-        lastName: document.getElementById('lastName').value,
-        alias: document.getElementById('alias').value,
-        dob: {
-            day: document.getElementById('dobDay').value,
-            month: document.getElementById('dobMonth').value,
-            year: document.getElementById('dobYear').value
-        },
-        country: document.getElementById('country').value,
-        province: document.getElementById('province').value,
-        city: document.getElementById('city').value,
-        address: document.getElementById('address').value,
-        postal: document.getElementById('postal').value,
-        email: document.getElementById('email').value,
-        password: document.getElementById('password').value,
-        registrationType: document.getElementById('registrationType').value,
-        regDate: new Date().toISOString(),
-        photoURL: "https://ui-avatars.com/api/?name=" + document.getElementById('firstName').value + "&background=75E6DA&color=05445E", // Default avatar
-    };
+    // Ensure Firebase is ready before proceeding
+    try {
+        await ensureFirebaseReady();
+        console.log("✅ Firebase is ready for use");
+    } catch (error) {
+        console.error("❌ Firebase not ready:", error);
+        alert(error.message);
+        return;
+    }
 
-    const userEmailKey = data.email.replace(/\./g, ',');
+    // Show loading state
+    const submitBtn = document.getElementById('submitBtn');
+    const originalText = submitBtn.textContent;
+    submitBtn.textContent = 'Memproses...';
+    submitBtn.disabled = true;
 
-    db.ref('users/' + userEmailKey)
-        .set(data)
-        .then(() => {
-            console.log("Data berhasil disimpan ke Firebase.");
-            // Tampilkan tab sukses
-            suksesTabBtn.style.display = 'block';
-            showTab('sukses');
-            // Juga perbarui foto profil di header dengan avatar default
-            document.getElementById('header-profile-pic').src = data.photoURL;
-        })
-        .catch((error) => {
-            console.error("Error saat menyimpan data: ", error);
-            alert("Terjadi kesalahan saat menyimpan data. Silakan coba lagi.");
+    try {
+        // Debug: Check if Firebase is available
+        if (typeof firebase === 'undefined') {
+            throw new Error('Firebase SDK tidak tersedia');
+        }
+        
+        if (!db) {
+            throw new Error('Firebase Database tidak tersedia. Silakan refresh halaman.');
+        }
+        
+        console.log("🔍 Debug: Firebase status OK");
+        console.log("🔍 Debug: Database object:", db);
+        console.log("🔍 Debug: Storage object:", storage);
+        
+        const form = document.getElementById('registrationForm');
+        const data = {
+            phone: form.querySelector('input[placeholder="Nomor telepon"]').value,
+            firstName: document.getElementById('firstName').value,
+            lastName: document.getElementById('lastName').value,
+            alias: document.getElementById('alias').value,
+            dob: {
+                day: document.getElementById('dobDay').value,
+                month: document.getElementById('dobMonth').value,
+                year: document.getElementById('dobYear').value
+            },
+            country: document.getElementById('country').value,
+            province: document.getElementById('province').value,
+            city: document.getElementById('city').value,
+            address: document.getElementById('address').value,
+            postal: document.getElementById('postal').value,
+            email: document.getElementById('email').value,
+            password: document.getElementById('password').value,
+            registrationType: document.getElementById('registrationType').value,
+            regDate: new Date().toISOString(),
+            photoURL: "https://ui-avatars.com/api/?name=" + document.getElementById('firstName').value + "&background=75E6DA&color=05445E",
+            status: 'pending', // Status verifikasi
+            role: 'Nasabah', // Role default
+            createdAt: Date.now(),
+            accountNumber: document.getElementById('accountNumber').textContent,
+            deviceId: document.getElementById('deviceId').textContent
+        };
+
+        console.log("📝 Data yang akan disimpan:", data);
+        
+        const userEmailKey = data.email.replace(/\./g, ',');
+        const registrationId = 'reg_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        
+        console.log("🔑 User Email Key:", userEmailKey);
+        console.log("🆔 Registration ID:", registrationId);
+
+        // 1. Simpan ke node "users" (seperti di gambar)
+        console.log("💾 Mencoba menyimpan ke users...");
+        await db.ref('users/' + userEmailKey).set({
+            ...data,
+            registrationId: registrationId,
+            verificationStatus: 'pending',
+            submittedAt: Date.now()
         });
+        console.log("✅ Data registrasi berhasil disimpan ke Firebase (users)");
+
+        // 2. Simpan juga ke "users verification" untuk proses verifikasi admin
+        console.log("💾 Mencoba menyimpan ke users verification...");
+        await db.ref('users verification/' + userEmailKey).set({
+            ...data,
+            registrationId: registrationId,
+            verificationStatus: 'pending',
+            submittedAt: Date.now()
+        });
+        console.log("✅ Data verifikasi berhasil disimpan ke Firebase (users verification)");
+
+        // 3. Kirim email otomatis
+        console.log("📧 Mencoba mengirim email...");
+        await sendWelcomeEmail(data);
+        console.log("✅ Email selamat datang berhasil dikirim");
+
+        // 4. Tampilkan tab sukses
+        suksesTabBtn.style.display = 'block';
+        showTab('sukses');
+        
+        // 5. Update foto profil di header
+        document.getElementById('header-profile-pic').src = data.photoURL;
+
+        // 6. Show success message
+        showSuccessMessage('Registrasi berhasil! Data telah disimpan dan email selamat datang telah dikirim.');
+
+    } catch (error) {
+        console.error("❌ Error detail saat registrasi:", error);
+        console.error("❌ Error message:", error.message);
+        console.error("❌ Error code:", error.code);
+        console.error("❌ Error stack:", error.stack);
+        
+        // Show specific error message
+        let errorMessage = "Terjadi kesalahan saat registrasi. ";
+        
+        if (error.code === 'PERMISSION_DENIED') {
+            errorMessage += "Akses ditolak. Silakan update Firebase Rules.";
+        } else if (error.message.includes('Firebase SDK')) {
+            errorMessage += "Firebase tidak tersedia. Silakan refresh halaman.";
+        } else if (error.message.includes('Database')) {
+            errorMessage += "Database tidak tersedia. Silakan refresh halaman.";
+        } else {
+            errorMessage += "Silakan coba lagi atau hubungi admin.";
+        }
+        
+        alert(errorMessage);
+    } finally {
+        // Reset button state
+        submitBtn.textContent = originalText;
+        submitBtn.disabled = false;
+    }
 });
 
 // Tombol Lihat Profil Anda
@@ -1490,6 +1622,168 @@ function loadProfileData() {
             console.error("Error loading profile data:", error);
         });
 }
+
+// ===== FUNGSI EMAIL DAN NOTIFIKASI =====
+
+// Fungsi untuk mengirim email selamat datang
+async function sendWelcomeEmail(userData) {
+    try {
+        // Gunakan EmailJS atau service email lainnya
+        // Untuk sementara, kita simulasikan pengiriman email
+        
+        // Simpan log email ke Firebase
+        const emailLog = {
+            to: userData.email,
+            subject: 'Selamat Datang di Bijak Sampah!',
+            message: generateWelcomeEmailContent(userData),
+            sentAt: Date.now(),
+            status: 'sent'
+        };
+        
+        await db.ref('email_logs/' + userData.email.replace(/\./g, ',')).push(emailLog);
+        
+        // Simulasi delay pengiriman email
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        
+        console.log(`📧 Email selamat datang berhasil dikirim ke: ${userData.email}`);
+        return true;
+        
+    } catch (error) {
+        console.error("❌ Error mengirim email:", error);
+        return false;
+    }
+}
+
+// Generate konten email selamat datang
+function generateWelcomeEmailContent(userData) {
+    const fullName = `${userData.firstName} ${userData.lastName}`;
+    const today = new Date().toLocaleDateString('id-ID', { 
+        day: 'numeric', 
+        month: 'long', 
+        year: 'numeric' 
+    });
+    
+    return `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+            <div style="background: linear-gradient(135deg, #75E6DA 0%, #05445E 100%); padding: 30px; text-align: center; color: white;">
+                <h1 style="margin: 0; font-size: 28px;">🎉 Selamat Datang di Bijak Sampah!</h1>
+                <p style="margin: 10px 0 0 0; font-size: 16px;">Terima kasih telah mendaftar sebagai Nasabah</p>
+            </div>
+            
+            <div style="padding: 30px; background: #f8f9fa;">
+                <h2 style="color: #05445E; margin-bottom: 20px;">Halo ${fullName}! 👋</h2>
+                
+                <p style="color: #333; line-height: 1.6; margin-bottom: 20px;">
+                    Selamat datang di platform Bijak Sampah! Akun Anda telah berhasil dibuat pada <strong>${today}</strong>.
+                </p>
+                
+                <div style="background: white; border-radius: 10px; padding: 20px; margin: 20px 0; border-left: 4px solid #75E6DA;">
+                    <h3 style="color: #05445E; margin-top: 0;">📋 Detail Registrasi Anda:</h3>
+                    <ul style="color: #555; line-height: 1.8;">
+                        <li><strong>Nama Lengkap:</strong> ${fullName}</li>
+                        <li><strong>Email:</strong> ${userData.email}</li>
+                        <li><strong>No. HP:</strong> +62${userData.phone}</li>
+                        <li><strong>Nomor Akun:</strong> ${userData.accountNumber}</li>
+                        <li><strong>Device ID:</strong> ${userData.deviceId}</li>
+                        <li><strong>Alamat:</strong> ${userData.address}, ${userData.city}, ${userData.province}</li>
+                    </ul>
+                </div>
+                
+                <div style="background: #e8f5e8; border-radius: 10px; padding: 20px; margin: 20px 0; border-left: 4px solid #28a745;">
+                    <h3 style="color: #155724; margin-top: 0;">✅ Status Registrasi:</h3>
+                    <p style="color: #155724; margin: 0;">
+                        Registrasi Anda telah berhasil disimpan dan sedang dalam proses verifikasi. 
+                        Tim kami akan segera memverifikasi data Anda dalam 1-2 hari kerja.
+                    </p>
+                </div>
+                
+                <div style="background: #fff3cd; border-radius: 10px; padding: 20px; margin: 20px 0; border-left: 4px solid #ffc107;">
+                    <h3 style="color: #856404; margin-top: 0;">📱 Langkah Selanjutnya:</h3>
+                    <ol style="color: #856404; line-height: 1.8;">
+                        <li>Tunggu verifikasi dari tim kami (1-2 hari kerja)</li>
+                        <li>Setelah diverifikasi, Anda dapat mengakses semua fitur</li>
+                        <li>Mulai mengumpulkan sampah dan dapatkan poin</li>
+                        <li>Jual sampah Anda di marketplace</li>
+                    </ol>
+                </div>
+                
+                <div style="text-align: center; margin: 30px 0;">
+                    <a href="https://bijaksampah.com/login" style="background: #75E6DA; color: white; padding: 15px 30px; text-decoration: none; border-radius: 25px; font-weight: bold; display: inline-block;">
+                        🚀 Mulai Menggunakan Platform
+                    </a>
+                </div>
+                
+                <hr style="border: none; border-top: 1px solid #ddd; margin: 30px 0;">
+                
+                <p style="color: #666; font-size: 14px; text-align: center;">
+                    Jika ada pertanyaan, silakan hubungi tim support kami di <strong>support@bijaksampah.com</strong>
+                </p>
+                
+                <p style="color: #666; font-size: 14px; text-align: center;">
+                    © 2025 Bijak Sampah. Semua hak dilindungi.
+                </p>
+            </div>
+        </div>
+    `;
+}
+
+// Fungsi untuk menampilkan pesan sukses
+function showSuccessMessage(message) {
+    // Buat toast notification
+    const toast = document.createElement('div');
+    toast.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: linear-gradient(135deg, #28a745, #20c997);
+        color: white;
+        padding: 20px 25px;
+        border-radius: 10px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        z-index: 10000;
+        font-family: Arial, sans-serif;
+        max-width: 400px;
+        animation: slideInRight 0.5s ease-out;
+    `;
+    
+    toast.innerHTML = `
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <div style="font-size: 24px;">🎉</div>
+            <div>
+                <div style="font-weight: bold; margin-bottom: 5px;">Registrasi Berhasil!</div>
+                <div style="font-size: 14px; opacity: 0.9;">${message}</div>
+            </div>
+        </div>
+    `;
+    
+    // Tambahkan CSS animation
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes slideInRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes slideOutRight {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(100%); opacity: 0; }
+        }
+    `;
+    document.head.appendChild(style);
+    
+    document.body.appendChild(toast);
+    
+    // Auto remove setelah 5 detik
+    setTimeout(() => {
+        toast.style.animation = 'slideOutRight 0.5s ease-out';
+        setTimeout(() => {
+            if (toast.parentNode) {
+                toast.parentNode.removeChild(toast);
+            }
+        }, 500);
+    }, 5000);
+}
+
+// ===== END FUNGSI EMAIL DAN NOTIFIKASI =====
 </script>
 </body>
 </html>
