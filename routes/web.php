@@ -246,6 +246,11 @@ Route::get('/verifikasi-nasabah-banksampah', function () {
     return view('verifikasi-nasabah-banksampah');
 })->name('verifikasi-nasabah-banksampah');
 
+// Route untuk Super Admin
+Route::get('/superadmin', function () {
+    return view('superadmin');
+})->name('superadmin');
+
 // Route baru yang ditambahkan untuk mengatasi error
 Route::get('/input-setoran', function () {
     return view('input-setoran');

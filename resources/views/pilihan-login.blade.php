@@ -738,6 +738,26 @@
                     document.getElementById('rememberMe').checked = true;
                 }
             }
+            
+            // Check if user is already authenticated
+            auth.onAuthStateChanged(user => {
+                if (user) {
+                    console.log('User already authenticated:', user.email);
+                    // Get user role from database and redirect
+                    database.ref('users verification/' + user.uid).once('value')
+                        .then((snapshot) => {
+                            const userData = snapshot.val();
+                            if (userData && userData.role) {
+                                redirectBasedOnRole(user.uid, userData.role);
+                            } else {
+                                console.log('No user data found, staying on login page');
+                            }
+                        })
+                        .catch((error) => {
+                            console.error('Error checking user data:', error);
+                        });
+                }
+            });
         }
 
         // --- View Management Functions ---
@@ -1077,6 +1097,9 @@
                     break;
                 case "Bank Sampah":
                     redirectUrl = "{{ route('dashboard-banksampah') }}";
+                    break;
+                case "Super Admin":
+                    redirectUrl = "{{ route('superadmin') }}";
                     break;
                 default:
                     redirectUrl = "{{ route('home') }}";
