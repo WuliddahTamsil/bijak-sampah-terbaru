@@ -66,6 +66,7 @@
         padding: 2rem;
         margin-bottom: 2rem;
         box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        width: 100%;
     }
     .article-meta {
         display: flex;
@@ -150,6 +151,7 @@
         padding: 2rem;
         margin-top: 3rem;
         box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        width: 100%;
     }
     .article-card {
         background: white;
@@ -158,6 +160,8 @@
         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
         transition: all 0.3s ease;
         border: 1px solid #e5e7eb;
+        width: 100%;
+        max-width: 350px;
     }
     .article-card:hover {
         transform: translateY(-5px);
@@ -252,13 +256,14 @@
         min-height: 100vh;
         background: #f8fafc;
         padding-top: 60px;
-        padding-left: 4rem;
+        padding-left: 1.5cm;
+        padding-right: 1.5cm;
         transition: padding-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
     .content-container {
-        max-width: 4xl;
-        margin: 0 auto;
-        padding: 2rem;
+        width: 100%;
+        margin: 0;
+        padding: 0;
         position: relative;
     }
     .sidebar-overlay {
@@ -276,6 +281,56 @@
     .sidebar-overlay.active {
         opacity: 1;
         visibility: visible;
+    }
+    
+    /* Responsive fixes */
+    @media (max-width: 768px) {
+        .main-content-wrapper {
+            padding-left: 0.5cm;
+            padding-right: 0.5cm;
+        }
+        .content-container {
+            padding: 0;
+        }
+    }
+    
+    @media (min-width: 769px) and (max-width: 1023px) {
+        .main-content-wrapper {
+            padding-left: 1cm;
+            padding-right: 1cm;
+        }
+    }
+    
+    @media (min-width: 1024px) {
+        .main-content-wrapper {
+            padding-left: 1.5cm;
+            padding-right: 1.5cm;
+        }
+    }
+    
+    /* Remove any unwanted spacing */
+    .article-header,
+    .related-articles,
+    .bg-white.rounded-2xl {
+        margin-left: 0;
+        margin-right: 0;
+        width: 100%;
+    }
+    
+    /* Ensure full width content */
+    .max-w-4xl,
+    .max-w-6xl {
+        max-width: none !important;
+    }
+    
+    /* Full width for all content */
+    .article-header,
+    .related-articles,
+    .bg-white.rounded-2xl,
+    .social-share,
+    .text-center {
+        width: 100% !important;
+        max-width: 100% !important;
     }
 </style>
 
@@ -396,13 +451,13 @@
 
         {{-- Content Container --}}
         <div class="content-container">
-            <div class="max-w-4xl mx-auto relative">
+            <div class="w-full h-full relative">
                 {{-- Decorative Elements --}}
                 <div class="decorative-element top-right"></div>
                 <div class="decorative-element bottom-left"></div>
 
                 {{-- Article Header --}}
-                <div class="article-header">
+                <div class="article-header w-full">
                     <div class="article-meta">
                         <div class="meta-item">
                             <i class="fas fa-user text-blue-500"></i>
@@ -459,7 +514,7 @@
                 </div>
 
                 {{-- Article Content --}}
-                <div class="bg-white rounded-2xl p-8 shadow-xl mb-8">
+                <div class="bg-white rounded-2xl p-8 shadow-xl mb-8 w-full">
                     <div class="article-content">
                         <p class="text-lg leading-relaxed mb-6">
                             Para pelaku UMKM semakin memperhatikan pentingnya pengelolaan sampah melalui pendekatan daur ulang yang berbasis teknologi. Dengan inovasi dan kolaborasi, pengelolaan sampah kini menjadi peluang bisnis sekaligus solusi lingkungan. Teknologi digital, IoT, dan edukasi masyarakat menjadi kunci sukses pengelolaan sampah modern.
@@ -519,9 +574,9 @@
                 </div>
 
                 {{-- Related Articles --}}
-                <div class="related-articles">
+                <div class="related-articles w-full">
                     <h3 class="text-2xl font-bold text-gray-900 mb-6">Artikel Terkait</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 justify-items-center">
                         <div class="article-card">
                             <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&w=400&q=80" 
                                  class="article-image" alt="Artikel 1">

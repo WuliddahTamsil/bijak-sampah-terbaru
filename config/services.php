@@ -35,4 +35,15 @@ return [
         ],
     ],
 
+    'firebase' => [
+        'api_key'                => 'AIzaSyAJhkCyNT0be2x6FSzyUz0Ye9xX-QihIBo',
+        'auth_domain'            => 'bijaksampah-aeb82.firebaseapp.com',
+        'database_url'           => 'https://bijaksampah-aeb82-default-rtdb.asia-southeast1.firebasedatabase.app',
+        'project_id'             => 'bijaksampah-aeb82',
+        'storage_bucket'         => 'bijaksampah-aeb82.firebasestorage.app',
+        'messaging_sender_id'    => '140467230562',
+        'app_id'                 => '1:140467230562:web:19a34dfefcb6f65bd7fe3b',
+        'credentials_file'       => storage_path('app/firebase/firebase_credentials.json'),
+    ],
+
 ];

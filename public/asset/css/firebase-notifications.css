@@ -1,0 +1,352 @@
+/* Firebase Notifications & Charts Styling */
+
+/* Toast Notifications */
+.notification-toast {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    width: 350px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+    border-left: 4px solid #ddd;
+    transform: translateX(400px);
+    transition: transform 0.3s ease;
+    z-index: 9999;
+    overflow: hidden;
+}
+
+.notification-toast.show {
+    transform: translateX(0);
+}
+
+.notification-toast.notification-high {
+    border-left-color: #FF6B6B;
+}
+
+.notification-toast.notification-medium {
+    border-left-color: #FFA726;
+}
+
+.notification-toast.notification-low {
+    border-left-color: #66BB6A;
+}
+
+.toast-header {
+    padding: 15px 20px 10px;
+    border-bottom: 1px solid #f0f0f0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.toast-header strong {
+    color: #333;
+    font-size: 14px;
+}
+
+.toast-time {
+    color: #666;
+    font-size: 12px;
+}
+
+.toast-body {
+    padding: 15px 20px;
+    color: #555;
+    font-size: 13px;
+}
+
+/* Notification Cards */
+.notification-card {
+    border-left: 4px solid #ddd;
+    transition: all 0.3s ease;
+}
+
+.notification-card.high {
+    border-left-color: #FF6B6B;
+    background: linear-gradient(135deg, #fff 0%, #fff5f5 100%);
+}
+
+.notification-card.medium {
+    border-left-color: #FFA726;
+    background: linear-gradient(135deg, #fff 0%, #fff8f0 100%);
+}
+
+.notification-card.low {
+    border-left-color: #66BB6A;
+    background: linear-gradient(135deg, #fff 0%, #f0fff0 100%);
+}
+
+.notification-card .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.notification-card .card-header h4 {
+    margin: 0;
+    color: #333;
+    font-size: 16px;
+}
+
+.status-badge {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.status-badge.high {
+    background: #FF6B6B;
+    color: white;
+}
+
+.status-badge.medium {
+    background: #FFA726;
+    color: white;
+}
+
+.status-badge.low {
+    background: #66BB6A;
+    color: white;
+}
+
+.notification-card .timestamp {
+    color: #666;
+    font-size: 12px;
+    margin-bottom: 15px;
+}
+
+.notification-card .actions {
+    display: flex;
+    gap: 10px;
+}
+
+.notification-card .btn {
+    padding: 6px 12px;
+    font-size: 12px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.notification-card .btn-primary {
+    background: #4CAF50;
+    color: white;
+}
+
+.notification-card .btn-primary:hover {
+    background: #388E3C;
+}
+
+.notification-card .btn-secondary {
+    background: #9E9E9E;
+    color: white;
+}
+
+.notification-card .btn-secondary:hover {
+    background: #757575;
+}
+
+/* Charts Container */
+.charts-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 25px;
+    margin: 30px 0;
+}
+
+.chart-card {
+    background: white;
+    border-radius: 16px;
+    padding: 25px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    transition: all 0.3s ease;
+}
+
+.chart-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+}
+
+.chart-card h3 {
+    margin: 0 0 20px 0;
+    color: #333;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.chart-wrapper {
+    position: relative;
+    height: 300px;
+    width: 100%;
+}
+
+/* Firebase Status Indicator */
+.firebase-status {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    padding: 8px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    z-index: 10000;
+    transition: all 0.3s ease;
+}
+
+.firebase-status.connected {
+    background: #4CAF50;
+    color: white;
+}
+
+.firebase-status.disconnected {
+    background: #F44336;
+    color: white;
+}
+
+.firebase-status.connecting {
+    background: #FF9800;
+    color: white;
+}
+
+/* Real-time Data Display */
+.realtime-data {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 20px;
+    margin: 20px 0;
+}
+
+.realtime-data h4 {
+    margin: 0 0 15px 0;
+    color: #333;
+    font-size: 16px;
+}
+
+.data-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+}
+
+.data-item {
+    background: white;
+    padding: 15px;
+    border-radius: 8px;
+    border-left: 3px solid #4CAF50;
+}
+
+.data-item .label {
+    font-size: 12px;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 5px;
+}
+
+.data-item .value {
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+}
+
+/* Loading States */
+.loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 200px;
+    color: #666;
+}
+
+.loading::after {
+    content: '';
+    width: 20px;
+    height: 20px;
+    border: 2px solid #ddd;
+    border-top: 2px solid #4CAF50;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-left: 10px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .notification-toast {
+        width: calc(100vw - 40px);
+        right: 20px;
+        left: 20px;
+    }
+    
+    .charts-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .chart-wrapper {
+        height: 250px;
+    }
+    
+    .data-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Animation Classes */
+.fade-in {
+    animation: fadeIn 0.5s ease-in;
+}
+
+.slide-in-right {
+    animation: slideInRight 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideInRight {
+    from { transform: translateX(100%); }
+    to { transform: translateX(0); }
+}
+
+/* Priority Colors */
+.priority-high {
+    color: #FF6B6B;
+}
+
+.priority-medium {
+    color: #FFA726;
+}
+
+.priority-low {
+    color: #66BB6A;
+}
+
+/* Export Button */
+.export-btn {
+    background: #2196F3;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.2s ease;
+    margin: 20px 0;
+}
+
+.export-btn:hover {
+    background: #1976D2;
+    transform: translateY(-1px);
+}

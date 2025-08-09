@@ -714,6 +714,310 @@
         box-shadow: 0 4px 12px rgba(255, 90, 95, 0.3);
     }
 
+    /* Quick Action Cards */
+    .quick-action-card {
+        background: white;
+        border-radius: 16px;
+        padding: 24px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        transition: all 0.3s ease;
+        cursor: pointer;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .quick-action-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+    }
+
+    .quick-action-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        background: linear-gradient(90deg, #75E6DA, #05445E);
+        opacity: 0;
+        transition: opacity 0.3s;
+    }
+
+    .quick-action-card:hover::before {
+        opacity: 1;
+    }
+
+    .quick-action-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 24px;
+        margin-bottom: 16px;
+    }
+
+    .quick-action-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: #0a3a60;
+        margin-bottom: 8px;
+    }
+
+    .quick-action-desc {
+        font-size: 14px;
+        color: #666;
+        line-height: 1.5;
+    }
+
+    /* Education Cards */
+    .education-card {
+        background: white;
+        border-radius: 16px;
+        padding: 24px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        transition: all 0.3s ease;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .education-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+    }
+
+    .education-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 20px;
+        margin-bottom: 16px;
+    }
+
+    .education-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: #0a3a60;
+        margin-bottom: 8px;
+    }
+
+    .education-desc {
+        font-size: 14px;
+        color: #666;
+        line-height: 1.5;
+        margin-bottom: 16px;
+    }
+
+    .education-btn {
+        background: linear-gradient(135deg, #75E6DA, #05445E);
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 8px;
+        font-size: 12px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .education-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(117, 230, 218, 0.3);
+    }
+
+    /* Event Cards */
+    .event-card {
+        background: white;
+        border-radius: 16px;
+        padding: 20px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        transition: all 0.3s ease;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        display: flex;
+        gap: 16px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .event-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+    }
+
+    .event-date {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-width: 60px;
+        padding: 12px 8px;
+        background: linear-gradient(135deg, #75E6DA, #05445E);
+        border-radius: 12px;
+        color: white;
+        text-align: center;
+    }
+
+    .event-day {
+        font-size: 20px;
+        font-weight: 700;
+        line-height: 1;
+    }
+
+    .event-month {
+        font-size: 12px;
+        font-weight: 500;
+        opacity: 0.9;
+    }
+
+    .event-content {
+        flex: 1;
+    }
+
+    .event-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: #0a3a60;
+        margin-bottom: 8px;
+    }
+
+    .event-desc {
+        font-size: 14px;
+        color: #666;
+        line-height: 1.5;
+        margin-bottom: 12px;
+    }
+
+    .event-meta {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        margin-bottom: 12px;
+    }
+
+    .event-time, .event-location {
+        font-size: 12px;
+        color: #888;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .event-btn {
+        background: linear-gradient(135deg, #75E6DA, #05445E);
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 8px;
+        font-size: 12px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .event-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(117, 230, 218, 0.3);
+    }
+
+    /* Animations */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes slideInLeft {
+        from {
+            opacity: 0;
+            transform: translateX(-30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    @keyframes pulse {
+        0%, 100% {
+            transform: scale(1);
+        }
+        50% {
+            transform: scale(1.05);
+        }
+    }
+
+    @keyframes bounce {
+        0%, 20%, 53%, 80%, 100% {
+            transform: translate3d(0,0,0);
+        }
+        40%, 43% {
+            transform: translate3d(0, -30px, 0);
+        }
+        70% {
+            transform: translate3d(0, -15px, 0);
+        }
+        90% {
+            transform: translate3d(0, -4px, 0);
+        }
+    }
+
+    .animate-fade-in-up {
+        animation: fadeInUp 0.6s ease-out;
+    }
+
+    .animate-slide-in-left {
+        animation: slideInLeft 0.6s ease-out;
+    }
+
+    .animate-pulse {
+        animation: pulse 2s infinite;
+    }
+
+    .animate-bounce {
+        animation: bounce 1s;
+    }
+
+    /* Hover effects for cards */
+    .quick-action-card:hover .quick-action-icon {
+        animation: pulse 0.6s ease-in-out;
+    }
+
+    .education-card:hover .education-icon {
+        animation: bounce 0.6s ease-in-out;
+    }
+
+    .event-card:hover .event-date {
+        animation: pulse 0.6s ease-in-out;
+    }
+
+    /* Loading animation */
+    .loading-spinner {
+        border: 3px solid #f3f4f6;
+        border-top: 3px solid #3b82f6;
+        border-radius: 50%;
+        width: 20px;
+        height: 20px;
+        animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
     /* Responsive fixes */
     @media (max-width: 1024px) {
         .main-content-wrapper { padding-left: 1rem; padding-right: 1rem; }
@@ -725,6 +1029,13 @@
         .notif-cards {
             grid-template-columns: 1fr;
         }
+        .event-card {
+            flex-direction: column;
+            text-align: center;
+        }
+        .event-date {
+            align-self: center;
+        }
     }
 </style>
 
@@ -732,77 +1043,7 @@
     {{-- Sidebar Overlay --}}
     <div class="sidebar-overlay" :class="{ 'active': sidebarOpen }" @click="sidebarOpen = false"></div>
 
-    {{-- Sidebar --}}
-    <aside
-        x-data="{ open: false, active: 'dashboard' }"
-        x-ref="sidebar"
-        @mouseenter="open = true; $root.sidebarOpen = true"
-        @mouseleave="open = false; $root.sidebarOpen = false"
-        class="fixed top-0 left-0 z-50 flex flex-col py-6 sidebar-hover overflow-hidden shadow-2xl group sidebar-gradient"
-        :class="open ? 'w-64' : 'w-16'"
-        style="transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1); margin-top: 48px; height: calc(100vh - 48px);"
-    >
-        <div class="relative flex flex-col h-full w-full px-4">
-            {{-- Logo Section --}}
-            <div class="flex items-center justify-center mb-8 mt-2 sidebar-logo">
-                <img x-show="open" class="w-32 h-auto" src="{{ asset('asset/img/logo1.png') }}" alt="Logo Penuh">
-                <img x-show="!open" class="w-6 h-6" src="{{ asset('asset/img/logo.png') }}" alt="Logo Ikon">
-            </div>
-            
-            {{-- Navigation Menu --}}
-            <nav class="flex flex-col gap-2 w-full flex-1">
-                {{-- Dashboard Link --}}
-                <a href="{{ route('nasabahdashboard') }}" class="flex items-center gap-3 p-3 font-medium sidebar-nav-item whitespace-nowrap w-full" :class="open ? (active === 'dashboard' ? 'active text-white' : 'text-white') : (active === 'dashboard' ? 'active text-white justify-center' : 'text-white justify-center')">
-                    <i class="fas fa-home text-lg"></i>
-                    <span x-show="open" class="text-sm font-medium">Dashboard</span>
-                </a>
-                
-                {{-- Komunitas Link --}}
-                <a href="{{ route('nasabahkomunitas') }}" class="flex items-center gap-3 p-3 rounded-lg sidebar-item-hover whitespace-nowrap w-full" :class="open ? (active === 'komunitas' ? 'bg-white/20 text-white shadow-lg' : 'hover:bg-white/20 text-white') : (active === 'komunitas' ? 'bg-white/20 text-white justify-center' : 'hover:bg-white/20 text-white justify-center')">
-                    <i class="fas fa-users text-lg"></i>
-                    <span x-show="open" class="text-sm font-medium">Komunitas</span>
-                </a>
-                
-                {{-- Penjemputan Sampah Link --}}
-                <a href="{{ route('sampahnasabah') }}" class="flex items-center gap-3 p-3 rounded-lg sidebar-item-hover whitespace-nowrap w-full" :class="open ? (active === 'penjemputan' ? 'bg-white/20 text-white shadow-lg' : 'hover:bg-white/20 text-white') : (active === 'penjemputan' ? 'bg-white/20 text-white justify-center' : 'hover:bg-white/20 text-white justify-center')">
-                    <i class="fas fa-trash-alt text-lg"></i>
-                    <span x-show="open" class="text-sm font-medium">Penjemputan Sampah</span>
-                </a>
-                
-                {{-- Poin Link --}}
-                <a href="{{ route('poin-nasabah') }}" class="flex items-center gap-3 p-3 rounded-lg sidebar-item-hover whitespace-nowrap w-full" :class="open ? (active === 'poin' ? 'bg-white/20 text-white shadow-lg' : 'hover:bg-white/20 text-white') : (active === 'poin' ? 'bg-white/20 text-white justify-center' : 'hover:bg-white/20 text-white justify-center')">
-                    <i class="fas fa-coins text-lg"></i>
-                    <span x-show="open" class="text-sm font-medium">Poin Mu</span>
-                </a>
-                
-                {{-- Riwayat Transaksi Link --}}
-                <a href="{{ route('riwayattransaksinasabah') }}" class="flex items-center gap-3 p-3 rounded-lg sidebar-item-hover whitespace-nowrap w-full" :class="open ? (active === 'riwayat-transaksi' ? 'bg-white/20 text-white shadow-lg' : 'hover:bg-white/20 text-white') : (active === 'riwayat-transaksi' ? 'bg-white/20 text-white justify-center' : 'hover:bg-white/20 text-white justify-center')">
-                    <i class="fas fa-history text-lg"></i>
-                    <span x-show="open" class="text-sm font-medium">Riwayat Transaksi</span>
-                </a>
-                
-                {{-- Marketplace Link --}}
-                <a href="{{ route('tokon') }}" class="flex items-center gap-3 p-3 rounded-lg sidebar-item-hover whitespace-nowrap w-full" :class="open ? (active === 'marketplace' ? 'bg-white/20 text-white shadow-lg' : 'hover:bg-white/20 text-white') : (active === 'marketplace' ? 'bg-white/20 text-white justify-center' : 'hover:bg-white/20 text-white justify-center')">
-                    <i class="fas fa-store text-lg"></i>
-                    <span x-show="open" class="text-sm font-medium">Marketplace</span>
-                </a>
-                
-                {{-- Settings Link --}}
-                <a href="{{ route('settingsnasab') }}" class="flex items-center gap-3 p-3 rounded-lg sidebar-item-hover whitespace-nowrap w-full" :class="open ? (active === 'settings' ? 'bg-white/20 text-white shadow-lg' : 'hover:bg-white/20 text-white') : (active === 'settings' ? 'bg-white/20 text-white justify-center' : 'hover:bg-white/20 text-white justify-center')">
-                    <i class="fas fa-cog text-lg"></i>
-                    <span x-show="open" class="text-sm font-medium">Settings</span>
-                </a>
-            </nav>
-            
-            {{-- Logout Section --}}
-            <div class="w-full flex items-center py-3 mt-auto">
-                <a href="{{ route('logout') }}" class="flex items-center gap-3 p-3 rounded-lg sidebar-item-hover text-white hover:text-red-300 transition-all duration-200 w-full whitespace-nowrap" :class="open ? (active === 'logout' ? 'bg-white/20 text-white shadow-lg' : 'hover:bg-white/20 text-white') : (active === 'logout' ? 'bg-white/20 text-white justify-center' : 'hover:bg-white/20 text-white justify-center')">
-                    <i class="fas fa-sign-out-alt text-lg"></i>
-                    <span x-show="open" class="text-sm font-medium">Logout</span>
-                </a>
-            </div>
-        </div>
-    </aside>
+    @include('partials.sidebar-nasabah', ['active' => 'dashboard'])
 
     {{-- Main Content Area --}}
     <div class="main-content-wrapper">
@@ -838,6 +1079,258 @@
                 <h2 class="text-2xl font-bold text-gray-800 mb-4">Notifikasi</h2>
                 <div class="notif-cards" id="notifContainer">
                     <!-- Notifikasi akan dimuat di sini -->
+                </div>
+            </div>
+
+            {{-- Quick Actions Panel --}}
+            <div class="mb-8 animate-fade-in-up">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4">Aksi Cepat</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div class="quick-action-card" onclick="navigateTo('sampahnasabah')">
+                        <div class="quick-action-icon bg-gradient-to-br from-green-400 to-green-600">
+                            <i class="fas fa-trash-alt"></i>
+                        </div>
+                        <div class="quick-action-content">
+                            <h3 class="quick-action-title">Jadwalkan Penjemputan</h3>
+                            <p class="quick-action-desc">Atur jadwal penjemputan sampah</p>
+                        </div>
+                    </div>
+                    
+                    <div class="quick-action-card" onclick="navigateTo('poin-nasabah')">
+                        <div class="quick-action-icon bg-gradient-to-br from-yellow-400 to-yellow-600">
+                            <i class="fas fa-coins"></i>
+                        </div>
+                        <div class="quick-action-content">
+                            <h3 class="quick-action-title">Tukar Poin</h3>
+                            <p class="quick-action-desc">Tukar poin dengan hadiah</p>
+                        </div>
+                    </div>
+                    
+                    <div class="quick-action-card" onclick="navigateTo('tokon')">
+                        <div class="quick-action-icon bg-gradient-to-br from-blue-400 to-blue-600">
+                            <i class="fas fa-store"></i>
+                        </div>
+                        <div class="quick-action-content">
+                            <h3 class="quick-action-title">Marketplace</h3>
+                            <p class="quick-action-desc">Beli produk ramah lingkungan</p>
+                        </div>
+                    </div>
+                    
+                    <div class="quick-action-card" onclick="navigateTo('nasabahkomunitas')">
+                        <div class="quick-action-icon bg-gradient-to-br from-purple-400 to-purple-600">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="quick-action-content">
+                            <h3 class="quick-action-title">Komunitas</h3>
+                            <p class="quick-action-desc">Bergabung dengan komunitas</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Progress & Stats Section --}}
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8 animate-slide-in-left">
+                {{-- Environmental Impact --}}
+                <div class="stat-card p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold text-gray-800">Dampak Lingkungan</h3>
+                        <i class="fas fa-leaf text-green-500 text-xl"></i>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-600">CO2 Tersimpan</span>
+                            <span class="text-lg font-bold text-green-600">2.4 kg</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-600">Pohon Setara</span>
+                            <span class="text-lg font-bold text-green-600">0.12</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-600">Air Tersimpan</span>
+                            <span class="text-lg font-bold text-blue-600">15 L</span>
+                        </div>
+                    </div>
+                    <div class="mt-4 pt-4 border-t border-gray-200">
+                        <div class="flex items-center justify-between text-sm">
+                            <span class="text-gray-600">Target Bulanan</span>
+                            <span class="text-green-600 font-medium">75%</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2 mt-2">
+                            <div class="bg-green-500 h-2 rounded-full" style="width: 75%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Rewards & Achievements --}}
+                <div class="stat-card p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold text-gray-800">Pencapaian</h3>
+                        <i class="fas fa-trophy text-yellow-500 text-xl"></i>
+                    </div>
+                    <div class="space-y-3">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                                <i class="fas fa-check text-green-600 text-sm"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm font-medium text-gray-800">Pemula Hijau</p>
+                                <p class="text-xs text-gray-500">Selesaikan 5 penjemputan</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                                <i class="fas fa-star text-blue-600 text-sm"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm font-medium text-gray-800">Konsisten</p>
+                                <p class="text-xs text-gray-500">3 minggu berturut-turut</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3 opacity-50">
+                            <div class="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center">
+                                <i class="fas fa-lock text-gray-400 text-sm"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm font-medium text-gray-400">Eco Warrior</p>
+                                <p class="text-xs text-gray-400">Selesaikan 20 penjemputan</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-4 pt-4 border-t border-gray-200">
+                        <p class="text-sm text-gray-600">Pencapaian berikutnya dalam <span class="font-medium text-blue-600">3 hari</span></p>
+                    </div>
+                </div>
+
+                {{-- Community Stats --}}
+                <div class="stat-card p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold text-gray-800">Komunitas</h3>
+                        <i class="fas fa-users text-purple-500 text-xl"></i>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-600">Total Anggota</span>
+                            <span class="text-lg font-bold text-purple-600">1,247</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-600">Aktif Hari Ini</span>
+                            <span class="text-lg font-bold text-green-600">89</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-600">Peringkat Anda</span>
+                            <span class="text-lg font-bold text-blue-600">#156</span>
+                        </div>
+                    </div>
+                    <div class="mt-4 pt-4 border-t border-gray-200">
+                        <button onclick="navigateTo('nasabahkomunitas')" class="w-full bg-purple-500 hover:bg-purple-600 text-white py-2 px-4 rounded-lg text-sm font-medium transition-colors">
+                            Lihat Komunitas
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Tips & Education Section --}}
+            <div class="mb-8 animate-fade-in-up">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4">Tips & Edukasi</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="education-card">
+                        <div class="education-icon bg-gradient-to-br from-green-400 to-green-600">
+                            <i class="fas fa-recycle"></i>
+                        </div>
+                        <div class="education-content">
+                            <h3 class="education-title">Cara Memilah Sampah</h3>
+                            <p class="education-desc">Pelajari cara memilah sampah organik dan anorganik dengan benar</p>
+                            <button class="education-btn" onclick="showEducationModal('pemilahan')">
+                                Pelajari Lebih Lanjut
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="education-card">
+                        <div class="education-icon bg-gradient-to-br from-blue-400 to-blue-600">
+                            <i class="fas fa-lightbulb"></i>
+                        </div>
+                        <div class="education-content">
+                            <h3 class="education-title">Ide Daur Ulang Kreatif</h3>
+                            <p class="education-desc">Temukan ide kreatif untuk mendaur ulang sampah di rumah</p>
+                            <button class="education-btn" onclick="showEducationModal('kreatif')">
+                                Lihat Ide
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="education-card">
+                        <div class="education-icon bg-gradient-to-br from-purple-400 to-purple-600">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="education-content">
+                            <h3 class="education-title">Impact Report</h3>
+                            <p class="education-desc">Lihat laporan dampak lingkungan dari aktivitas Anda</p>
+                            <button class="education-btn" onclick="showEducationModal('impact')">
+                                Lihat Laporan
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Upcoming Events --}}
+            <div class="mb-8 animate-slide-in-left">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4">Event Mendatang</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="event-card">
+                        <div class="event-date">
+                            <span class="event-day">25</span>
+                            <span class="event-month">Jun</span>
+                        </div>
+                        <div class="event-content">
+                            <h3 class="event-title">Workshop Daur Ulang</h3>
+                            <p class="event-desc">Workshop membuat kerajinan dari sampah plastik</p>
+                            <div class="event-meta">
+                                <span class="event-time"><i class="fas fa-clock"></i> 14:00 WIB</span>
+                                <span class="event-location"><i class="fas fa-map-marker-alt"></i> Online</span>
+                            </div>
+                            <button class="event-btn" onclick="joinEvent('workshop')">
+                                Daftar Sekarang
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="event-card">
+                        <div class="event-date">
+                            <span class="event-day">30</span>
+                            <span class="event-month">Jun</span>
+                        </div>
+                        <div class="event-content">
+                            <h3 class="event-title">Challenges Hijau</h3>
+                            <p class="event-desc">Kompetisi daur ulang dengan hadiah menarik</p>
+                            <div class="event-meta">
+                                <span class="event-time"><i class="fas fa-clock"></i> 09:00 WIB</span>
+                                <span class="event-location"><i class="fas fa-map-marker-alt"></i> Offline</span>
+                            </div>
+                            <button class="event-btn" onclick="joinEvent('challenge')">
+                                Ikut Challenge
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="event-card">
+                        <div class="event-date">
+                            <span class="event-day">05</span>
+                            <span class="event-month">Jul</span>
+                        </div>
+                        <div class="event-content">
+                            <h3 class="event-title">Webinar Lingkungan</h3>
+                            <p class="event-desc">Diskusi tentang solusi masalah sampah</p>
+                            <div class="event-meta">
+                                <span class="event-time"><i class="fas fa-clock"></i> 19:00 WIB</span>
+                                <span class="event-location"><i class="fas fa-map-marker-alt"></i> Online</span>
+                            </div>
+                            <button class="event-btn" onclick="joinEvent('webinar')">
+                                Daftar Webinar
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -941,6 +1434,37 @@
         </div>
         <div class="modal-footer">
             <button class="btn btn-primary" id="closeNotifModal">Tutup</button>
+        </div>
+    </div>
+</div>
+
+{{-- Modal untuk fitur dalam pengembangan --}}
+<div class="modal" id="featureModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 class="modal-title">Fitur Dalam Pengembangan</h3>
+            <button class="close-modal" id="closeFeatureModal">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="text-center py-6">
+                <div class="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <i class="fas fa-tools text-blue-600 text-3xl"></i>
+                </div>
+                <h4 class="text-xl font-bold text-gray-900 mb-4">Fitur Sedang Dikembangkan</h4>
+                <p class="text-gray-600 text-base leading-relaxed mb-6">
+                    Fitur ini sedang dalam tahap pengembangan. 
+                    Tim kami sedang bekerja keras untuk menghadirkan pengalaman terbaik untuk Anda.
+                </p>
+                <div class="bg-blue-50 rounded-xl p-4 mb-6">
+                    <div class="flex items-center justify-center gap-2">
+                        <i class="fas fa-clock text-blue-600"></i>
+                        <span class="text-blue-600 font-medium">Estimasi rilis: 2-3 minggu ke depan</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary" id="closeFeatureBtn">Mengerti</button>
         </div>
     </div>
 </div>
@@ -1513,11 +2037,21 @@
         document.getElementById('searchModal').style.display = 'none';
     });
 
+    // Close Feature Modal
+    document.getElementById('closeFeatureModal').addEventListener('click', function() {
+        document.getElementById('featureModal').style.display = 'none';
+    });
+
+    document.getElementById('closeFeatureBtn').addEventListener('click', function() {
+        document.getElementById('featureModal').style.display = 'none';
+    });
+
     // Close modal when clicking outside
     window.addEventListener('click', function(event) {
         const developmentModal = document.getElementById('developmentModal');
         const notificationModal = document.getElementById('notificationModal');
         const searchModal = document.getElementById('searchModal');
+        const featureModal = document.getElementById('featureModal');
         
         if (event.target === developmentModal) {
             developmentModal.style.display = 'none';
@@ -1530,7 +2064,269 @@
         if (event.target === searchModal) {
             searchModal.style.display = 'none';
         }
+        
+        if (event.target === featureModal) {
+            featureModal.style.display = 'none';
+        }
     });
+
+    // Navigation function
+    function navigateTo(route) {
+        // Show loading toast
+        showToast('Mengalihkan ke halaman...', 'info');
+        
+        // Simulate navigation delay
+        setTimeout(() => {
+            // In a real app, this would navigate to the actual route
+            if (route === 'sampahnasabah') {
+                window.location.href = '/sampahnasabah';
+            } else if (route === 'poin-nasabah') {
+                window.location.href = '/poin-nasabah';
+            } else if (route === 'tokon') {
+                window.location.href = '/tokon';
+            } else if (route === 'nasabahkomunitas') {
+                window.location.href = '/nasabahkomunitas';
+            } else {
+                showToast('Fitur sedang dalam pengembangan', 'warning');
+            }
+        }, 1000);
+    }
+
+    // Show Education Modal
+    function showEducationModal(type) {
+        const educationData = {
+            'pemilahan': {
+                title: 'Cara Memilah Sampah',
+                content: `
+                    <div class="space-y-4">
+                        <div class="bg-green-50 p-4 rounded-lg">
+                            <h4 class="font-semibold text-green-800 mb-2">Sampah Organik</h4>
+                            <ul class="text-sm text-green-700 space-y-1">
+                                <li>• Sisa makanan</li>
+                                <li>• Daun-daunan</li>
+                                <li>• Kulit buah</li>
+                                <li>• Kertas tisu</li>
+                            </ul>
+                        </div>
+                        <div class="bg-blue-50 p-4 rounded-lg">
+                            <h4 class="font-semibold text-blue-800 mb-2">Sampah Anorganik</h4>
+                            <ul class="text-sm text-blue-700 space-y-1">
+                                <li>• Plastik</li>
+                                <li>• Kertas</li>
+                                <li>• Logam</li>
+                                <li>• Kaca</li>
+                            </ul>
+                        </div>
+                        <div class="bg-red-50 p-4 rounded-lg">
+                            <h4 class="font-semibold text-red-800 mb-2">Sampah B3</h4>
+                            <ul class="text-sm text-red-700 space-y-1">
+                                <li>• Baterai</li>
+                                <li>• Lampu neon</li>
+                                <li>• Obat-obatan</li>
+                                <li>• Cat</li>
+                            </ul>
+                        </div>
+                    </div>
+                `
+            },
+            'kreatif': {
+                title: 'Ide Daur Ulang Kreatif',
+                content: `
+                    <div class="space-y-4">
+                        <div class="bg-yellow-50 p-4 rounded-lg">
+                            <h4 class="font-semibold text-yellow-800 mb-2">Botol Plastik</h4>
+                            <ul class="text-sm text-yellow-700 space-y-1">
+                                <li>• Pot tanaman</li>
+                                <li>• Tempat pensil</li>
+                                <li>• Lampu hias</li>
+                                <li>• Vertical garden</li>
+                            </ul>
+                        </div>
+                        <div class="bg-purple-50 p-4 rounded-lg">
+                            <h4 class="font-semibold text-purple-800 mb-2">Kardus</h4>
+                            <ul class="text-sm text-purple-700 space-y-1">
+                                <li>• Organizer</li>
+                                <li>• Mainan anak</li>
+                                <li>• Dekorasi rumah</li>
+                                <li>• Storage box</li>
+                            </ul>
+                        </div>
+                        <div class="bg-green-50 p-4 rounded-lg">
+                            <h4 class="font-semibold text-green-800 mb-2">Kertas</h4>
+                            <ul class="text-sm text-green-700 space-y-1">
+                                <li>• Origami</li>
+                                <li>• Paper mache</li>
+                                <li>• Greeting cards</li>
+                                <li>• Notebook</li>
+                            </ul>
+                        </div>
+                    </div>
+                `
+            },
+            'impact': {
+                title: 'Impact Report',
+                content: `
+                    <div class="space-y-4">
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="bg-green-50 p-4 rounded-lg text-center">
+                                <div class="text-2xl font-bold text-green-600">2.4 kg</div>
+                                <div class="text-sm text-green-700">CO2 Tersimpan</div>
+                            </div>
+                            <div class="bg-blue-50 p-4 rounded-lg text-center">
+                                <div class="text-2xl font-bold text-blue-600">15 L</div>
+                                <div class="text-sm text-blue-700">Air Tersimpan</div>
+                            </div>
+                        </div>
+                        <div class="bg-yellow-50 p-4 rounded-lg">
+                            <h4 class="font-semibold text-yellow-800 mb-2">Pencapaian Bulan Ini</h4>
+                            <div class="space-y-2">
+                                <div class="flex justify-between">
+                                    <span class="text-sm">Penjemputan Sampah</span>
+                                    <span class="font-medium">8 kali</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-sm">Total Sampah</span>
+                                    <span class="font-medium">24 kg</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-sm">Poin Terkumpul</span>
+                                    <span class="font-medium">320 poin</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `
+            }
+        };
+
+        const data = educationData[type];
+        if (data) {
+            showEducationContent(data.title, data.content);
+        }
+    }
+
+    // Show Education Content Modal
+    function showEducationContent(title, content) {
+        const modal = document.createElement('div');
+        modal.className = 'modal';
+        modal.style.display = 'flex';
+        modal.innerHTML = `
+            <div class="modal-content" style="max-width: 600px;">
+                <div class="modal-header">
+                    <h3 class="modal-title">${title}</h3>
+                    <button class="close-modal" onclick="this.parentElement.parentElement.parentElement.remove()">&times;</button>
+                </div>
+                <div class="modal-body">
+                    ${content}
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary" onclick="this.parentElement.parentElement.parentElement.remove()">Tutup</button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(modal);
+    }
+
+    // Join Event Function
+    function joinEvent(eventType) {
+        const eventData = {
+            'workshop': {
+                title: 'Workshop Daur Ulang',
+                message: 'Anda berhasil mendaftar untuk Workshop Daur Ulang pada 25 Juni 2025'
+            },
+            'challenge': {
+                title: 'Challenges Hijau',
+                message: 'Anda berhasil mendaftar untuk Challenges Hijau pada 30 Juni 2025'
+            },
+            'webinar': {
+                title: 'Webinar Lingkungan',
+                message: 'Anda berhasil mendaftar untuk Webinar Lingkungan pada 5 Juli 2025'
+            }
+        };
+
+        const data = eventData[eventType];
+        if (data) {
+            showToast(data.message, 'success');
+            
+            // Add to notifications
+            const newNotification = {
+                id: Date.now(),
+                title: `Daftar ${data.title}`,
+                icon: 'fas fa-calendar-check',
+                message: data.message,
+                date: new Date().toLocaleDateString('id-ID'),
+                time: new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }),
+                priority: 'Medium',
+                timeTag: 'Baru saja'
+            };
+            
+            notifications.unshift(newNotification);
+            loadNotifications();
+        }
+    }
+
+    // Real-time updates simulation
+    function startRealTimeUpdates() {
+        // Simulate real-time data updates
+        setInterval(() => {
+            // Update environmental impact randomly
+            const co2Element = document.querySelector('.stat-card .text-green-600');
+            if (co2Element && co2Element.textContent.includes('kg')) {
+                const currentValue = parseFloat(co2Element.textContent);
+                const newValue = currentValue + (Math.random() * 0.1);
+                co2Element.textContent = newValue.toFixed(1) + ' kg';
+            }
+            
+            // Update community stats
+            const activeMembers = document.querySelector('.stat-card .text-green-600');
+            if (activeMembers && activeMembers.textContent.includes('89')) {
+                const currentActive = parseInt(activeMembers.textContent);
+                const newActive = currentActive + Math.floor(Math.random() * 3) - 1;
+                if (newActive > 0) {
+                    activeMembers.textContent = newActive;
+                }
+            }
+        }, 30000); // Update every 30 seconds
+    }
+
+    // Add achievement unlock animation
+    function unlockAchievement(achievementName) {
+        const achievementModal = document.createElement('div');
+        achievementModal.className = 'fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center';
+        achievementModal.innerHTML = `
+            <div class="bg-white rounded-2xl p-8 max-w-md mx-4 text-center shadow-2xl animate-bounce">
+                <div class="w-20 h-20 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <i class="fas fa-trophy text-yellow-600 text-3xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 mb-2">🎉 Achievement Unlocked!</h3>
+                <p class="text-gray-600 mb-4">${achievementName}</p>
+                <button onclick="this.parentElement.parentElement.remove()" class="bg-yellow-500 hover:bg-yellow-600 text-white px-6 py-2 rounded-lg font-medium transition-colors">
+                    Keren!
+                </button>
+            </div>
+        `;
+        document.body.appendChild(achievementModal);
+        
+        // Remove modal after 3 seconds
+        setTimeout(() => {
+            if (document.body.contains(achievementModal)) {
+                achievementModal.remove();
+            }
+        }, 3000);
+    }
+
+    // Add progress animation
+    function animateProgress() {
+        const progressBars = document.querySelectorAll('.bg-green-500');
+        progressBars.forEach(bar => {
+            const width = bar.style.width;
+            bar.style.width = '0%';
+            setTimeout(() => {
+                bar.style.transition = 'width 2s ease-in-out';
+                bar.style.width = width;
+            }, 500);
+        });
+    }
 
     // Initialize when DOM is ready
     document.addEventListener('DOMContentLoaded', function() {
@@ -1538,6 +2334,14 @@
         loadNotifications();
         generateChart();
         updateNotificationCount();
+        
+        // Start real-time updates
+        startRealTimeUpdates();
+        
+        // Animate progress bars
+        setTimeout(() => {
+            animateProgress();
+        }, 1000);
         
         // Add welcome toast
         setTimeout(() => {
@@ -1548,6 +2352,12 @@
         setTimeout(() => {
             showActivityNotification();
         }, 4000);
+        
+        // Simulate achievement unlock after 10 seconds
+        setTimeout(() => {
+            unlockAchievement('Pemula Hijau - Selesaikan 5 penjemputan');
+        }, 10000);
     });
 </script>
 @endsection
+

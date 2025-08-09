@@ -27,8 +27,8 @@
     .main-content-wrapper {
         min-height: 100vh;
         background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #f1f5f9 100%);
-        padding-top: 60px; 
-        padding-left: 4rem; 
+        padding-top: 30px; 
+        padding-left: 2rem; 
         padding-right: 0;
         transition: padding-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         position: relative; 
@@ -200,7 +200,7 @@
         <div class="relative flex flex-col h-full w-full px-4">
             {{-- Logo Section --}}
             <div class="flex items-center justify-center mb-8 mt-2 sidebar-logo">
-                <img x-show="open" class="w-16 h-auto" src="{{ asset('asset/img/logo.png') }}" alt="Logo Penuh">
+                <img x-show="open" class="w-32 h-auto" src="{{ asset('asset/img/logo1.png') }}" alt="Logo Penuh">
                 <img x-show="!open" class="w-6 h-6" src="{{ asset('asset/img/logo.png') }}" alt="Logo Ikon">
             </div>
             

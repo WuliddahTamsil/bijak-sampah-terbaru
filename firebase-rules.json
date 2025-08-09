@@ -1,0 +1,12 @@
+{
+  "rules": {
+    "UsersData": {
+      ".read": true,
+      ".write": "auth != null"
+    },
+    "$other": {
+      ".read": "auth != null",
+      ".write": "auth != null"
+    }
+  }
+}

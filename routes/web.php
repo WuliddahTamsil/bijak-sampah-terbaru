@@ -120,8 +120,8 @@ Route::get('/test-settings', function () {
 })->name('test-settings');
 
 Route::get('/logout', function () {
-    // Logika logout bisa ditambahkan di sini
-    return redirect('/')->with('success', 'Berhasil logout!');
+    // Redirect ke halaman login atau home setelah logout
+    return redirect('/login');
 })->name('logout');
 
 Route::get('/test-theme', function () {

@@ -21,110 +21,7 @@
 
         window.addEventListener('load', function() {
             console.log('Window loaded, Chart.js available:', typeof Chart !== 'undefined');
-            initializeDashboard();
         });
-
-        // Dashboard initialization function
-        function initializeDashboard() {
-            updateDateTime();
-            updateStats();
-            updateRecentActivities();
-            
-            // Update every minute
-            setInterval(updateDateTime, 60000);
-            setInterval(updateStats, 300000); // 5 minutes
-        }
-
-        // Update date and time
-        function updateDateTime() {
-            const now = new Date();
-            const dateElement = document.getElementById('current-date');
-            const timeElement = document.getElementById('current-time');
-            
-            if (dateElement) {
-                dateElement.textContent = now.toLocaleDateString('id-ID', { 
-                    weekday: 'long', 
-                    year: 'numeric', 
-                    month: 'long', 
-                    day: 'numeric' 
-                });
-            }
-            
-            if (timeElement) {
-                timeElement.textContent = now.toLocaleTimeString('id-ID', { 
-                    hour: '2-digit', 
-                    minute: '2-digit' 
-                });
-            }
-        }
-
-        // Update dashboard statistics
-        function updateStats() {
-            // Simulate real-time data updates
-            const totalSetoran = Math.floor(Math.random() * 1000) + 500;
-            const sampahDaurUlang = Math.floor(Math.random() * 500) + 200;
-            const penjemputanHariIni = Math.floor(Math.random() * 20) + 5;
-            const pendapatanBulanIni = Math.floor(Math.random() * 5000000) + 3000000;
-            const totalNasabah = Math.floor(Math.random() * 200) + 100;
-
-            // Update DOM elements
-            const elements = {
-                'total-setoran': totalSetoran,
-                'sampah-daur-ulang': sampahDaurUlang + ' kg',
-                'penjemputan-hari-ini': penjemputanHariIni,
-                'pendapatan-bulan-ini': 'Rp ' + pendapatanBulanIni.toLocaleString('id-ID'),
-                'total-nasabah': totalNasabah
-            };
-
-            Object.keys(elements).forEach(id => {
-                const element = document.getElementById(id);
-                if (element) {
-                    element.textContent = elements[id];
-                }
-            });
-        }
-
-        // Update recent activities
-        function updateRecentActivities() {
-            const activities = [
-                {
-                    icon: 'fas fa-user-plus',
-                    iconBg: 'bg-blue-100',
-                    iconColor: 'text-blue-600',
-                    title: 'Nasabah baru terdaftar',
-                    subtitle: 'Ahmad Suryadi - 2 menit yang lalu'
-                },
-                {
-                    icon: 'fas fa-recycle',
-                    iconBg: 'bg-green-100',
-                    iconColor: 'text-green-600',
-                    title: 'Setoran sampah berhasil',
-                    subtitle: '15 kg plastik - 5 menit yang lalu'
-                },
-                {
-                    icon: 'fas fa-truck',
-                    iconBg: 'bg-yellow-100',
-                    iconColor: 'text-yellow-600',
-                    title: 'Penjemputan dijadwalkan',
-                    subtitle: 'Lokasi: Jakarta Selatan - 10 menit yang lalu'
-                }
-            ];
-
-            const container = document.getElementById('recent-activities');
-            if (container) {
-                container.innerHTML = activities.map(activity => `
-                    <div class="flex items-center gap-4 p-3 bg-gray-50 rounded-lg">
-                        <div class="w-10 h-10 ${activity.iconBg} rounded-full flex items-center justify-center">
-                            <i class="${activity.icon} ${activity.iconColor}"></i>
-                        </div>
-                        <div class="flex-1">
-                            <p class="text-sm font-medium text-gray-800">${activity.title}</p>
-                            <p class="text-xs text-gray-500">${activity.subtitle}</p>
-                        </div>
-                    </div>
-                `).join('');
-            }
-        }
 
         // Firebase Configuration
         let database = null; // Global database reference
@@ -429,58 +326,6 @@
         .notification-card {
             border-left: 4px solid #ddd;
             transition: all 0.3s ease;
-            margin-bottom: 12px;
-        }
-
-        .notification-card.high {
-            border-left-color: #ef4444;
-        }
-
-        .notification-card.medium {
-            border-left-color: #f59e0b;
-        }
-
-        .notification-card.low {
-            border-left-color: #10b981;
-        }
-
-        .status-badge {
-            display: inline-block;
-            padding: 4px 12px;
-            border-radius: 12px;
-            font-size: 12px;
-            font-weight: 600;
-            text-transform: uppercase;
-            color: white;
-        }
-
-        .status-badge.high {
-            background: #ef4444;
-        }
-
-        .status-badge.medium {
-            background: #f59e0b;
-        }
-
-        .status-badge.low {
-            background: #10b981;
-        }
-
-        .timestamp {
-            color: #666;
-            font-size: 13px;
-            margin-bottom: 10px;
-        }
-
-        .actions {
-            display: flex;
-            justify-content: flex-end;
-            margin-top: 8px;
-        }
-
-        .btn-sm {
-            padding: 8px 16px;
-            font-size: 13px;
         }
 
         .notification-card.high {
@@ -553,27 +398,16 @@
         .notif-cards {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 15px;
-            margin-bottom: 20px;
-            margin-top: 15px;
+            gap: 25px;
+            margin-bottom: 40px;
+            margin-top: 20px;
             width: 100%;
-            position: relative;
-            z-index: 1;
-        }
-
-        /* Firebase Notifications specific styling */
-        #firebase-notifications {
-            margin-bottom: 20px;
-        }
-
-        #firebase-notifications .notification-card {
-            margin-bottom: 0;
         }
 
         .card {
             background: white;
             border-radius: 16px;
-            padding: 18px;
+            padding: 25px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.05);
             transition: all 0.3s ease;
             border-left: 4px solid transparent;
@@ -612,7 +446,7 @@
             color: #0a3a60;
             font-weight: 600;
             font-size: 17px;
-            margin-bottom: 8px;
+            margin-bottom: 12px;
             display: flex;
             align-items: center;
             gap: 10px;
@@ -626,7 +460,7 @@
         .card p {
             font-size: 15px;
             color: #555;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
             line-height: 1.6;
         }
 
@@ -676,11 +510,11 @@
         /* Grafik dengan Animasi */
         .chart-section {
             background: white;
-            padding: 25px;
+            padding: 30px;
             border-radius: 16px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.05);
             margin-bottom: 30px;
-            margin-top: 15px;
+            margin-top: 30px;
             width: 100%;
         }
 
@@ -702,7 +536,7 @@
         .chart-sub {
             font-size: 15px;
             color: #777;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
         }
         
         .chart-content {
@@ -931,13 +765,6 @@
 
         .btn-outline:hover {
             background: #f5f5f5;
-            border-color: #05445E;
-            color: #05445E;
-        }
-
-        .btn-outline.btn-sm {
-            padding: 8px 16px;
-            font-size: 13px;
         }
 
         .btn-danger {
@@ -996,8 +823,6 @@
                 padding: 20px;
             }
         }
-
-
 
         /* Toast Notification Styles */
         .toast-notification {
@@ -1090,7 +915,15 @@
 </head>
 <body class="bg-gray-50">
 
+<!-- Firebase Status Indicator -->
+<div id="firebase-status" class="firebase-status connecting">
+    <i class="fas fa-circle-notch fa-spin"></i> Menghubungkan Firebase...
+</div>
 
+
+
+<!-- Firebase Notifications Container -->
+<div id="firebase-notifications" class="notif-cards"></div>
 
 <div class="flex min-h-screen bg-gray-50 w-full" x-data="{ sidebarOpen: false, activeMenu: 'dashboard' }" x-init="activeMenu = 'dashboard'">
     {{-- Sidebar --}}
@@ -1272,380 +1105,66 @@
         </div>
     </div>
 
-        <div class="p-6" style="padding-top: 15px; width: 100%; max-width: 100%;">
-            <!-- Welcome Section -->
-            <div class="welcome-section mb-8">
-                <div class="bg-gradient-to-r from-teal-500 to-blue-600 rounded-2xl p-6 text-white shadow-xl">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <h1 class="text-3xl font-bold mb-2">Selamat Datang! 👋</h1>
-                            <p class="text-teal-100 text-lg">Dashboard Bank Sampah - Kelola sampah dengan bijak</p>
-                            <div class="flex items-center gap-4 mt-4">
-                                <div class="flex items-center gap-2">
-                                    <i class="fas fa-calendar-alt"></i>
-                                    <span id="current-date" class="text-sm"></span>
-                                </div>
-                                <div class="flex items-center gap-2">
-                                    <i class="fas fa-clock"></i>
-                                    <span id="current-time" class="text-sm"></span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="text-right">
-                            <div class="text-4xl font-bold mb-1" id="total-nasabah">0</div>
-                            <div class="text-teal-100">Total Nasabah</div>
-                        </div>
-                    </div>
+        <div class="p-6" style="padding-top: 20px; width: 100%; max-width: 100%;">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+                <div>
+                    <h1 class="text-2xl font-bold text-gray-800">Dashboard</h1>
+                    <p class="text-sm text-gray-500">Selamat datang di dashboard bank sampah</p>
                 </div>
             </div>
-
-            <!-- Firebase Status Indicator -->
-            <div id="firebase-status" class="firebase-status connecting mb-6">
-                <i class="fas fa-circle-notch fa-spin"></i> Menghubungkan Firebase...
-            </div>
-
-            <!-- Quick Stats Cards -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                <div class="stat-card bg-white rounded-xl p-6 shadow-lg border-l-4 border-blue-500 hover:shadow-xl transition-all duration-300">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-sm font-medium text-gray-600">Total Setoran</p>
-                            <p class="text-2xl font-bold text-gray-900" id="total-setoran">0</p>
-                        </div>
-                        <div class="p-3 bg-blue-100 rounded-full">
-                            <i class="fas fa-recycle text-blue-600 text-xl"></i>
-                        </div>
-                    </div>
-                    <div class="mt-4">
-                        <span class="text-green-600 text-sm font-medium">
-                            <i class="fas fa-arrow-up"></i> +12%
-                        </span>
-                        <span class="text-gray-500 text-sm ml-2">dari bulan lalu</span>
-                    </div>
-                </div>
-
-                <div class="stat-card bg-white rounded-xl p-6 shadow-lg border-l-4 border-green-500 hover:shadow-xl transition-all duration-300">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-sm font-medium text-gray-600">Sampah Terdaur Ulang</p>
-                            <p class="text-2xl font-bold text-gray-900" id="sampah-daur-ulang">0 kg</p>
-                        </div>
-                        <div class="p-3 bg-green-100 rounded-full">
-                            <i class="fas fa-leaf text-green-600 text-xl"></i>
-                        </div>
-                    </div>
-                    <div class="mt-4">
-                        <span class="text-green-600 text-sm font-medium">
-                            <i class="fas fa-arrow-up"></i> +8%
-                        </span>
-                        <span class="text-gray-500 text-sm ml-2">dari bulan lalu</span>
-                    </div>
-                </div>
-
-                <div class="stat-card bg-white rounded-xl p-6 shadow-lg border-l-4 border-yellow-500 hover:shadow-xl transition-all duration-300">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-sm font-medium text-gray-600">Penjemputan Hari Ini</p>
-                            <p class="text-2xl font-bold text-gray-900" id="penjemputan-hari-ini">0</p>
-                        </div>
-                        <div class="p-3 bg-yellow-100 rounded-full">
-                            <i class="fas fa-truck text-yellow-600 text-xl"></i>
-                        </div>
-                    </div>
-                    <div class="mt-4">
-                        <span class="text-blue-600 text-sm font-medium">
-                            <i class="fas fa-clock"></i> Dalam Proses
-                        </span>
-                    </div>
-                </div>
-
-                <div class="stat-card bg-white rounded-xl p-6 shadow-lg border-l-4 border-purple-500 hover:shadow-xl transition-all duration-300">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-sm font-medium text-gray-600">Pendapatan Bulan Ini</p>
-                            <p class="text-2xl font-bold text-gray-900" id="pendapatan-bulan-ini">Rp 0</p>
-                        </div>
-                        <div class="p-3 bg-purple-100 rounded-full">
-                            <i class="fas fa-coins text-purple-600 text-xl"></i>
-                        </div>
-                    </div>
-                    <div class="mt-4">
-                        <span class="text-green-600 text-sm font-medium">
-                            <i class="fas fa-arrow-up"></i> +15%
-                        </span>
-                        <span class="text-gray-500 text-sm ml-2">dari bulan lalu</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Recent Activity & Quick Actions -->
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-                <!-- Recent Activity -->
-                <div class="lg:col-span-2 bg-white rounded-xl p-6 shadow-lg">
-                    <div class="flex items-center justify-between mb-6">
-                        <h3 class="text-lg font-semibold text-gray-800">Aktivitas Terbaru</h3>
-                        <button class="text-blue-600 hover:text-blue-700 text-sm font-medium">Lihat Semua</button>
-                    </div>
-                    <div class="space-y-4" id="recent-activities">
-                        <div class="flex items-center gap-4 p-3 bg-gray-50 rounded-lg">
-                            <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                                <i class="fas fa-user-plus text-blue-600"></i>
-                            </div>
-                            <div class="flex-1">
-                                <p class="text-sm font-medium text-gray-800">Nasabah baru terdaftar</p>
-                                <p class="text-xs text-gray-500">Ahmad Suryadi - 2 menit yang lalu</p>
-                            </div>
-                        </div>
-                        <div class="flex items-center gap-4 p-3 bg-gray-50 rounded-lg">
-                            <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
-                                <i class="fas fa-recycle text-green-600"></i>
-                            </div>
-                            <div class="flex-1">
-                                <p class="text-sm font-medium text-gray-800">Setoran sampah berhasil</p>
-                                <p class="text-xs text-gray-500">15 kg plastik - 5 menit yang lalu</p>
-                            </div>
-                        </div>
-                        <div class="flex items-center gap-4 p-3 bg-gray-50 rounded-lg">
-                            <div class="w-10 h-10 bg-yellow-100 rounded-full flex items-center justify-center">
-                                <i class="fas fa-truck text-yellow-600"></i>
-                            </div>
-                            <div class="flex-1">
-                                <p class="text-sm font-medium text-gray-800">Penjemputan dijadwalkan</p>
-                                <p class="text-xs text-gray-500">Lokasi: Jakarta Selatan - 10 menit yang lalu</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Quick Actions -->
-                <div class="bg-white rounded-xl p-6 shadow-lg">
-                    <h3 class="text-lg font-semibold text-gray-800 mb-6">Aksi Cepat</h3>
-                    <div class="space-y-3">
-                        <button onclick="window.location.href='{{ route('input-setoran') }}'" class="w-full flex items-center gap-3 p-3 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors duration-200">
-                            <i class="fas fa-plus-circle text-blue-600"></i>
-                            <span class="text-sm font-medium text-blue-800">Input Setoran</span>
-                        </button>
-                        <button onclick="window.location.href='{{ route('penjemputan-sampah-banksampah') }}'" class="w-full flex items-center gap-3 p-3 bg-green-50 hover:bg-green-100 rounded-lg transition-colors duration-200">
-                            <i class="fas fa-truck text-green-600"></i>
-                            <span class="text-sm font-medium text-green-800">Jadwalkan Penjemputan</span>
-                        </button>
-                        <button onclick="window.location.href='{{ route('verifikasi-nasabah-banksampah') }}'" class="w-full flex items-center gap-3 p-3 bg-yellow-50 hover:bg-yellow-100 rounded-lg transition-colors duration-200">
-                            <i class="fas fa-user-check text-yellow-600"></i>
-                            <span class="text-sm font-medium text-yellow-800">Verifikasi Nasabah</span>
-                        </button>
-                        <button onclick="window.location.href='{{ route('data-nasabah-banksampah') }}'" class="w-full flex items-center gap-3 p-3 bg-purple-50 hover:bg-purple-100 rounded-lg transition-colors duration-200">
-                            <i class="fas fa-database text-purple-600"></i>
-                            <span class="text-sm font-medium text-purple-800">Lihat Data Nasabah</span>
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Firebase Notifications Container -->
-            <div id="firebase-notifications" class="notif-cards mb-6"></div>
 
             <div class="notif-cards" id="notifContainer">
                 <!-- Notifikasi akan dimuat di sini oleh JavaScript -->
-            </div>
+
+
+
+
+
         </div>
 
 
 
-                    <!-- Progress & Goals Section -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-                <!-- Monthly Goals Progress -->
-                <div class="bg-white rounded-xl p-6 shadow-lg">
-                    <div class="flex items-center justify-between mb-6">
-                        <h3 class="text-lg font-semibold text-gray-800">Target Bulanan</h3>
-                        <span class="text-sm text-gray-500">Agustus 2025</span>
-                    </div>
-                    <div class="space-y-4">
-                        <div>
-                            <div class="flex justify-between items-center mb-2">
-                                <span class="text-sm font-medium text-gray-600">Target Setoran</span>
-                                <span class="text-sm font-semibold text-gray-800">75%</span>
-                            </div>
-                            <div class="w-full bg-gray-200 rounded-full h-2">
-                                <div class="bg-blue-500 h-2 rounded-full" style="width: 75%"></div>
-                            </div>
-                            <p class="text-xs text-gray-500 mt-1">750 kg dari 1000 kg target</p>
-                        </div>
-                        <div>
-                            <div class="flex justify-between items-center mb-2">
-                                <span class="text-sm font-medium text-gray-600">Target Nasabah Baru</span>
-                                <span class="text-sm font-semibold text-gray-800">60%</span>
-                            </div>
-                            <div class="w-full bg-gray-200 rounded-full h-2">
-                                <div class="bg-green-500 h-2 rounded-full" style="width: 60%"></div>
-                            </div>
-                            <p class="text-xs text-gray-500 mt-1">30 dari 50 target</p>
-                        </div>
-                        <div>
-                            <div class="flex justify-between items-center mb-2">
-                                <span class="text-sm font-medium text-gray-600">Target Pendapatan</span>
-                                <span class="text-sm font-semibold text-gray-800">85%</span>
-                            </div>
-                            <div class="w-full bg-gray-200 rounded-full h-2">
-                                <div class="bg-purple-500 h-2 rounded-full" style="width: 85%"></div>
-                            </div>
-                            <p class="text-xs text-gray-500 mt-1">Rp 8.5 juta dari Rp 10 juta target</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Weather & Environment Info -->
-                <div class="bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl p-6 text-white shadow-lg">
-                    <div class="flex items-center justify-between mb-4">
-                        <h3 class="text-lg font-semibold">Info Lingkungan</h3>
-                        <i class="fas fa-leaf text-2xl opacity-80"></i>
-                    </div>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div class="text-center">
-                            <div class="text-3xl font-bold mb-1">29°C</div>
-                            <div class="text-sm opacity-90">Suhu</div>
-                        </div>
-                        <div class="text-center">
-                            <div class="text-3xl font-bold mb-1">75%</div>
-                            <div class="text-sm opacity-90">Kelembaban</div>
-                        </div>
-                        <div class="text-center">
-                            <div class="text-3xl font-bold mb-1">AQI 45</div>
-                            <div class="text-sm opacity-90 text-green-200">Baik</div>
-                        </div>
-                        <div class="text-center">
-                            <div class="text-3xl font-bold mb-1">2.5</div>
-                            <div class="text-sm opacity-90">CO2 (ppm)</div>
-                        </div>
-                    </div>
-                    <div class="mt-4 p-3 bg-white/20 rounded-lg">
-                        <p class="text-sm text-center">🌱 Kondisi lingkungan mendukung untuk aktivitas daur ulang</p>
-                    </div>
-                </div>
+        <!-- Firebase Charts Section -->
+        <div class="chart-section">
+            <div class="chart-title">
+                <i class="fas fa-chart-pie"></i> Firebase Real-time Analytics
             </div>
-
-            <!-- Top Performers & Alerts -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-                <!-- Top Performers -->
-                <div class="bg-white rounded-xl p-6 shadow-lg">
-                    <h3 class="text-lg font-semibold text-gray-800 mb-6">Top Performers Bulan Ini</h3>
-                    <div class="space-y-4">
-                        <div class="flex items-center gap-4 p-3 bg-gradient-to-r from-yellow-50 to-orange-50 rounded-lg border-l-4 border-yellow-400">
-                            <div class="w-10 h-10 bg-yellow-100 rounded-full flex items-center justify-center">
-                                <i class="fas fa-trophy text-yellow-600"></i>
-                            </div>
-                            <div class="flex-1">
-                                <p class="text-sm font-medium text-gray-800">Ahmad Suryadi</p>
-                                <p class="text-xs text-gray-500">150 kg sampah - Rp 450.000</p>
-                            </div>
-                            <div class="text-right">
-                                <div class="text-lg font-bold text-yellow-600">🥇</div>
-                                <div class="text-xs text-gray-500">1st Place</div>
-                            </div>
-                        </div>
-                        <div class="flex items-center gap-4 p-3 bg-gradient-to-r from-gray-50 to-slate-50 rounded-lg border-l-4 border-gray-400">
-                            <div class="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center">
-                                <i class="fas fa-medal text-gray-600"></i>
-                            </div>
-                            <div class="flex-1">
-                                <p class="text-sm font-medium text-gray-800">Siti Nurhaliza</p>
-                                <p class="text-xs text-gray-500">120 kg sampah - Rp 360.000</p>
-                            </div>
-                            <div class="text-right">
-                                <div class="text-lg font-bold text-gray-600">🥈</div>
-                                <div class="text-xs text-gray-500">2nd Place</div>
-                            </div>
-                        </div>
-                        <div class="flex items-center gap-4 p-3 bg-gradient-to-r from-orange-50 to-amber-50 rounded-lg border-l-4 border-orange-400">
-                            <div class="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center">
-                                <i class="fas fa-award text-orange-600"></i>
-                            </div>
-                            <div class="flex-1">
-                                <p class="text-sm font-medium text-gray-800">Budi Santoso</p>
-                                <p class="text-xs text-gray-500">100 kg sampah - Rp 300.000</p>
-                            </div>
-                            <div class="text-right">
-                                <div class="text-lg font-bold text-orange-600">🥉</div>
-                                <div class="text-xs text-gray-500">3rd Place</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Important Alerts -->
-                <div class="bg-white rounded-xl p-6 shadow-lg">
-                    <h3 class="text-lg font-semibold text-gray-800 mb-6">Peringatan Penting</h3>
-                    <div class="space-y-4">
-                        <div class="p-4 bg-red-50 border-l-4 border-red-500 rounded-lg">
-                            <div class="flex items-start gap-3">
-                                <i class="fas fa-exclamation-triangle text-red-500 mt-1"></i>
-                                <div>
-                                    <p class="text-sm font-medium text-red-800">Kapasitas Tempat Sampah 90%</p>
-                                    <p class="text-xs text-red-600 mt-1">Segera jadwalkan penjemputan untuk area Jakarta Selatan</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="p-4 bg-yellow-50 border-l-4 border-yellow-500 rounded-lg">
-                            <div class="flex items-start gap-3">
-                                <i class="fas fa-clock text-yellow-500 mt-1"></i>
-                                <div>
-                                    <p class="text-sm font-medium text-yellow-800">5 Penjemputan Tertunda</p>
-                                    <p class="text-xs text-yellow-600 mt-1">Perlu tindak lanjut dalam 24 jam</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="p-4 bg-blue-50 border-l-4 border-blue-500 rounded-lg">
-                            <div class="flex items-start gap-3">
-                                <i class="fas fa-info-circle text-blue-500 mt-1"></i>
-                                <div>
-                                    <p class="text-sm font-medium text-blue-800">Maintenance Jadwal</p>
-                                    <p class="text-xs text-blue-600 mt-1">Sistem akan offline pada 15 Agustus 2025</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Firebase Charts Section -->
-            <div class="chart-section">
-                <div class="chart-title">
-                    <i class="fas fa-chart-pie"></i> Firebase Real-time Analytics
-                </div>
-                <div class="chart-sub">Data real-time dari Firebase Realtime Database</div>
-                
-                <div class="charts-container">
-                    <div class="chart-card">
-                        <h3>Status Tempat Sampah</h3>
-                        <div class="chart-wrapper">
-                            <canvas id="status-chart"></canvas>
-                        </div>
-                    </div>
-                    
-                    <div class="chart-card">
-                        <h3>Aktivitas Update Status</h3>
-                        <div class="chart-wrapper">
-                            <canvas id="nasabah-chart"></canvas>
-                        </div>
-                    </div>
-
-                    <div class="chart-card" style="grid-column: 1 / -1;">
-                        <h3>Perubahan Status Over Time</h3>
-                        <div class="chart-wrapper">
-                            <canvas id="timeseries-chart"></canvas>
-                        </div>
+            <div class="chart-sub">Data real-time dari Firebase Realtime Database</div>
+            
+            <div class="charts-container">
+                <div class="chart-card">
+                    <h3>Status Tempat Sampah</h3>
+                    <div class="chart-wrapper">
+                        <canvas id="status-chart"></canvas>
                     </div>
                 </div>
                 
-                <button class="export-btn" onclick="exportFirebaseData()">
-                    <i class="fas fa-download"></i> Export Data
-                </button>
+                <div class="chart-card">
+                    <h3>Aktivitas Update Status</h3>
+                    <div class="chart-wrapper">
+                        <canvas id="nasabah-chart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="chart-card" style="grid-column: 1 / -1;">
+                    <h3>Perubahan Status Over Time</h3>
+                    <div class="chart-wrapper">
+                        <canvas id="timeseries-chart"></canvas>
+                    </div>
+                </div>
             </div>
+            
+            <button class="export-btn" onclick="exportFirebaseData()">
+                <i class="fas fa-download"></i> Export Data
+            </button>
+        </div>
 
         <div class="footer">
             Created by <strong>TEK(G)</strong> | All Right Reserved!
+            </div>
+        </div>
         </div>
     </div>
-</div>
 
     <div class="modal" id="notifModal">
         <div class="modal-content">
@@ -1780,10 +1299,10 @@
         });
         }
 
-        // Add event listeners for delete buttons
-        function attachDeleteEventListeners() {
-            const deleteButtons = document.querySelectorAll('.card-btn.delete');
-            deleteButtons.forEach(btn => {
+
+
+
+
                 btn.addEventListener('click', function(e) {
                     console.log('Delete button clicked!'); // Debug log
                     e.stopPropagation();
@@ -1837,7 +1356,40 @@
             });
         }
 
-        // Chart generation is now handled by Firebase Charts
+        // Generate Chart
+        function generateChart() {
+            chartContent.innerHTML = '';
+            
+            // Tanggal sesuai gambar (16-22 Juni)
+            const dates = [
+                { day: '16 Jun', fullDate: '16 Juni 2025' },
+                { day: '17 Jun', fullDate: '17 Juni 2025' },
+                { day: '18 Jun', fullDate: '18 Juni 2025' },
+                { day: '19 Jun', fullDate: '19 Juni 2025' },
+                { day: '20 Jun', fullDate: '20 Juni 2025' },
+                { day: '21 Jun', fullDate: '21 Juni 2025' },
+                { day: '22 Jun', fullDate: '22 Juni 2025' }
+            ];
+
+            // Generate chart bars
+            for (let i = 0; i < 7; i++) {
+                const data = chartData[i];
+                const dateInfo = dates[i];
+                
+                const chartBarItem = document.createElement('div');
+                chartBarItem.className = 'chart-bar-item';
+                chartBarItem.style.setProperty('--height', `${data.height}%`);
+                
+                const barClass = data.isGreen ? 'bar green' : 'bar';
+                chartBarItem.innerHTML = `
+                    <div class="${barClass}" style="--order: ${i + 1};">
+                        <span class="bar-label">${data.value}</span>
+                    </div>
+                    <div class="day">${dateInfo.day}</div>
+                `;
+                chartContent.appendChild(chartBarItem);
+            }
+        }
 
         // Modal Toggles - Check if elements exist
         if (notifBtn && notifModal) {
@@ -1929,10 +1481,7 @@
                 });
                 
                 notifInput.value = '';
-                // Notifications will be loaded from Firebase
-                if (firebaseNotifications) {
-                    firebaseNotifications.updateNotificationDisplay();
-                }
+                loadNotifications();
                 loadNotifModal();
             }
         });
@@ -2021,6 +1570,51 @@
         // Close detail modal when clicking outside
         window.addEventListener('click', function(event) {
             if (detailModal && event.target === detailModal) {
+                detailModal.style.display = 'none';
+            }
+        });
+
+        // Show Notification Detail
+        function showNotificationDetail(id) {
+            const notif = notifications.find(n => n.id === id);
+            if (!notif) return;
+
+            const detailContent = document.getElementById('detailContent');
+            detailContent.innerHTML = `
+                <div class="mb-4">
+                    <div class="flex justify-between items-start mb-3">
+                        <h4 class="text-lg font-semibold"><i class="${notif.icon}"></i> ${notif.title}</h4>
+                        <span class="px-3 py-1 text-sm text-white rounded-full ${notif.priorityColor}">${notif.priority}</span>
+                    </div>
+                    <p class="text-gray-700 mb-4">${notif.message}</p>
+                    <div class="flex items-center gap-4 text-sm text-gray-500">
+                        <span class="flex items-center gap-1"><i class="fas fa-calendar"></i> ${notif.date}</span>
+                        <span class="flex items-center gap-1"><i class="fas fa-clock"></i> ${notif.time}</span>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('detailModal').style.display = 'flex';
+        }
+
+        // Detail Modal Event Listeners
+        document.getElementById('closeDetailModal').addEventListener('click', function() {
+            document.getElementById('detailModal').style.display = 'none';
+        });
+
+        document.getElementById('closeDetail').addEventListener('click', function() {
+            document.getElementById('detailModal').style.display = 'none';
+        });
+
+        document.getElementById('markAsRead').addEventListener('click', function() {
+            alert('Notifikasi telah ditandai sebagai sudah dibaca!');
+            document.getElementById('detailModal').style.display = 'none';
+        });
+
+        // Close detail modal when clicking outside
+        window.addEventListener('click', function(event) {
+            const detailModal = document.getElementById('detailModal');
+            if (event.target === detailModal) {
                 detailModal.style.display = 'none';
             }
         });
@@ -2156,8 +1750,9 @@
             });
         }
 
-        // Initialize - Firebase will handle data loading
-        // generateChart(); // Removed - Firebase charts will handle this
+        // Initialize
+        loadNotifications();
+        generateChart();
 
         // Test Firebase connection manually
         setTimeout(() => {
@@ -2454,15 +2049,18 @@
                 const card = document.createElement('div');
                 card.className = `card notification-card ${notification.priority}`;
                 card.innerHTML = `
-                                            <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                        <h4 style="margin: 0; color: #0a3a60; font-weight: 600;">${notification.nasabah}</h4>
+                    <div class="card-header">
+                        <h4>${notification.nasabah}</h4>
                         <span class="status-badge ${notification.priority}">${notification.status}</span>
                     </div>
                     <div class="card-body">
                         <p class="timestamp">${notification.timestamp}</p>
                         <div class="actions">
-                            <button class="btn btn-outline btn-sm" onclick="dismissNotification('${notification.id}')">
-                                <i class="fas fa-times"></i> Tutup
+                            <button class="btn btn-primary btn-sm" onclick="handleNotification('${notification.id}')">
+                                Tindak Lanjut
+                            </button>
+                            <button class="btn btn-secondary btn-sm" onclick="dismissNotification('${notification.id}')">
+                                Tutup
                             </button>
                         </div>
                     </div>
@@ -2758,6 +2356,10 @@
         }
 
         // Global functions
+        function handleNotification(id) {
+            console.log('Handle notification:', id);
+            // Implementasi tindak lanjut notifikasi
+        }
 
         function dismissNotification(id) {
             if (firebaseNotifications) {

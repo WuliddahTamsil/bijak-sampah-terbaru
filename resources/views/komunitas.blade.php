@@ -71,7 +71,7 @@
     }
 </style>
 
-<div class="flex min-h-screen bg-gradient-to-br from-blue-50 via-white to-teal-50" x-data="komunitasApp()">
+<div class="flex min-h-screen bg-gradient-to-br from-blue-50 via-white to-teal-50" x-data="komunitasApp()" x-init="init()">
     {{-- Sidebar --}}
     <aside
         x-data="{ open: false, active: 'komunitas' }"
@@ -196,6 +196,43 @@
                 </div>
             </div>
 
+            {{-- Search Bar --}}
+            <div class="bg-white rounded-2xl shadow-2xl p-6 border-2 border-gray-200 mb-8">
+                <div class="flex items-center gap-4">
+                    <div class="flex-1 relative">
+                        <input 
+                            x-model="globalSearchQuery" 
+                            @input="performSearch($event.target.value)"
+                            type="text" 
+                            placeholder="Cari post, event, anggota, atau grup..." 
+                            class="w-full px-4 py-3 pl-12 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 text-lg"
+                        >
+                        <i class="fas fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 text-lg"></i>
+                    </div>
+                    <button @click="clearSearch()" x-show="globalSearchQuery" class="bg-gray-500 text-white px-4 py-3 rounded-xl hover:bg-gray-600 transition-all duration-300 font-bold">
+                        <i class="fas fa-times mr-2"></i>Clear
+                    </button>
+                </div>
+                <div x-show="globalSearchQuery" class="mt-4 text-sm text-gray-600">
+                    <span x-text="`Hasil pencarian untuk: "${globalSearchQuery}"`"></span>
+                    <span x-text="` - ${filteredPosts.length} post, ${filteredEvents.length} event, ${filteredMembers.length} anggota, ${filteredGroups.length} grup`"></span>
+                </div>
+            </div>
+
+            {{-- Info Panel --}}
+            <div x-show="filteredPosts.some(p => p.isNew) || filteredEvents.some(e => e.isNew)" class="bg-green-50 border-2 border-green-200 rounded-2xl p-4 mb-6">
+                <div class="flex items-center gap-3">
+                    <i class="fas fa-info-circle text-green-600 text-xl"></i>
+                    <div>
+                        <h4 class="font-bold text-green-800">Konten Baru Tersedia!</h4>
+                        <p class="text-green-700 text-sm">
+                            <span x-show="filteredPosts.some(p => p.isNew)">• Post baru di tab <strong>Timeline</strong></span>
+                            <span x-show="filteredEvents.some(e => e.isNew)">• Event baru di tab <strong>Events</strong></span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
             {{-- Statistics Cards --}}
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                 <!-- Total Members -->
@@ -274,12 +311,14 @@
                     :class="activeTab === 'timeline' ? 'bg-green-600 text-white shadow-2xl scale-105 border-2 border-green-700' : 'bg-gray-100 text-gray-900 hover:bg-gray-200 border-2 border-gray-400'"
                     class="px-8 py-3 rounded-xl font-bold text-lg transition-all duration-300 shadow-lg">
                     <i class="fas fa-stream mr-2"></i>Timeline
+                    <span x-show="filteredPosts.some(p => p.isNew)" class="ml-2 bg-red-500 text-white text-xs px-2 py-1 rounded-full">New</span>
                 </button>
                 <button 
                     @click="activeTab = 'events'" 
                     :class="activeTab === 'events' ? 'bg-blue-600 text-white shadow-2xl scale-105 border-2 border-blue-700' : 'bg-gray-100 text-gray-900 hover:bg-gray-200 border-2 border-gray-400'"
                     class="px-8 py-3 rounded-xl font-bold text-lg transition-all duration-300 shadow-lg">
                     <i class="fas fa-calendar mr-2"></i>Events
+                    <span x-show="filteredEvents.some(e => e.isNew)" class="ml-2 bg-red-500 text-white text-xs px-2 py-1 rounded-full">New</span>
                 </button>
                 <button 
                     @click="activeTab = 'members'" 
@@ -302,25 +341,53 @@
                     <div class="flex items-center gap-4 mb-4">
                         <img src="{{ asset('asset/img/user_profile.jpg') }}" alt="Profile" class="w-12 h-12 rounded-full">
                         <div class="flex-1">
-                            <input type="text" placeholder="Apa yang ingin Anda bagikan?" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500">
+                            <textarea x-model="newPost.content" placeholder="Apa yang ingin Anda bagikan?" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 resize-none" rows="3"></textarea>
                         </div>
                     </div>
+                    
+                    <!-- Upload Progress Bar -->
+                    <div x-show="isUploading" class="mb-4">
+                        <div class="w-full bg-gray-200 rounded-full h-2">
+                            <div class="bg-green-600 h-2 rounded-full transition-all duration-300" :style="`width: ${uploadProgress}%`"></div>
+                        </div>
+                        <p class="text-sm text-gray-600 mt-1">Uploading... <span x-text="uploadProgress"></span>%</p>
+                    </div>
+                    
                     <div class="flex items-center justify-between">
-                        <div class="flex items-center gap-4">
-                            <button class="flex items-center gap-2 text-gray-600 hover:text-green-600 transition-colors">
-                                <i class="fas fa-image"></i>
-                                <span>Foto</span>
-                            </button>
-                            <button class="flex items-center gap-2 text-gray-600 hover:text-blue-600 transition-colors">
-                                <i class="fas fa-video"></i>
-                                <span>Video</span>
-                            </button>
-                            <button class="flex items-center gap-2 text-gray-600 hover:text-purple-600 transition-colors">
-                                <i class="fas fa-map-marker-alt"></i>
-                                <span>Lokasi</span>
+                                            <div class="flex items-center gap-4">
+                        <label class="flex items-center gap-2 text-gray-600 hover:text-green-600 transition-colors cursor-pointer">
+                            <i class="fas fa-image"></i>
+                            <span>Foto</span>
+                            <input type="file" accept="image/*" class="hidden" @change="handleFileUpload($event.target)">
+                        </label>
+                        <label class="flex items-center gap-2 text-gray-600 hover:text-blue-600 transition-colors cursor-pointer">
+                            <i class="fas fa-video"></i>
+                            <span>Video</span>
+                            <input type="file" accept="video/*" class="hidden" @change="handleFileUpload($event.target)">
+                        </label>
+                        <button class="flex items-center gap-2 text-gray-600 hover:text-purple-600 transition-colors">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>Lokasi</span>
+                        </button>
+                    </div>
+                    
+                    <!-- File Preview -->
+                    <div x-show="selectedFile" class="mt-4 p-4 bg-gray-50 rounded-xl border-2 border-gray-200">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <i class="fas fa-file text-blue-500 text-xl"></i>
+                                <div>
+                                    <p class="font-medium text-gray-900" x-text="selectedFile?.name"></p>
+                                    <p class="text-sm text-gray-600" x-text="`${(selectedFile?.size / 1024 / 1024).toFixed(2)} MB`"></p>
+                                </div>
+                            </div>
+                            <button @click="removeSelectedFile()" class="text-red-500 hover:text-red-700">
+                                <i class="fas fa-times"></i>
                             </button>
                         </div>
-                        <button class="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition-colors font-bold border-2 border-green-700">
+                        <img x-show="selectedFile && selectedFile.type.startsWith('image/')" :src="selectedFile ? URL.createObjectURL(selectedFile) : ''" alt="Preview" class="mt-3 w-full h-32 object-cover rounded-lg">
+                    </div>
+                        <button @click="createPost()" class="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition-colors font-bold border-2 border-green-700">
                             Post
                         </button>
                     </div>
@@ -328,87 +395,97 @@
 
                 {{-- Posts --}}
                 <div class="space-y-6">
-                    @for ($i = 0; $i < 3; $i++)
-                    <div class="bg-white rounded-2xl shadow-2xl p-6 border-2 border-gray-200 hover:shadow-2xl transition-all duration-300">
-                        <div class="flex items-start gap-4 mb-4">
-                            <div class="relative">
-                                <img src="{{ asset('asset/img/user_profile.jpg') }}" alt="Profile" class="w-12 h-12 rounded-full">
-                                <div class="absolute bottom-0 right-0 w-4 h-4 bg-green-500 border-2 border-white rounded-full"></div>
-                            </div>
-                            <div class="flex-1">
-                                <div class="flex items-center gap-2 mb-1">
-                                    <h3 class="font-bold text-gray-900">{{ $i % 2 == 0 ? 'Sarah Johnson' : 'Ahmad Rahman' }}</h3>
-                                    <span class="text-green-600 text-sm font-bold">• Online</span>
-                                </div>
-                                <p class="text-gray-600 text-sm">{{ $i % 2 == 0 ? '2 jam yang lalu' : '5 jam yang lalu' }}</p>
-                            </div>
-                            <button class="text-gray-400 hover:text-gray-600">
-                                <i class="fas fa-ellipsis-h"></i>
-                            </button>
-                        </div>
-                        <p class="text-gray-800 mb-4 leading-relaxed">
-                            {{ $i % 2 == 0 ? 'Baru saja selesai mengumpulkan sampah plastik di taman kota! Bersama-sama kita bisa membuat lingkungan lebih bersih. 🌱♻️' : 'Event bersih-bersih pantai minggu depan! Siapa yang mau ikut? Mari kita jaga kebersihan pantai kita! 🏖️🌊' }}
-                        </p>
-                        @if($i % 2 == 0)
-                        <img src="{{ asset('asset/img/bijak' . ($i + 1) . '.jpg') }}" alt="Post Image" class="w-full h-64 object-cover rounded-xl mb-4">
-                        @endif
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-center gap-6">
-                                <button class="flex items-center gap-2 text-gray-600 hover:text-red-500 transition-colors">
-                                    <i class="fas fa-heart"></i>
-                                    <span>{{ 15 + ($i * 3) }}</span>
-                                </button>
-                                <button class="flex items-center gap-2 text-gray-600 hover:text-blue-500 transition-colors">
-                                    <i class="fas fa-comment"></i>
-                                    <span>{{ 8 + ($i * 2) }}</span>
-                                </button>
-                                <button class="flex items-center gap-2 text-gray-600 hover:text-green-500 transition-colors">
-                                    <i class="fas fa-share"></i>
-                                    <span>{{ 3 + $i }}</span>
-                                </button>
-                            </div>
-                            <button class="text-gray-400 hover:text-gray-600">
-                                <i class="fas fa-bookmark"></i>
-                            </button>
-                        </div>
+                    <div x-show="filteredPosts.length === 0 && globalSearchQuery" class="text-center py-8">
+                        <i class="fas fa-search text-gray-400 text-4xl mb-4"></i>
+                        <p class="text-gray-600 text-lg">Tidak ada post yang ditemukan untuk "<span x-text="globalSearchQuery"></span>"</p>
                     </div>
-                    @endfor
+                    <template x-for="post in filteredPosts" :key="post.id">
+                        <div class="bg-white rounded-2xl shadow-2xl p-6 border-2 hover:shadow-2xl transition-all duration-300" :class="post.isNew ? 'border-green-400 bg-green-50' : 'border-gray-200'">
+                            <div x-show="post.isNew" class="mb-3">
+                                <span class="bg-green-500 text-white px-3 py-1 rounded-full text-xs font-bold">
+                                    <i class="fas fa-star mr-1"></i>Post Baru
+                                </span>
+                            </div>
+                            <div class="flex items-start gap-4 mb-4">
+                                <div class="relative">
+                                    <img :src="post.avatar" alt="Profile" class="w-12 h-12 rounded-full">
+                                    <div x-show="post.isOnline" class="absolute bottom-0 right-0 w-4 h-4 bg-green-500 border-2 border-white rounded-full"></div>
+                                </div>
+                                <div class="flex-1">
+                                    <div class="flex items-center gap-2 mb-1">
+                                        <h3 class="font-bold text-gray-900" x-text="post.author"></h3>
+                                        <span x-show="post.isOnline" class="text-green-600 text-sm font-bold">• Online</span>
+                                    </div>
+                                    <p class="text-gray-600 text-sm" x-text="post.time"></p>
+                                </div>
+                                <button class="text-gray-400 hover:text-gray-600">
+                                    <i class="fas fa-ellipsis-h"></i>
+                                </button>
+                            </div>
+                            <p class="text-gray-800 mb-4 leading-relaxed" x-text="post.content"></p>
+                            <img x-show="post.image" :src="post.image" alt="Post Image" class="w-full h-64 object-cover rounded-xl mb-4">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-6">
+                                    <button @click="likePost(post.id)" class="flex items-center gap-2 text-gray-600 hover:text-red-500 transition-colors">
+                                        <i class="fas fa-heart"></i>
+                                        <span x-text="post.likes"></span>
+                                    </button>
+                                    <button @click="commentPost(post.id)" class="flex items-center gap-2 text-gray-600 hover:text-blue-500 transition-colors">
+                                        <i class="fas fa-comment"></i>
+                                        <span x-text="post.comments"></span>
+                                    </button>
+                                    <button @click="sharePost(post.id)" class="flex items-center gap-2 text-gray-600 hover:text-green-500 transition-colors">
+                                        <i class="fas fa-share"></i>
+                                        <span x-text="post.shares"></span>
+                                    </button>
+                                </div>
+                                <button @click="bookmarkPost(post.id)" class="text-gray-400 hover:text-gray-600">
+                                    <i class="fas fa-bookmark"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </template>
                 </div>
             </div>
 
             {{-- Events Tab --}}
             <div x-show="activeTab === 'events'" class="space-y-6">
+                <div x-show="filteredEvents.length === 0 && globalSearchQuery" class="text-center py-8">
+                    <i class="fas fa-calendar text-gray-400 text-4xl mb-4"></i>
+                    <p class="text-gray-600 text-lg">Tidak ada event yang ditemukan untuk "<span x-text="globalSearchQuery"></span>"</p>
+                </div>
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    @for ($i = 0; $i < 4; $i++)
-                    <div class="bg-white rounded-2xl shadow-2xl p-6 border-2 border-gray-200 hover:shadow-2xl transition-all duration-300">
-                        <div class="flex items-center justify-between mb-4">
-                            <div class="flex items-center gap-3">
-                                <div class="w-12 h-12 bg-gradient-to-br from-green-400 to-blue-500 rounded-xl flex items-center justify-center">
-                                    <i class="fas fa-calendar text-white text-xl"></i>
-                                </div>
-                                <div>
-                                    <h3 class="font-bold text-gray-900">{{ $i % 2 == 0 ? 'Bersih-bersih Pantai' : 'Workshop Daur Ulang' }}</h3>
-                                    <p class="text-gray-600 text-sm">{{ $i % 2 == 0 ? 'Pantai Kuta, Bali' : 'Ruang Komunitas Hijau' }}</p>
-                                </div>
+                    <template x-for="event in filteredEvents" :key="event.id">
+                        <div class="bg-white rounded-2xl shadow-2xl p-6 border-2 hover:shadow-2xl transition-all duration-300" :class="event.isNew ? 'border-green-400 bg-green-50' : 'border-gray-200'">
+                            <div x-show="event.isNew" class="mb-3">
+                                <span class="bg-green-500 text-white px-3 py-1 rounded-full text-xs font-bold">
+                                    <i class="fas fa-star mr-1"></i>Event Baru
+                                </span>
                             </div>
-                            <span class="px-3 py-1 rounded-full text-xs font-bold {{ $i % 2 == 0 ? 'bg-green-100 text-green-800' : 'bg-blue-100 text-blue-800' }}">
-                                {{ $i % 2 == 0 ? 'Minggu Ini' : 'Bulan Depan' }}
-                            </span>
-                        </div>
-                        <p class="text-gray-700 mb-4">
-                            {{ $i % 2 == 0 ? 'Ayo bergabung dalam aksi bersih-bersih pantai! Mari kita jaga kebersihan pantai kita bersama-sama.' : 'Belajar cara mendaur ulang sampah menjadi barang yang berguna. Workshop gratis untuk semua anggota!' }}
-                        </p>
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-center gap-2">
-                                <i class="fas fa-users text-gray-500"></i>
-                                <span class="text-sm text-gray-600">{{ 25 + ($i * 5) }} peserta</span>
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-12 h-12 bg-gradient-to-br from-green-400 to-blue-500 rounded-xl flex items-center justify-center">
+                                        <i class="fas fa-calendar text-white text-xl"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-bold text-gray-900" x-text="event.title"></h3>
+                                        <p class="text-gray-600 text-sm" x-text="event.location"></p>
+                                    </div>
+                                </div>
+                                <span class="px-3 py-1 rounded-full text-xs font-bold" :class="event.type === 'green' ? 'bg-green-100 text-green-800' : 'bg-blue-100 text-blue-800'" x-text="event.status"></span>
                             </div>
-                            <button class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors font-bold border-2 border-green-700">
-                                Daftar
-                            </button>
+                            <p class="text-gray-700 mb-4" x-text="event.description"></p>
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-2">
+                                    <i class="fas fa-users text-gray-500"></i>
+                                    <span class="text-sm text-gray-600" x-text="`${event.participants} peserta`"></span>
+                                </div>
+                                <button @click="joinEvent(event.id)" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors font-bold border-2 border-green-700">
+                                    Daftar
+                                </button>
+                            </div>
                         </div>
-                    </div>
-                    @endfor
+                    </template>
                 </div>
             </div>
 
@@ -418,71 +495,77 @@
                     <div class="flex items-center justify-between mb-4">
                         <h3 class="text-xl font-bold text-gray-900">Anggota Aktif</h3>
                         <div class="flex items-center gap-2">
-                            <input type="text" placeholder="Cari anggota..." class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
-                            <button class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors font-bold border-2 border-green-700">
+                            <input x-model="searchQuery" type="text" placeholder="Cari anggota..." class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+                            <button @click="searchMembers(searchQuery)" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors font-bold border-2 border-green-700">
                                 <i class="fas fa-search"></i>
                             </button>
                         </div>
                     </div>
+                    
+                    <div x-show="filteredMembers.length === 0 && (globalSearchQuery || searchQuery)" class="text-center py-8">
+                        <i class="fas fa-users text-gray-400 text-4xl mb-4"></i>
+                        <p class="text-gray-600 text-lg">Tidak ada anggota yang ditemukan untuk "<span x-text="globalSearchQuery || searchQuery"></span>"</p>
+                    </div>
+                    
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        @for ($i = 0; $i < 6; $i++)
-                        <div class="bg-gray-50 rounded-xl p-4 border-2 border-gray-200 hover:shadow-lg transition-all duration-300">
-                            <div class="flex items-center gap-3">
-                                <div class="relative">
-                                    <img src="{{ asset('asset/img/user_profile.jpg') }}" alt="Member" class="w-12 h-12 rounded-full">
-                                    <div class="absolute bottom-0 right-0 w-4 h-4 bg-green-500 border-2 border-white rounded-full"></div>
-                                </div>
-                                <div class="flex-1">
-                                    <h4 class="font-bold text-gray-900">{{ $i % 2 == 0 ? 'Sarah Johnson' : 'Ahmad Rahman' }}</h4>
-                                    <p class="text-sm text-gray-600">{{ $i % 2 == 0 ? 'Anggota Aktif' : 'Moderator' }}</p>
-                                    <div class="flex items-center gap-1 mt-1">
-                                        <i class="fas fa-star text-yellow-500 text-xs"></i>
-                                        <span class="text-xs text-gray-600">{{ 4 + ($i % 2) }}.5</span>
+                        <template x-for="member in filteredMembers" :key="member.id">
+                            <div class="bg-gray-50 rounded-xl p-4 border-2 border-gray-200 hover:shadow-lg transition-all duration-300">
+                                <div class="flex items-center gap-3">
+                                    <div class="relative">
+                                        <img :src="member.avatar" alt="Member" class="w-12 h-12 rounded-full">
+                                        <div x-show="member.isOnline" class="absolute bottom-0 right-0 w-4 h-4 bg-green-500 border-2 border-white rounded-full"></div>
                                     </div>
+                                    <div class="flex-1">
+                                        <h4 class="font-bold text-gray-900" x-text="member.name"></h4>
+                                        <p class="text-sm text-gray-600" x-text="member.role"></p>
+                                        <div class="flex items-center gap-1 mt-1">
+                                            <i class="fas fa-star text-yellow-500 text-xs"></i>
+                                            <span class="text-xs text-gray-600" x-text="member.rating"></span>
+                                        </div>
+                                    </div>
+                                    <button @click="followMember(member.id)" class="text-green-600 hover:text-green-700">
+                                        <i class="fas fa-user-plus"></i>
+                                    </button>
                                 </div>
-                                <button class="text-green-600 hover:text-green-700">
-                                    <i class="fas fa-user-plus"></i>
-                                </button>
                             </div>
-                        </div>
-                        @endfor
+                        </template>
                     </div>
                 </div>
             </div>
 
             {{-- Groups Tab --}}
             <div x-show="activeTab === 'groups'" class="space-y-6">
+                <div x-show="filteredGroups.length === 0 && globalSearchQuery" class="text-center py-8">
+                    <i class="fas fa-layer-group text-gray-400 text-4xl mb-4"></i>
+                    <p class="text-gray-600 text-lg">Tidak ada grup yang ditemukan untuk "<span x-text="globalSearchQuery"></span>"</p>
+                </div>
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    @for ($i = 0; $i < 4; $i++)
-                    <div class="bg-white rounded-2xl shadow-2xl p-6 border-2 border-gray-200 hover:shadow-2xl transition-all duration-300">
-                        <div class="flex items-center gap-4 mb-4">
-                            <div class="w-16 h-16 bg-gradient-to-br from-green-400 to-blue-500 rounded-xl flex items-center justify-center">
-                                <i class="fas fa-users text-white text-2xl"></i>
-                            </div>
-                            <div class="flex-1">
-                                <h3 class="font-bold text-gray-900 text-lg">{{ $i % 2 == 0 ? 'Komunitas Hijau Jakarta' : 'Eco Warriors Bali' }}</h3>
-                                <p class="text-gray-600 text-sm">{{ $i % 2 == 0 ? 'Kelompok peduli lingkungan Jakarta' : 'Komunitas pelestarian alam Bali' }}</p>
-                                <div class="flex items-center gap-4 mt-2">
-                                    <span class="text-sm text-gray-600">{{ 150 + ($i * 25) }} anggota</span>
-                                    <span class="text-sm text-green-600 font-bold">• Aktif</span>
+                    <template x-for="group in filteredGroups" :key="group.id">
+                        <div class="bg-white rounded-2xl shadow-2xl p-6 border-2 border-gray-200 hover:shadow-2xl transition-all duration-300">
+                            <div class="flex items-center gap-4 mb-4">
+                                <div class="w-16 h-16 bg-gradient-to-br from-green-400 to-blue-500 rounded-xl flex items-center justify-center">
+                                    <i class="fas fa-users text-white text-2xl"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <h3 class="font-bold text-gray-900 text-lg" x-text="group.name"></h3>
+                                    <p class="text-gray-600 text-sm" x-text="group.description"></p>
+                                    <div class="flex items-center gap-4 mt-2">
+                                        <span class="text-sm text-gray-600" x-text="`${group.members} anggota`"></span>
+                                        <span x-show="group.isActive" class="text-sm text-green-600 font-bold">• Aktif</span>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <p class="text-gray-700 mb-4">
-                            {{ $i % 2 == 0 ? 'Komunitas yang fokus pada kegiatan peduli lingkungan di Jakarta. Rutin mengadakan kegiatan bersih-bersih dan edukasi lingkungan.' : 'Kelompok yang berdedikasi untuk melestarikan alam Bali. Mengadakan berbagai kegiatan konservasi dan edukasi.' }}
-                        </p>
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-center gap-2">
-                                <span class="px-3 py-1 rounded-full text-xs font-bold {{ $i % 2 == 0 ? 'bg-green-100 text-green-800' : 'bg-blue-100 text-blue-800' }}">
-                                    {{ $i % 2 == 0 ? 'Terbuka' : 'Terbatas' }}
-                                </span>
+                            <p class="text-gray-700 mb-4" x-text="group.description"></p>
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-2">
+                                    <span class="px-3 py-1 rounded-full text-xs font-bold" :class="group.status === 'Terbuka' ? 'bg-green-100 text-green-800' : 'bg-blue-100 text-blue-800'" x-text="group.status"></span>
+                                </div>
+                                <button @click="joinGroup(group.id)" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors font-bold border-2 border-green-700">
+                                    Bergabung
+                                </button>
                             </div>
-                            <button class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors font-bold border-2 border-green-700">
-                                Bergabung
-                            </button>
                         </div>
-                    </div>
-                    @endfor
+                    </template>
                 </div>
             </div>
         </div>
@@ -506,23 +589,51 @@
                             <p class="text-sm text-gray-600">Anggota Aktif</p>
                         </div>
                     </div>
-                    <textarea placeholder="Apa yang ingin Anda bagikan dengan komunitas?" class="w-full h-32 px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 resize-none"></textarea>
+                    <textarea x-model="newPost.content" placeholder="Apa yang ingin Anda bagikan dengan komunitas?" class="w-full h-32 px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 resize-none"></textarea>
+                    
+                    <!-- Upload Progress Bar -->
+                    <div x-show="isUploading" class="mb-4">
+                        <div class="w-full bg-gray-200 rounded-full h-2">
+                            <div class="bg-green-600 h-2 rounded-full transition-all duration-300" :style="`width: ${uploadProgress}%`"></div>
+                        </div>
+                        <p class="text-sm text-gray-600 mt-1">Uploading... <span x-text="uploadProgress"></span>%</p>
+                    </div>
+                    
                     <div class="flex items-center gap-4">
-                        <button class="flex items-center gap-2 text-gray-600 hover:text-green-600 transition-colors">
+                        <label class="flex items-center gap-2 text-gray-600 hover:text-green-600 transition-colors cursor-pointer">
                             <i class="fas fa-image"></i>
                             <span>Tambah Foto</span>
-                        </button>
-                        <button class="flex items-center gap-2 text-gray-600 hover:text-blue-600 transition-colors">
+                            <input type="file" accept="image/*" class="hidden" @change="handleFileUpload($event.target)">
+                        </label>
+                        <label class="flex items-center gap-2 text-gray-600 hover:text-blue-600 transition-colors cursor-pointer">
                             <i class="fas fa-video"></i>
                             <span>Tambah Video</span>
-                        </button>
+                            <input type="file" accept="video/*" class="hidden" @change="handleFileUpload($event.target)">
+                        </label>
                         <button class="flex items-center gap-2 text-gray-600 hover:text-purple-600 transition-colors">
                             <i class="fas fa-map-marker-alt"></i>
                             <span>Tambah Lokasi</span>
                         </button>
                     </div>
+                    
+                    <!-- File Preview for Modal -->
+                    <div x-show="selectedFile" class="mt-4 p-4 bg-gray-50 rounded-xl border-2 border-gray-200">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <i class="fas fa-file text-blue-500 text-xl"></i>
+                                <div>
+                                    <p class="font-medium text-gray-900" x-text="selectedFile?.name"></p>
+                                    <p class="text-sm text-gray-600" x-text="`${(selectedFile?.size / 1024 / 1024).toFixed(2)} MB`"></p>
+                                </div>
+                            </div>
+                            <button @click="removeSelectedFile()" class="text-red-500 hover:text-red-700">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <img x-show="selectedFile && selectedFile.type.startsWith('image/')" :src="selectedFile ? URL.createObjectURL(selectedFile) : ''" alt="Preview" class="mt-3 w-full h-32 object-cover rounded-lg">
+                    </div>
                     <div class="flex gap-3 pt-4">
-                        <button @click="showCreatePost = false" class="flex-1 bg-gray-300 text-gray-700 py-3 rounded-xl hover:bg-gray-400 transition-colors font-bold border-2 border-gray-400">
+                        <button @click="showCreatePost = false; resetNewPost()" class="flex-1 bg-gray-300 text-gray-700 py-3 rounded-xl hover:bg-gray-400 transition-colors font-bold border-2 border-gray-400">
                             Batal
                         </button>
                         <button @click="createPost()" class="flex-1 bg-green-600 text-black py-3 rounded-xl hover:bg-green-700 transition-colors font-bold border-2 border-green-700">
@@ -547,32 +658,32 @@
                 <div class="space-y-4">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Judul Event</label>
-                        <input type="text" placeholder="Masukkan judul event" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500">
+                        <input x-model="newEvent.title" type="text" placeholder="Masukkan judul event" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500">
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Deskripsi</label>
-                        <textarea placeholder="Jelaskan detail event Anda" class="w-full h-24 px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 resize-none"></textarea>
+                        <textarea x-model="newEvent.description" placeholder="Jelaskan detail event Anda" class="w-full h-24 px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 resize-none"></textarea>
                     </div>
                     <div class="grid grid-cols-2 gap-4">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Tanggal</label>
-                            <input type="date" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500">
+                            <input x-model="newEvent.date" type="date" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Waktu</label>
-                            <input type="time" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500">
+                            <input x-model="newEvent.time" type="time" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500">
                         </div>
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Lokasi</label>
-                        <input type="text" placeholder="Masukkan lokasi event" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500">
+                        <input x-model="newEvent.location" type="text" placeholder="Masukkan lokasi event" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500">
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Kapasitas Maksimal</label>
-                        <input type="number" placeholder="Jumlah peserta maksimal" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500">
+                        <input x-model="newEvent.maxCapacity" type="number" placeholder="Jumlah peserta maksimal" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500">
                     </div>
                     <div class="flex gap-3 pt-4">
-                        <button @click="showCreateEvent = false" class="flex-1 bg-gray-300 text-gray-700 py-3 rounded-xl hover:bg-gray-400 transition-colors font-bold border-2 border-gray-400">
+                        <button @click="showCreateEvent = false; resetNewEvent()" class="flex-1 bg-gray-300 text-gray-700 py-3 rounded-xl hover:bg-gray-400 transition-colors font-bold border-2 border-gray-400">
                             Batal
                         </button>
                         <button @click="createEvent()" class="flex-1 bg-blue-600 text-white py-3 rounded-xl hover:bg-blue-700 transition-colors font-bold border-2 border-blue-700">
@@ -591,15 +702,446 @@
             activeTab: 'timeline',
             showCreatePost: false,
             showCreateEvent: false,
+            posts: [],
+            events: [],
+            members: [],
+            groups: [],
+            filteredPosts: [],
+            filteredEvents: [],
+            filteredMembers: [],
+            filteredGroups: [],
+            newPost: {
+                content: '',
+                image: null,
+                video: null,
+                location: ''
+            },
+            newEvent: {
+                title: '',
+                description: '',
+                date: '',
+                time: '',
+                location: '',
+                maxCapacity: ''
+            },
+            searchQuery: '',
+            globalSearchQuery: '',
+            selectedFile: null,
+            uploadProgress: 0,
+            isUploading: false,
+            
+            init() {
+                this.loadInitialData();
+                this.setupEventListeners();
+            },
+            
+            loadInitialData() {
+                // Load sample data
+                this.posts = [
+                    {
+                        id: 1,
+                        author: 'Sarah Johnson',
+                        avatar: '{{ asset("asset/img/user_profile.jpg") }}',
+                        content: 'Baru saja selesai mengumpulkan sampah plastik di taman kota! Bersama-sama kita bisa membuat lingkungan lebih bersih. 🌱♻️',
+                        image: '{{ asset("asset/img/bijak1.jpg") }}',
+                        likes: 15,
+                        comments: 8,
+                        shares: 3,
+                        time: '2 jam yang lalu',
+                        isOnline: true
+                    },
+                    {
+                        id: 2,
+                        author: 'Ahmad Rahman',
+                        avatar: '{{ asset("asset/img/user_profile.jpg") }}',
+                        content: 'Event bersih-bersih pantai minggu depan! Siapa yang mau ikut? Mari kita jaga kebersihan pantai kita! 🏖️🌊',
+                        image: null,
+                        likes: 18,
+                        comments: 10,
+                        shares: 4,
+                        time: '5 jam yang lalu',
+                        isOnline: false
+                    },
+                    {
+                        id: 3,
+                        author: 'Budi Santoso',
+                        avatar: '{{ asset("asset/img/user_profile.jpg") }}',
+                        content: 'Hasil workshop daur ulang kemarin sangat memuaskan! Berhasil membuat tas dari plastik bekas. Terima kasih komunitas! 🎒♻️',
+                        image: '{{ asset("asset/img/bijak2.jpg") }}',
+                        likes: 22,
+                        comments: 12,
+                        shares: 6,
+                        time: '1 hari yang lalu',
+                        isOnline: true
+                    },
+                    {
+                        id: 4,
+                        author: 'Dewi Putri',
+                        avatar: '{{ asset("asset/img/user_profile.jpg") }}',
+                        content: 'Mengajak anak-anak untuk menanam pohon di sekolah. Pendidikan lingkungan sejak dini sangat penting! 🌳📚',
+                        image: '{{ asset("asset/img/bijak3.jpg") }}',
+                        likes: 31,
+                        comments: 15,
+                        shares: 8,
+                        time: '2 hari yang lalu',
+                        isOnline: false
+                    }
+                ];
+                
+                this.events = [
+                    {
+                        id: 1,
+                        title: 'Bersih-bersih Pantai',
+                        location: 'Pantai Kuta, Bali',
+                        description: 'Ayo bergabung dalam aksi bersih-bersih pantai! Mari kita jaga kebersihan pantai kita bersama-sama.',
+                        date: '2024-01-28',
+                        time: '08:00',
+                        participants: 25,
+                        status: 'Minggu Ini',
+                        type: 'green'
+                    },
+                    {
+                        id: 2,
+                        title: 'Workshop Daur Ulang',
+                        location: 'Ruang Komunitas Hijau',
+                        description: 'Belajar cara mendaur ulang sampah menjadi barang yang berguna. Workshop gratis untuk semua anggota!',
+                        date: '2024-02-15',
+                        time: '14:00',
+                        participants: 30,
+                        status: 'Bulan Depan',
+                        type: 'blue'
+                    },
+                    {
+                        id: 3,
+                        title: 'Kampanye Anti Plastik',
+                        location: 'Mall Central Park',
+                        description: 'Kampanye untuk mengurangi penggunaan plastik sekali pakai. Mari kita mulai dari diri sendiri!',
+                        date: '2024-02-20',
+                        time: '10:00',
+                        participants: 45,
+                        status: 'Bulan Depan',
+                        type: 'green'
+                    },
+                    {
+                        id: 4,
+                        title: 'Seminar Lingkungan',
+                        location: 'Auditorium Universitas',
+                        description: 'Seminar tentang dampak perubahan iklim dan solusi yang bisa kita lakukan bersama.',
+                        date: '2024-03-05',
+                        time: '19:00',
+                        participants: 100,
+                        status: 'Maret',
+                        type: 'blue'
+                    }
+                ];
+
+                // Load sample members data
+                this.members = [
+                    { id: 1, name: 'Sarah Johnson', role: 'Anggota Aktif', rating: 4.8, isOnline: true, avatar: '{{ asset("asset/img/user_profile.jpg") }}' },
+                    { id: 2, name: 'Ahmad Rahman', role: 'Moderator', rating: 4.9, isOnline: false, avatar: '{{ asset("asset/img/user_profile.jpg") }}' },
+                    { id: 3, name: 'Budi Santoso', role: 'Anggota Aktif', rating: 4.5, isOnline: true, avatar: '{{ asset("asset/img/user_profile.jpg") }}' },
+                    { id: 4, name: 'Dewi Putri', role: 'Anggota Aktif', rating: 4.7, isOnline: false, avatar: '{{ asset("asset/img/user_profile.jpg") }}' },
+                    { id: 5, name: 'Rina Melati', role: 'Moderator', rating: 4.6, isOnline: true, avatar: '{{ asset("asset/img/user_profile.jpg") }}' },
+                    { id: 6, name: 'Joko Widodo', role: 'Anggota Aktif', rating: 4.3, isOnline: false, avatar: '{{ asset("asset/img/user_profile.jpg") }}' },
+                    { id: 7, name: 'Siti Nurhaliza', role: 'Anggota Aktif', rating: 4.4, isOnline: true, avatar: '{{ asset("asset/img/user_profile.jpg") }}' },
+                    { id: 8, name: 'Agus Setiawan', role: 'Moderator', rating: 4.8, isOnline: false, avatar: '{{ asset("asset/img/user_profile.jpg") }}' }
+                ];
+
+                // Load sample groups data
+                this.groups = [
+                    { id: 1, name: 'Komunitas Hijau Jakarta', description: 'Kelompok peduli lingkungan Jakarta', members: 150, status: 'Terbuka', isActive: true },
+                    { id: 2, name: 'Eco Warriors Bali', description: 'Komunitas pelestarian alam Bali', members: 120, status: 'Terbatas', isActive: true },
+                    { id: 3, name: 'Green Team Surabaya', description: 'Tim hijau untuk Surabaya yang bersih', members: 200, status: 'Terbuka', isActive: true },
+                    { id: 4, name: 'Komunitas Peduli Sampah', description: 'Fokus pada pengelolaan sampah yang baik', members: 180, status: 'Terbatas', isActive: true }
+                ];
+
+                // Initialize filtered data
+                this.filteredPosts = [...this.posts];
+                this.filteredEvents = [...this.events];
+                this.filteredMembers = [...this.members];
+                this.filteredGroups = [...this.groups];
+            },
+            
+            setupEventListeners() {
+                // File upload listeners
+                document.addEventListener('change', (e) => {
+                    if (e.target.type === 'file') {
+                        this.handleFileUpload(e.target);
+                    }
+                });
+                
+                // Search functionality
+                document.addEventListener('input', (e) => {
+                    if (e.target.placeholder === 'Cari anggota...') {
+                        this.searchMembers(e.target.value);
+                    }
+                });
+            },
+            
+            handleFileUpload(input) {
+                const file = input.files[0];
+                if (file) {
+                    // Validasi tipe file
+                    const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+                    const allowedVideoTypes = ['video/mp4', 'video/avi', 'video/mov', 'video/wmv'];
+                    
+                    if (!allowedTypes.includes(file.type) && !allowedVideoTypes.includes(file.type)) {
+                        this.showNotification('Tipe file tidak didukung! Gunakan gambar (JPG, PNG, GIF) atau video (MP4, AVI, MOV)', 'error');
+                        input.value = '';
+                        return;
+                    }
+                    
+                    // Validasi ukuran file (max 5MB)
+                    const maxSize = 5 * 1024 * 1024; // 5MB
+                    if (file.size > maxSize) {
+                        this.showNotification('Ukuran file terlalu besar! Maksimal 5MB', 'error');
+                        input.value = '';
+                        return;
+                    }
+                    
+                    this.selectedFile = file;
+                    this.showNotification(`File ${file.name} dipilih`, 'info');
+                    
+                    // Simulate upload progress
+                    this.isUploading = true;
+                    this.uploadProgress = 0;
+                    
+                    const interval = setInterval(() => {
+                        this.uploadProgress += 10;
+                        if (this.uploadProgress >= 100) {
+                            clearInterval(interval);
+                            this.isUploading = false;
+                            this.showNotification('File berhasil diupload!', 'success');
+                        }
+                    }, 200);
+                }
+            },
             
             createPost() {
-                this.showNotification('Post berhasil dibuat!', 'success');
+                if (!this.newPost.content.trim()) {
+                    this.showNotification('Mohon isi konten post!', 'error');
+                    return;
+                }
+                
+                const post = {
+                    id: this.posts.length + 1,
+                    author: 'Sarah Johnson',
+                    avatar: '{{ asset("asset/img/user_profile.jpg") }}',
+                    content: this.newPost.content,
+                    image: this.selectedFile ? URL.createObjectURL(this.selectedFile) : null,
+                    likes: 0,
+                    comments: 0,
+                    shares: 0,
+                    time: 'Baru saja',
+                    isOnline: true,
+                    isNew: true // Menandai post baru
+                };
+                
+                // Tambahkan post baru ke array posts dan filteredPosts
+                this.posts.unshift(post);
+                this.filteredPosts.unshift(post);
+                
+                this.resetNewPost();
                 this.showCreatePost = false;
+                this.showNotification('Post berhasil dibuat! Post Anda muncul di timeline.', 'success');
             },
             
             createEvent() {
-                this.showNotification('Event berhasil dibuat!', 'success');
+                if (!this.newEvent.title.trim() || !this.newEvent.description.trim()) {
+                    this.showNotification('Mohon isi judul dan deskripsi event!', 'error');
+                    return;
+                }
+                
+                const event = {
+                    id: this.events.length + 1,
+                    title: this.newEvent.title,
+                    location: this.newEvent.location,
+                    description: this.newEvent.description,
+                    date: this.newEvent.date,
+                    time: this.newEvent.time,
+                    participants: 0,
+                    status: 'Baru',
+                    type: 'green',
+                    isNew: true // Menandai event baru
+                };
+                
+                // Tambahkan event baru ke array events dan filteredEvents
+                this.events.unshift(event);
+                this.filteredEvents.unshift(event);
+                
+                this.resetNewEvent();
                 this.showCreateEvent = false;
+                this.showNotification('Event berhasil dibuat! Klik tab Events untuk melihat event Anda.', 'success');
+                
+                // Otomatis pindah ke tab Events setelah 2 detik
+                setTimeout(() => {
+                    this.activeTab = 'events';
+                }, 2000);
+            },
+            
+            resetNewPost() {
+                this.newPost = {
+                    content: '',
+                    image: null,
+                    video: null,
+                    location: ''
+                };
+                this.selectedFile = null;
+                this.uploadProgress = 0;
+                this.isUploading = false;
+                
+                // Reset file input
+                const fileInputs = document.querySelectorAll('input[type="file"]');
+                fileInputs.forEach(input => {
+                    if (input.closest('.bg-white.rounded-2xl')) {
+                        input.value = '';
+                    }
+                });
+            },
+            
+            resetNewEvent() {
+                this.newEvent = {
+                    title: '',
+                    description: '',
+                    date: '',
+                    time: '',
+                    location: '',
+                    maxCapacity: ''
+                };
+            },
+            
+            likePost(postId) {
+                const post = this.posts.find(p => p.id === postId);
+                if (post) {
+                    post.likes++;
+                    this.showNotification('Post disukai!', 'success');
+                }
+            },
+            
+            commentPost(postId) {
+                const comment = prompt('Tulis komentar Anda:');
+                if (comment && comment.trim()) {
+                    const post = this.posts.find(p => p.id === postId);
+                    if (post) {
+                        post.comments++;
+                        this.showNotification('Komentar berhasil ditambahkan!', 'success');
+                    }
+                }
+            },
+            
+            sharePost(postId) {
+                const post = this.posts.find(p => p.id === postId);
+                if (post) {
+                    post.shares++;
+                    this.showNotification('Post dibagikan!', 'success');
+                }
+            },
+            
+            bookmarkPost(postId) {
+                this.showNotification('Post disimpan ke bookmark!', 'success');
+            },
+            
+            joinEvent(eventId) {
+                const event = this.events.find(e => e.id === eventId);
+                if (event) {
+                    event.participants++;
+                    this.showNotification('Berhasil mendaftar event!', 'success');
+                }
+            },
+            
+            joinGroup(groupId) {
+                this.showNotification('Berhasil bergabung dengan grup!', 'success');
+            },
+            
+            followMember(memberId) {
+                this.showNotification('Berhasil mengikuti anggota!', 'success');
+            },
+            
+            searchMembers(query) {
+                this.searchQuery = query;
+                if (!query.trim()) {
+                    this.filteredMembers = [...this.members];
+                    return;
+                }
+                
+                const searchTerm = query.toLowerCase();
+                this.filteredMembers = this.members.filter(member => 
+                    member.name.toLowerCase().includes(searchTerm) ||
+                    member.role.toLowerCase().includes(searchTerm)
+                );
+                
+                this.showNotification(`Ditemukan ${this.filteredMembers.length} anggota`, 'info');
+            },
+
+            searchPosts(query) {
+                if (!query.trim()) {
+                    this.filteredPosts = [...this.posts];
+                    return;
+                }
+                
+                const searchTerm = query.toLowerCase();
+                this.filteredPosts = this.posts.filter(post => 
+                    post.author.toLowerCase().includes(searchTerm) ||
+                    post.content.toLowerCase().includes(searchTerm)
+                );
+            },
+
+            searchEvents(query) {
+                if (!query.trim()) {
+                    this.filteredEvents = [...this.events];
+                    return;
+                }
+                
+                const searchTerm = query.toLowerCase();
+                this.filteredEvents = this.events.filter(event => 
+                    event.title.toLowerCase().includes(searchTerm) ||
+                    event.location.toLowerCase().includes(searchTerm) ||
+                    event.description.toLowerCase().includes(searchTerm)
+                );
+            },
+
+            searchGroups(query) {
+                if (!query.trim()) {
+                    this.filteredGroups = [...this.groups];
+                    return;
+                }
+                
+                const searchTerm = query.toLowerCase();
+                this.filteredGroups = this.groups.filter(group => 
+                    group.name.toLowerCase().includes(searchTerm) ||
+                    group.description.toLowerCase().includes(searchTerm)
+                );
+            },
+
+            performSearch(query) {
+                this.searchPosts(query);
+                this.searchEvents(query);
+                this.searchMembers(query);
+                this.searchGroups(query);
+            },
+
+            clearSearch() {
+                this.globalSearchQuery = '';
+                this.searchQuery = '';
+                this.filteredPosts = [...this.posts];
+                this.filteredEvents = [...this.events];
+                this.filteredMembers = [...this.members];
+                this.filteredGroups = [...this.groups];
+                this.showNotification('Pencarian dibersihkan', 'info');
+            },
+
+            removeSelectedFile() {
+                this.selectedFile = null;
+                this.uploadProgress = 0;
+                this.isUploading = false;
+                
+                // Reset file inputs
+                const fileInputs = document.querySelectorAll('input[type="file"]');
+                fileInputs.forEach(input => {
+                    input.value = '';
+                });
+                
+                this.showNotification('File dihapus', 'info');
             },
             
             showNotification(message, type = 'info') {

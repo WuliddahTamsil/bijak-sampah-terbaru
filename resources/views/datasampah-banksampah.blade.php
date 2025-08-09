@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
@@ -176,11 +177,120 @@
             visibility: visible;
             opacity: 1;
         }
+
+        /* Search Results Info */
+        .search-info {
+            background: #f0f9ff;
+            border: 1px solid #bae6fd;
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .search-info .info-text {
+            color: #0369a1;
+            font-size: 14px;
+        }
+
+        .search-info .clear-btn {
+            background: #0369a1;
+            color: white;
+            border: none;
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .search-info .clear-btn:hover {
+            background: #075985;
+        }
     </style>
 </head>
 <body class="bg-gray-50">
 
-<div class="flex min-h-screen bg-gray-50" x-data="{ sidebarOpen: false, activeMenu: 'data-sampah' }" x-init="activeMenu = 'data-sampah'">
+<div class="flex min-h-screen bg-gray-50" x-data="{ 
+    sidebarOpen: false, 
+    activeMenu: 'data-sampah',
+    searchQuery: '',
+    filteredWastes: [],
+    allWastes: [],
+    searchResults: 0,
+    showSearchInfo: false,
+    
+    performSearch() {
+      const query = this.searchQuery.toLowerCase().trim();
+      console.log('Searching for:', query);
+      console.log('Current allWastes length:', this.allWastes ? this.allWastes.length : 'undefined');
+      
+      if (query === '') {
+        this.clearSearch();
+        return;
+      }
+      
+      // Check if allWastes is available
+      if (!this.allWastes || this.allWastes.length === 0) {
+        console.log('No waste data available for search');
+        console.log('Trying to reload data...');
+        
+        // Try to reload data from current month
+        const selectedMonth = parseInt(document.getElementById('monthFilter').value);
+        const monthData = monthlyData[selectedMonth];
+        if (monthData && monthData.wastes) {
+          this.allWastes = monthData.wastes;
+          console.log('Reloaded data with', monthData.wastes.length, 'items');
+        } else {
+          console.log('No month data available');
+          return;
+        }
+      }
+      
+      console.log('Available wastes:', this.allWastes.length);
+      console.log('Sample wastes:', this.allWastes.slice(0, 3));
+      
+      // Filter wastes based on search query
+      this.filteredWastes = this.allWastes.filter(waste => {
+        const matches = waste.name.toLowerCase().includes(query) ||
+               waste.category.toLowerCase().includes(query) ||
+               waste.unit.toLowerCase().includes(query) ||
+               waste.amount.toString().includes(query);
+        return matches;
+      });
+      
+      this.searchResults = this.filteredWastes.length;
+      this.showSearchInfo = true;
+      
+      console.log('Search results:', this.filteredWastes.length);
+      console.log('Sample results:', this.filteredWastes.slice(0, 3));
+      
+      // Update table with filtered data
+      if (window.updateTableWithData) {
+        window.updateTableWithData(this.filteredWastes);
+      } else {
+        console.error('updateTableWithData function not available');
+      }
+    },
+    
+    clearSearch() {
+      console.log('Clearing search');
+      this.searchQuery = '';
+      this.filteredWastes = [];
+      this.searchResults = 0;
+      this.showSearchInfo = false;
+      
+      // Reload original data
+      const selectedMonth = parseInt(document.getElementById('monthFilter').value);
+      if (window.loadMonthData) {
+        window.loadMonthData(selectedMonth);
+      } else {
+        console.error('loadMonthData function not available');
+      }
+    }
+}" x-init="activeMenu = 'data-sampah'">
     {{-- Sidebar --}}
     <aside 
         class="fixed top-0 left-0 z-40 flex flex-col py-6 overflow-hidden shadow-2xl group sidebar-banksampah-gradient text-white"
@@ -370,7 +480,14 @@
       </div>
       <div class="flex items-center space-x-4 w-full md:w-auto">
         <div class="relative flex-grow md:flex-grow-0">
-          <input type="text" placeholder="Cari data setoran..." class="pl-10 pr-4 py-2 border rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm w-full">
+          <input 
+            type="text" 
+            placeholder="Cari data setoran..." 
+            class="pl-10 pr-4 py-2 border rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm w-full"
+            x-model="searchQuery"
+            @input="performSearch()"
+            @keyup="performSearch()"
+          >
           <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
         </div>
         <div class="relative">
@@ -391,6 +508,30 @@
           <i class="fas fa-chevron-down absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-xs"></i>
         </div>
       </div>
+    </div>
+
+    <!-- Search Results Info -->
+    <div x-show="showSearchInfo" x-transition class="search-info">
+      <div class="info-text">
+        <i class="fas fa-search mr-2"></i>
+        Menampilkan <span x-text="searchResults"></span> hasil pencarian untuk "<span x-text="searchQuery"></span>"
+      </div>
+      <button @click="clearSearch()" class="clear-btn">
+        <i class="fas fa-times mr-1"></i>Bersihkan
+      </button>
+    </div>
+    
+    <!-- Debug Info (temporary) -->
+    <div x-show="searchQuery !== ''" class="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-2 rounded mb-4">
+      <strong>Debug:</strong> Query: "<span x-text="searchQuery"></span>", Available: <span x-text="allWastes.length"></span>, Results: <span x-text="filteredWastes.length"></span>
+      <br>
+      <small>Sample data: <span x-text="allWastes.length > 0 ? allWastes[0].name : 'No data'"></span></small>
+    </div>
+    
+    <!-- Always show debug info for troubleshooting -->
+    <div class="bg-blue-100 border border-blue-400 text-blue-700 px-4 py-2 rounded mb-4">
+      <strong>Status:</strong> Available: <span x-text="allWastes.length"></span> items, 
+      Current Month: <span x-text="document.getElementById('monthFilter') ? document.getElementById('monthFilter').value : 'N/A'"></span>
     </div>
 
     <!-- Stats Cards -->
@@ -493,7 +634,12 @@
               </tr>
             </thead>
             <tbody id="wasteTableBody" class="text-sm">
-              <!-- Data will be filled by JavaScript -->
+              <tr>
+                <td colspan="6" class="text-center py-8 text-gray-500">
+                  <i class="fas fa-spinner fa-spin mr-2"></i>
+                  Memuat data...
+                </td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -655,8 +801,9 @@
           </div>
         </div>
         <div class="mt-6 pt-4 border-t border-gray-200 flex justify-end space-x-3">
-          <button class="px-4 py-2 border rounded-md text-sm hover:bg-gray-100">Edit</button>
-          <button class="px-4 py-2 bg-blue-500 text-white rounded-md text-sm hover:bg-blue-600">Cetak Struk</button>
+          <button class="px-4 py-2 bg-blue-500 text-white rounded-md text-sm hover:bg-blue-600" onclick="printReceipt()">
+            <i class="fas fa-print mr-2"></i>Cetak Struk PNG
+          </button>
         </div>
       </div>
     </div>
@@ -780,6 +927,12 @@
         totalKg: totalKg,
         activeUsers: Math.floor(Math.random() * 50) + 100 // Random between 100-150
       };
+      
+      // Debug log for April data
+      if (month === 4) {
+        console.log(`April data created with ${wastes.length} waste items`);
+        console.log('Sample waste items:', wastes.slice(0, 3));
+      }
     }
 
     // Chart instances
@@ -791,6 +944,9 @@
     // Initialize the page
     document.addEventListener('DOMContentLoaded', function() {
       console.log('DOM Content Loaded');
+      console.log('Monthly data available:', Object.keys(monthlyData));
+      console.log('April data:', monthlyData[4]);
+      console.log('April wastes count:', monthlyData[4] ? monthlyData[4].wastes.length : 0);
       
       // Load initial data (April)
       loadMonthData(4);
@@ -808,30 +964,150 @@
       
       // Set up event listeners
       setupEventListeners();
+      
+      // Function to ensure Alpine.js data is loaded
+      function ensureAlpineData() {
+        if (window.Alpine) {
+          try {
+            const alpineComponent = document.querySelector('[x-data]').__x.$data;
+            const monthData = monthlyData[4]; // April data
+            if (monthData && monthData.wastes) {
+              alpineComponent.allWastes = monthData.wastes;
+              console.log('Alpine.js data loaded successfully with', monthData.wastes.length, 'items');
+              console.log('Sample Alpine.js data:', alpineComponent.allWastes.slice(0, 3));
+              return true;
+            } else {
+              console.log('Month data not available for Alpine.js');
+              return false;
+            }
+          } catch (error) {
+            console.log('Alpine.js data loading delayed:', error);
+            return false;
+          }
+        } else {
+          console.log('Alpine.js not available yet');
+          return false;
+        }
+      }
+      
+      // Try to load Alpine.js data multiple times
+      let attempts = 0;
+      const maxAttempts = 10;
+      
+      function tryLoadAlpineData() {
+        attempts++;
+        console.log(`Attempt ${attempts} to load Alpine.js data`);
+        
+        if (ensureAlpineData()) {
+          console.log('Alpine.js data loaded successfully');
+        } else if (attempts < maxAttempts) {
+          setTimeout(tryLoadAlpineData, 500);
+        } else {
+          console.log('Failed to load Alpine.js data after', maxAttempts, 'attempts');
+        }
+      }
+      
+      // Start trying to load Alpine.js data
+      setTimeout(tryLoadAlpineData, 500);
     });
 
-    function loadMonthData(month) {
+
+
+    // Make loadMonthData globally accessible
+    window.loadMonthData = function(month) {
       const monthData = monthlyData[month];
+      if (!monthData) {
+        console.error('Month data not found for month:', month);
+        return;
+      }
+      
       const monthName = monthNames[month-1];
       
       // Update month title
-      document.getElementById('currentMonth').textContent = `${monthName} 2025`;
+      const currentMonthElement = document.getElementById('currentMonth');
+      if (currentMonthElement) {
+        currentMonthElement.textContent = `${monthName} 2025`;
+      }
       
       // Update stats cards
-      document.getElementById('totalDepositMonth').textContent = `${monthData.totalKg.toFixed(1)} Kg`;
-      document.getElementById('totalActiveUsers').textContent = `${monthData.activeUsers} Orang`;
-      document.getElementById('avgDepositPerUser').textContent = `${(monthData.totalKg / monthData.activeUsers).toFixed(2)} Kg`;
-      document.getElementById('topWasteType').textContent = monthData.topWaste.name;
+      const totalDepositElement = document.getElementById('totalDepositMonth');
+      const totalUsersElement = document.getElementById('totalActiveUsers');
+      const avgDepositElement = document.getElementById('avgDepositPerUser');
+      const topWasteElement = document.getElementById('topWasteType');
+      
+      if (totalDepositElement) totalDepositElement.textContent = `${monthData.totalKg.toFixed(1)} Kg`;
+      if (totalUsersElement) totalUsersElement.textContent = `${monthData.activeUsers} Orang`;
+      if (avgDepositElement) avgDepositElement.textContent = `${(monthData.totalKg / monthData.activeUsers).toFixed(2)} Kg`;
+      if (topWasteElement) topWasteElement.textContent = monthData.topWaste.name;
+      
+      // Store data in Alpine.js for search functionality
+      if (window.Alpine) {
+        try {
+          const alpineComponent = document.querySelector('[x-data]').__x.$data;
+          alpineComponent.allWastes = monthData.wastes;
+          alpineComponent.filteredWastes = [];
+          alpineComponent.searchQuery = '';
+          alpineComponent.showSearchInfo = false;
+          console.log('Alpine.js data updated for month:', month, 'with', monthData.wastes.length, 'items');
+        } catch (error) {
+          console.log('Alpine.js not ready yet, data will be loaded later');
+        }
+      }
       
       // Fill the table
+      updateTableWithData(monthData.wastes);
+      
+      // Update charts
+      updateCharts(month);
+      
+      console.log(`Month data loaded successfully for month ${month} with ${monthData.wastes.length} waste items`);
+      
+      // Force Alpine.js data update after a short delay
+      setTimeout(() => {
+        if (window.Alpine) {
+          try {
+            const alpineComponent = document.querySelector('[x-data]').__x.$data;
+            if (!alpineComponent.allWastes || alpineComponent.allWastes.length === 0) {
+              alpineComponent.allWastes = monthData.wastes;
+              console.log('Forced Alpine.js data update with', monthData.wastes.length, 'items');
+            }
+          } catch (error) {
+            console.log('Failed to force Alpine.js data update:', error);
+          }
+        }
+      }, 100);
+    }
+
+    // Make updateTableWithData globally accessible
+    window.updateTableWithData = function(wastes) {
       const tableBody = document.getElementById('wasteTableBody');
+      if (!tableBody) {
+        console.error('Table body not found');
+        return;
+      }
+      
+      console.log('Updating table with', wastes ? wastes.length : 0, 'items');
+      
       tableBody.innerHTML = '';
+      
+      if (!wastes || wastes.length === 0) {
+        tableBody.innerHTML = `
+          <tr>
+            <td colspan="6" class="text-center py-8 text-gray-500">
+              <i class="fas fa-search mr-2"></i>
+              Tidak ada data yang ditemukan
+            </td>
+          </tr>
+        `;
+        console.log('No data to display');
+        return;
+      }
       
       let totalKg = 0;
       let totalLiter = 0;
       let totalOther = 0;
       
-      monthData.wastes.forEach((waste, index) => {
+      wastes.forEach((waste, index) => {
         const row = document.createElement('tr');
         row.className = 'hover:bg-gray-50';
         row.innerHTML = `
@@ -859,12 +1135,15 @@
       });
       
       // Update pagination info
-      document.getElementById('startItem').textContent = '1';
-      document.getElementById('endItem').textContent = monthData.wastes.length;
-      document.getElementById('totalItems').textContent = monthData.wastes.length;
+      const startItem = document.getElementById('startItem');
+      const endItem = document.getElementById('endItem');
+      const totalItems = document.getElementById('totalItems');
       
-      // Update charts
-      updateCharts(month);
+      if (startItem) startItem.textContent = '1';
+      if (endItem) endItem.textContent = wastes.length;
+      if (totalItems) totalItems.textContent = wastes.length;
+      
+      console.log(`Table updated with ${wastes.length} items`);
     }
 
     function getCategoryBadgeClass(category) {
@@ -883,7 +1162,7 @@
       if (typeof Chart === 'undefined') {
         console.error('Chart.js is not loaded!');
         // Show fallback message
-        showChartFallback();
+        console.log('Chart.js not available, continuing without charts');
         return;
       }
       
@@ -893,7 +1172,7 @@
       
       if (!trendCanvas || !compositionCanvas) {
         console.error('Canvas elements not found!');
-        showChartFallback();
+        console.log('Canvas elements not found, continuing without charts');
         return;
       }
       
@@ -1028,6 +1307,24 @@
       document.getElementById('monthFilter').addEventListener('change', function() {
         const selectedMonth = parseInt(this.value);
         loadMonthData(selectedMonth);
+        
+        // Ensure Alpine.js data is updated for the new month
+        setTimeout(() => {
+          if (window.Alpine) {
+            try {
+              const alpineComponent = document.querySelector('[x-data]').__x.$data;
+              const monthData = monthlyData[selectedMonth];
+              if (monthData && monthData.wastes) {
+                alpineComponent.allWastes = monthData.wastes;
+                alpineComponent.searchQuery = '';
+                alpineComponent.showSearchInfo = false;
+                console.log('Alpine.js data updated for month', selectedMonth, 'with', monthData.wastes.length, 'items');
+              }
+            } catch (error) {
+              console.log('Failed to update Alpine.js data for month change:', error);
+            }
+          }
+        }, 200);
       });
       
       // Toggle chart type (line/bar) - simplified
@@ -1272,6 +1569,173 @@
       
       // Show success message
       showNotification('Data berhasil dicetak!', 'success');
+    }
+    
+    // Function to print receipt as PNG
+    function printReceipt() {
+      // Get modal data
+      const wasteType = document.getElementById('modalWasteType').textContent;
+      const wasteCategory = document.getElementById('modalWasteCategory').textContent;
+      const wasteAmount = document.getElementById('modalWasteAmount').textContent;
+      const wastePrice = document.getElementById('modalWastePrice').textContent;
+      const wasteTotal = document.getElementById('modalWasteTotal').textContent;
+      
+      // Create receipt content
+      const receiptContent = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <title>Struk Setoran Sampah</title>
+          <style>
+            body {
+              font-family: 'Courier New', monospace;
+              margin: 0;
+              padding: 20px;
+              background: white;
+              width: 300px;
+            }
+            .receipt {
+              border: 2px solid #000;
+              padding: 15px;
+              background: white;
+            }
+            .header {
+              text-align: center;
+              border-bottom: 1px solid #000;
+              padding-bottom: 10px;
+              margin-bottom: 15px;
+            }
+            .title {
+              font-size: 18px;
+              font-weight: bold;
+              margin-bottom: 5px;
+            }
+            .subtitle {
+              font-size: 12px;
+              color: #666;
+            }
+            .info-row {
+              display: flex;
+              justify-content: space-between;
+              margin-bottom: 8px;
+              font-size: 12px;
+            }
+            .label {
+              font-weight: bold;
+            }
+            .value {
+              text-align: right;
+            }
+            .total {
+              border-top: 1px solid #000;
+              padding-top: 10px;
+              margin-top: 10px;
+              font-weight: bold;
+              font-size: 14px;
+            }
+            .footer {
+              text-align: center;
+              margin-top: 15px;
+              font-size: 10px;
+              color: #666;
+            }
+            .timestamp {
+              font-size: 10px;
+              color: #999;
+              text-align: center;
+              margin-top: 10px;
+            }
+          </style>
+        </head>
+        <body>
+          <div class="receipt">
+            <div class="header">
+              <div class="title">BIJAK SAMPAH</div>
+              <div class="subtitle">Bank Sampah Digital</div>
+            </div>
+            
+            <div class="info-row">
+              <span class="label">Jenis Sampah:</span>
+              <span class="value">${wasteType}</span>
+            </div>
+            
+            <div class="info-row">
+              <span class="label">Kategori:</span>
+              <span class="value">${wasteCategory}</span>
+            </div>
+            
+            <div class="info-row">
+              <span class="label">Jumlah:</span>
+              <span class="value">${wasteAmount}</span>
+            </div>
+            
+            <div class="info-row">
+              <span class="label">Harga per Satuan:</span>
+              <span class="value">${wastePrice}</span>
+            </div>
+            
+            <div class="total info-row">
+              <span class="label">TOTAL NILAI:</span>
+              <span class="value">${wasteTotal}</span>
+            </div>
+            
+            <div class="footer">
+              Terima kasih telah berkontribusi<br>
+              untuk lingkungan yang lebih baik
+            </div>
+            
+            <div class="timestamp">
+              ${new Date().toLocaleString('id-ID')}
+            </div>
+          </div>
+        </body>
+        </html>
+      `;
+      
+      // Create a new window for the receipt
+      const receiptWindow = window.open('', '_blank', 'width=350,height=600');
+      receiptWindow.document.write(receiptContent);
+      receiptWindow.document.close();
+      
+      // Wait for content to load then convert to PNG
+      receiptWindow.onload = function() {
+        setTimeout(() => {
+          // Use html2canvas to convert to PNG
+          if (typeof html2canvas !== 'undefined') {
+            html2canvas(receiptWindow.document.querySelector('.receipt'), {
+              backgroundColor: '#ffffff',
+              width: 300,
+              height: 500,
+              scale: 2,
+              useCORS: true,
+              allowTaint: true
+            }).then(canvas => {
+              // Convert canvas to PNG and download
+              const link = document.createElement('a');
+              link.download = `struk-setoran-${wasteType.toLowerCase().replace(/\s+/g, '-')}-${new Date().getTime()}.png`;
+              link.href = canvas.toDataURL('image/png');
+              link.click();
+              
+              // Close the receipt window
+              receiptWindow.close();
+              
+              // Show success notification
+              showNotification('Struk berhasil diunduh dalam format PNG!', 'success');
+            }).catch(error => {
+              console.error('Error generating PNG:', error);
+              // Fallback: just print the receipt
+              receiptWindow.print();
+              receiptWindow.close();
+              showNotification('Struk berhasil dicetak!', 'success');
+            });
+          } else {
+            // Fallback: just print the receipt
+            receiptWindow.print();
+            receiptWindow.close();
+            showNotification('Struk berhasil dicetak!', 'success');
+          }
+        }, 500); // Wait 500ms for content to fully load
+      };
     }
     
     // Function to show notification

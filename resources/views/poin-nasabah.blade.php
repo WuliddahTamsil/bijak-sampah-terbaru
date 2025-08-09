@@ -416,6 +416,209 @@
         border-radius: 20px;
         display: inline-block;
     }
+
+    /* E-Wallet Modal Styles */
+    .ewallet-card {
+        transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .ewallet-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+        transition: left 0.5s;
+    }
+    
+    .ewallet-card:hover::before {
+        left: 100%;
+    }
+    
+    .ewallet-card:hover {
+        transform: translateY(-8px) scale(1.02);
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    }
+    
+    .ewallet-logo-container {
+        transition: all 0.3s ease;
+        position: relative;
+    }
+    
+    .ewallet-card:hover .ewallet-logo-container {
+        transform: scale(1.1);
+    }
+    
+    .ewallet-logo {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        transition: all 0.3s ease;
+    }
+    
+    .ewallet-icon {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+    }
+    
+    .ewallet-name {
+        transition: all 0.3s ease;
+    }
+    
+    .ewallet-card:hover .ewallet-name {
+        transform: scale(1.05);
+    }
+    
+    /* Special effects for each e-wallet type */
+    .ewallet-card[onclick*="gopay"]:hover {
+        background: linear-gradient(135deg, #10b981, #059669);
+        color: white;
+    }
+    
+    .ewallet-card[onclick*="ovo"]:hover {
+        background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+        color: white;
+    }
+    
+    .ewallet-card[onclick*="dana"]:hover {
+        background: linear-gradient(135deg, #3b82f6, #2563eb);
+        color: white;
+    }
+    
+    .ewallet-card[onclick*="shopeepay"]:hover {
+        background: linear-gradient(135deg, #f97316, #ea580c);
+        color: white;
+    }
+    
+    .ewallet-card[onclick*="linkaja"]:hover {
+        background: linear-gradient(135deg, #14b8a6, #0d9488);
+        color: white;
+    }
+    
+    .ewallet-card[onclick*="pulsa"]:hover {
+        background: linear-gradient(135deg, #6366f1, #4f46e5);
+        color: white;
+    }
+    
+    .ewallet-card[onclick*="tokenlistrik"]:hover {
+        background: linear-gradient(135deg, #eab308, #ca8a04);
+        color: white;
+    }
+    
+    /* Enhanced e-wallet section styling */
+    .ewallet-section {
+        background: linear-gradient(135deg, #ffffff 0%, #f0f9ff 50%, #e0f2fe 100%);
+        border: 1px solid rgba(59, 130, 246, 0.1);
+        box-shadow: 
+            0 20px 25px -5px rgba(0, 0, 0, 0.1),
+            0 10px 10px -5px rgba(0, 0, 0, 0.04),
+            inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    }
+    
+    .ewallet-section .section-title {
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    .ewallet-grid {
+        perspective: 1000px;
+    }
+    
+    .ewallet-card {
+        backdrop-filter: blur(10px);
+        border: 2px solid transparent;
+        background-clip: padding-box;
+    }
+    
+    .ewallet-card:hover {
+        border-color: rgba(59, 130, 246, 0.3);
+    }
+    
+    /* Logo container enhancements */
+    .ewallet-logo-container {
+        box-shadow: 
+            0 4px 6px -1px rgba(0, 0, 0, 0.1),
+            0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .ewallet-card:hover .ewallet-logo-container {
+        box-shadow: 
+            0 10px 15px -3px rgba(0, 0, 0, 0.1),
+            0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    }
+    
+    /* Text enhancements */
+    .ewallet-name {
+        font-weight: 700;
+        letter-spacing: -0.025em;
+    }
+    
+    .ewallet-card:hover .ewallet-name {
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    }
+    
+    /* Info badge styling */
+    .ewallet-section .bg-blue-100 {
+        background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+        border: 1px solid rgba(59, 130, 246, 0.2);
+        box-shadow: 0 2px 4px rgba(59, 130, 246, 0.1);
+    }
+
+    /* Transaction History Styles */
+    .transaction-item {
+        transition: all 0.3s ease;
+    }
+
+    .transaction-item:hover {
+        transform: translateX(4px);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Modal Animation */
+    @keyframes modalSlideIn {
+        from {
+            opacity: 0;
+            transform: scale(0.9) translateY(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+        }
+    }
+
+    #ewalletModal > div > div {
+        animation: modalSlideIn 0.3s ease-out;
+    }
+
+    /* Progress Bar Animation */
+    #progressBar {
+        transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Step Transition */
+    .step-transition {
+        transition: all 0.3s ease-in-out;
+    }
+
+    /* Button Hover Effects */
+    .btn-gradient {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        transition: all 0.3s ease;
+    }
+
+    .btn-gradient:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+    }
     </style>
 
 <div class="flex min-h-screen bg-gray-50" x-data="{ sidebarOpen: false }">
@@ -559,508 +762,653 @@
                             </div>
                         </div>
                     </div>
-                    <div class="ewallet-section bg-white rounded-2xl shadow-lg p-6 mb-6">
+                    <div class="ewallet-section bg-gradient-to-br from-white to-blue-50 rounded-3xl shadow-xl p-8 mb-8 border border-blue-100">
+                        <div class="text-center mb-8">
+                            <h2 class="section-title text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-3 flex items-center justify-center gap-3">
+                                <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-wallet text-white text-lg"></i>
+                                </div>
+                                Tukar Poin Mu
+                            </h2>
+                            <p class="text-gray-600 text-lg">Pilih e-wallet favoritmu dan tukarkan poin dengan mudah!</p>
+                        </div>
+                        
+                        <div class="ewallet-grid grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                            <!-- Gopay -->
+                            <div class="ewallet-card group bg-gradient-to-br from-green-50 to-green-100 rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-all duration-500 cursor-pointer border-2 border-green-200 hover:border-green-400 hover:scale-105" onclick="openEwalletModal('gopay', 'Gopay', 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/86/Gopay_logo.svg/1200px-Gopay_logo.svg.png')">
+                                <div class="text-center">
+                                    <div class="ewallet-logo-container w-16 h-16 mx-auto mb-4 bg-white rounded-2xl p-3 shadow-lg group-hover:shadow-xl transition-all duration-300 flex items-center justify-center">
+                                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/86/Gopay_logo.svg/1200px-Gopay_logo.svg.png" alt="Gopay" class="w-full h-full object-contain">
+                                    </div>
+                                    <h3 class="ewallet-name text-lg font-bold text-green-800 mb-2 group-hover:text-green-900 transition-colors">Gopay</h3>
+                                    <p class="text-green-600 text-sm font-medium">GoPay Indonesia</p>
+                                </div>
+                            </div>
+                            
+                            <!-- OVO -->
+                            <div class="ewallet-card group bg-gradient-to-br from-purple-50 to-purple-100 rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-all duration-500 cursor-pointer border-2 border-purple-200 hover:border-purple-400 hover:scale-105" onclick="openEwalletModal('ovo', 'OVO', 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/eb/Logo_ovo_purple.svg/1200px-Logo_ovo_purple.svg.png')">
+                                <div class="text-center">
+                                    <div class="ewallet-logo-container w-16 h-16 mx-auto mb-4 bg-white rounded-2xl p-3 shadow-lg group-hover:shadow-xl transition-all duration-300 flex items-center justify-center">
+                                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/eb/Logo_ovo_purple.svg/1200px-Logo_ovo_purple.svg.png" alt="OVO" class="w-full h-full object-contain">
+                                    </div>
+                                    <h3 class="ewallet-name text-lg font-bold text-purple-800 mb-2 group-hover:text-purple-900 transition-colors">OVO</h3>
+                                    <p class="text-purple-600 text-sm font-medium">OVO Digital</p>
+                                </div>
+                            </div>
+
+                            <!-- DANA -->
+                            <div class="ewallet-card group bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-all duration-500 cursor-pointer border-2 border-blue-200 hover:border-blue-400 hover:scale-105" onclick="openEwalletModal('dana', 'DANA', 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Logo_dana_blue.svg/1200px-Logo_dana_blue.svg.png')">
+                                <div class="text-center">
+                                    <div class="ewallet-logo-container w-16 h-16 mx-auto mb-4 bg-white rounded-2xl p-3 shadow-lg group-hover:shadow-xl transition-all duration-300 flex items-center justify-center">
+                                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Logo_dana_blue.svg/1200px-Logo_dana_blue.svg.png" alt="DANA" class="w-full h-full object-contain">
+                                    </div>
+                                    <h3 class="ewallet-name text-lg font-bold text-blue-800 mb-2 group-hover:text-blue-900 transition-colors">DANA</h3>
+                                    <p class="text-blue-600 text-sm font-medium">DANA Indonesia</p>
+                                </div>
+                            </div>
+
+                            <!-- ShopeePay -->
+                            <div class="ewallet-card group bg-gradient-to-br from-orange-50 to-orange-100 rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-all duration-500 cursor-pointer border-2 border-orange-200 hover:border-orange-400 hover:scale-105" onclick="openEwalletModal('shopeepay', 'ShopeePay', 'https://cdn-icons-png.flaticon.com/512/5969/5969059.png')">
+                                <div class="text-center">
+                                    <div class="ewallet-logo-container w-16 h-16 mx-auto mb-4 bg-white rounded-2xl p-3 shadow-lg group-hover:shadow-xl transition-all duration-300 flex items-center justify-center">
+                                        <img src="https://bloguna.com/wp-content/uploads/2025/06/Logo-ShopeePay-PNG-CDR-SVG-EPS-Kualitas-HD.png" alt="ShopeePay" class="w-full h-full object-contain">
+                                    </div>
+                                    <h3 class="ewallet-name text-lg font-bold text-orange-800 mb-2 group-hover:text-orange-900 transition-colors">ShopeePay</h3>
+                                    <p class="text-orange-600 text-sm font-medium">Shopee Digital</p>
+                                </div>
+                            </div>
+
+                            <!-- LinkAja -->
+                            <div class="ewallet-card group bg-gradient-to-br from-teal-50 to-teal-100 rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-all duration-500 cursor-pointer border-2 border-teal-200 hover:border-teal-400 hover:scale-105" onclick="openEwalletModal('linkaja', 'LinkAja', 'https://cdn-icons-png.flaticon.com/512/5969/5969059.png')">
+                                <div class="text-center">
+                                    <div class="ewallet-logo-container w-16 h-16 mx-auto mb-4 bg-white rounded-2xl p-3 shadow-lg group-hover:shadow-xl transition-all duration-300 flex items-center justify-center">
+                                        <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjVlPZwKzWUoaxBpt6mJCixaNjGdbraFXJjCQcdVwuLsqz02UAAzAidd6y745xuXLvCtVPfhObIWVLPT6oZbS9U5iICX2XhEmBqbR-AGL-Edx3Iipq-4qGwLBAcqpB8Q5QQ3p0bG3By-7o/s2048/Logo+LinkAja.png" alt="LinkAja" class="w-full h-full object-contain">
+                                    </div>
+                                    <h3 class="ewallet-name text-lg font-bold text-teal-800 mb-2 group-hover:text-teal-900 transition-colors">LinkAja</h3>
+                                    <p class="text-teal-600 text-sm font-medium">LinkAja Digital</p>
+                                </div>
+                            </div>
+                            
+                            <!-- Pulsa -->
+                            <div class="ewallet-card group bg-gradient-to-br from-indigo-50 to-indigo-100 rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-all duration-500 cursor-pointer border-2 border-indigo-200 hover:border-indigo-400 hover:scale-105" onclick="openEwalletModal('pulsa', 'Pulsa', 'placeholder')">
+                                <div class="text-center">
+                                    <div class="ewallet-logo-container w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-indigo-500 to-blue-600 rounded-2xl p-3 shadow-lg group-hover:shadow-xl transition-all duration-300 flex items-center justify-center">
+                                        <i class="fas fa-mobile-alt text-white text-2xl"></i>
+                                    </div>
+                                    <h3 class="ewallet-name text-lg font-bold text-indigo-800 mb-2 group-hover:text-indigo-900 transition-colors">Pulsa</h3>
+                                    <p class="text-indigo-600 text-sm font-medium">Mobile Credit</p>
+                                </div>
+                            </div>
+
+                            <!-- Token Listrik -->
+                            <div class="ewallet-card group bg-gradient-to-br from-yellow-50 to-yellow-100 rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-all duration-500 cursor-pointer border-2 border-yellow-200 hover:border-yellow-400 hover:scale-105" onclick="openEwalletModal('tokenlistrik', 'Token Listrik', 'placeholder')">
+                                <div class="text-center">
+                                    <div class="ewallet-logo-container w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-yellow-500 to-orange-500 rounded-2xl p-3 shadow-lg group-hover:shadow-xl transition-all duration-300 flex items-center justify-center">
+                                        <i class="fas fa-bolt text-white text-2xl"></i>
+                                    </div>
+                                    <h3 class="ewallet-name text-lg font-bold text-yellow-800 mb-2 group-hover:text-yellow-900 transition-colors">Token Listrik</h3>
+                                    <p class="text-yellow-600 text-sm font-medium">Electricity Token</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Additional Info Section -->
+                        <div class="mt-8 text-center">
+                            <div class="inline-flex items-center gap-2 bg-blue-100 text-blue-800 px-4 py-2 rounded-full text-sm font-medium">
+                                <i class="fas fa-info-circle"></i>
+                                <span>Semua e-wallet tersedia 24/7 • Proses instan • Tanpa biaya tersembunyi</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- List Transaksi Section -->
+                    <div class="transaction-section bg-white rounded-2xl shadow-lg p-6">
                         <h2 class="section-title text-xl font-bold text-blue-800 mb-4 flex items-center gap-2">
-                            <i class="fas fa-wallet"></i> Tukar Poin Mu
+                            <i class="fas fa-history"></i> Riwayat Transaksi
                         </h2>
-                        <div class="ewallet-grid grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                            <div class="ewallet-card bg-white rounded-xl p-4 shadow-md hover:shadow-lg transition-all duration-300 cursor-pointer border border-gray-100" data-provider-id="gopay" onclick="showNominalSelection('gopay', 'Gopay', 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/86/Gopay_logo.svg/1200px-Gopay_logo.svg.png')">
-                                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/86/Gopay_logo.svg/1200px-Gopay_logo.svg.png" alt="Gopay" class="ewallet-logo w-12 h-12 mx-auto mb-2">
-                                <span class="ewallet-name text-center block font-semibold text-gray-700">Gopay</span>
+                        <div class="transaction-list">
+                            <div id="transaction-history-list" class="space-y-3">
+                                <!-- Transactions will be loaded here -->
                             </div>
-                            
-                            <div class="ewallet-card bg-white rounded-xl p-4 shadow-md hover:shadow-lg transition-all duration-300 cursor-pointer border border-gray-100" data-provider-id="ovo" onclick="showNominalSelection('ovo', 'OVO', 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/eb/Logo_ovo_purple.svg/1200px-Logo_ovo_purple.svg.png')">
-                                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/eb/Logo_ovo_purple.svg/1200px-Logo_ovo_purple.svg.png" alt="OVO" class="ewallet-logo w-12 h-12 mx-auto mb-2">
-                                <span class="ewallet-name text-center block font-semibold text-gray-700">OVO</span>
-                            </div>
-
-                            <div class="ewallet-card bg-white rounded-xl p-4 shadow-md hover:shadow-lg transition-all duration-300 cursor-pointer border border-gray-100" data-provider-id="dana" onclick="showNominalSelection('dana', 'DANA', 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Logo_dana_blue.svg/1200px-Logo_dana_blue.svg.png')">
-                                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Logo_dana_blue.svg/1200px-Logo_dana_blue.svg.png" alt="DANA" class="ewallet-logo w-12 h-12 mx-auto mb-2">
-                                <span class="ewallet-name text-center block font-semibold text-gray-700">DANA</span>
-                            </div>
-
-                            <div class="ewallet-card bg-white rounded-xl p-4 shadow-md hover:shadow-lg transition-all duration-300 cursor-pointer border border-gray-100" data-provider-id="shopeepay" onclick="showNominalSelection('shopeepay', 'ShopeePay', 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/ShopeePay_logo.svg/1200px-ShopeePay_logo.svg.png')">
-                                <img src="https://bloguna.com/wp-content/uploads/2025/06/Logo-ShopeePay-PNG-CDR-SVG-EPS-Kualitas-HD.png" alt="ShopeePay" class="ewallet-logo w-12 h-12 mx-auto mb-2">
-                                <span class="ewallet-name text-center block font-semibold text-gray-700">ShopeePay</span>
-                            </div>
-
-                            <div class="ewallet-card bg-white rounded-xl p-4 shadow-md hover:shadow-lg transition-all duration-300 cursor-pointer border border-gray-100" data-provider-id="linkaja" onclick="showNominalSelection('linkaja', 'LinkAja', 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/86/LinkAja.svg/1200px-LinkAja.svg.png')">
-                                <img src="https://assets-a1.kompasiana.com/items/album/2023/04/13/beli-saldo-paypal-via-linkaja-6437c7be4addee244748a212.png" alt="LinkAja" class="ewallet-logo w-12 h-12 mx-auto mb-2">
-                                <span class="ewallet-name text-center block font-semibold text-gray-700">LinkAja</span>
-                            </div>
-                            
-                            <div class="ewallet-card bg-white rounded-xl p-4 shadow-md hover:shadow-lg transition-all duration-300 cursor-pointer border border-gray-100" data-provider-id="pulsa" onclick="showNominalSelection('pulsa', 'Pulsa', 'placeholder')">
-                                <i class="fas fa-mobile-alt ewallet-icon text-3xl text-blue-600 mx-auto block mb-2"></i>
-                                <span class="ewallet-name text-center block font-semibold text-gray-700">Pulsa</span>
-                            </div>
-
-                            <div class="ewallet-card bg-white rounded-xl p-4 shadow-md hover:shadow-lg transition-all duration-300 cursor-pointer border border-gray-100" data-provider-id="tokenlistrik" onclick="showNominalSelection('tokenlistrik', 'Token Listrik', 'placeholder')">
-                                <i class="fas fa-bolt ewallet-icon text-3xl text-yellow-600 mx-auto block mb-2"></i>
-                                <span class="ewallet-name text-center block font-semibold text-gray-700">Token Listrik</span>
+                            <div id="no-history-message" class="text-center py-8 text-gray-500">
+                                <i class="fas fa-inbox text-4xl mb-3"></i>
+                                <p>Belum ada transaksi</p>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="nominal-section bg-white rounded-2xl shadow-lg p-8 max-w-4xl mx-auto mt-8" id="nominalSelectionSection">
-                    <a class="nominal-back mb-4 inline-block text-blue-600 hover:underline" onclick="showSection('poinmuDashboard')"><i class="fas fa-arrow-left"></i> Kembali</a>
-                    <h2 class="section-title text-xl font-bold mb-6">
-                        Pilih Nominal <span id="nominal-provider-name" class="text-blue-600"></span>
-                    </h2>
-                    <div class="nominal-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="nominal-grid">
-                        <!-- Nominal items will be populated by JavaScript -->
-                    </div>
-                </div>
 
-                <div class="redemption-section bg-white rounded-2xl shadow-lg p-8 max-w-lg mx-auto mt-8" id="redemptionConfirmationSection">
-                    <a class="nominal-back mb-4 inline-block text-blue-600 hover:underline" onclick="showSection('nominalSelectionSection')"><i class="fas fa-arrow-left"></i> Kembali</a>
-                    <h2 class="section-title text-xl font-bold mb-4">Konfirmasi Penukaran</h2>
-                    <div class="redemption-summary flex items-center justify-between bg-blue-50 rounded-lg p-4 mb-6">
-                        <div class="summary-info">
-                            <h4 class="font-semibold text-gray-700">Poin yang Ditukar</h4>
-                            <p id="summary-points-text" class="text-lg font-bold text-blue-700">1.000 Poin</p>
-                        </div>
-                        <div class="summary-points text-2xl font-bold text-blue-900">
-                            <span id="summary-points-amount">1000 Poin</span>
-                        </div>
-                    </div>
-                    <form class="space-y-4">
-                        <div class="flex flex-col md:flex-row md:items-center gap-4">
-                            <div class="flex-1">
-                                <label for="recipient-number" class="block text-sm font-medium text-gray-700 mb-1">Nomor Tujuan</label>
-                                <input type="text" id="recipient-number" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Masukkan nomor tujuan">
-                                <span class="error-message text-xs text-red-500 mt-1 block" id="number-error" style="display:none;">Nomor tujuan tidak valid.</span>
-                            </div>
-                        </div>
-                        <div class="flex flex-col md:flex-row md:items-center gap-4">
-                            <div class="flex-1">
-                                <label for="bijaksampah-pin" class="block text-sm font-medium text-gray-700 mb-1">PIN BijakSampah Pay</label>
-                                <input type="password" id="bijaksampah-pin" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="PIN saat kamu register/login" maxlength="6">
-                                <span class="error-message text-xs text-red-500 mt-1 block" id="pin-error" style="display:none;">PIN salah.</span>
-                            </div>
-                        </div>
-                        <div class="redemption-actions flex gap-4 mt-6 justify-end">
-                            <button type="button" class="btn btn-secondary px-5 py-2 rounded-lg" onclick="showSection('poinmuDashboard')">Batalkan</button>
-                            <button type="button" class="btn btn-primary px-5 py-2 rounded-lg" id="confirm-redemption-btn">Konfirmasi Penukaran</button>
-                        </div>
-                    </form>
-                </div>
-
-                <div class="transaction-history-section bg-white rounded-2xl shadow-lg p-8 max-w-4xl mx-auto mt-8" id="transactionHistorySection">
-                    <div class="history-controls flex items-center justify-between mb-4">
-                        <h2 class="section-title text-xl font-bold flex items-center gap-2"><i class="fas fa-history"></i> Riwayat Transaksi</h2>
-                        <div class="history-actions">
-                            <button class="btn print-button bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition" id="print-history-btn">
-                                <i class="fas fa-print"></i> Cetak Riwayat
-                            </button>
-                        </div>
-                    </div>
-                    <div class="transaction-list-container overflow-x-auto">
-                        <table class="history-table w-full text-left">
-                            <thead>
-                                <tr>
-                                    <th class="py-2 px-4">Deskripsi</th>
-                                    <th class="py-2 px-4">Tanggal</th>
-                                    <th class="py-2 px-4 text-right">Jumlah</th>
-                                </tr>
-                            </thead>
-                            <tbody id="transaction-history-list">
-                                <!-- Data transaksi -->
-                            </tbody>
-                        </table>
-                        <div id="no-history-message" class="text-center text-gray-400 py-8" style="display: none;">
-                            Belum ada riwayat transaksi.
-                        </div>
-                    </div>
-                </div>
             </div>
             <div class="footer text-center mt-10 text-gray-500">
                 Created by <strong>TEK(G)</strong> | All Right Reserved
             </div>
         </div>
     </div>
-    
-    <!-- Popup/Toast Notification -->
-    <div id="toast-notification" class="fixed top-6 right-6 z-50 hidden bg-white border-l-4 border-blue-500 shadow-lg rounded-lg px-6 py-4 flex items-center gap-3 animate-fade-in">
-        <i id="toast-icon" class="fas fa-info-circle text-blue-500 text-2xl"></i>
-        <div>
-            <div id="toast-title" class="font-bold text-blue-700 mb-1">Info</div>
-            <div id="toast-message" class="text-gray-700">Pesan notifikasi</div>
+
+    <!-- E-Wallet Modal -->
+    <div id="ewalletModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full mx-4">
+                <!-- Header -->
+                <div class="flex items-center justify-between p-6 border-b border-gray-200">
+                    <div class="flex items-center gap-3">
+                        <img id="modalProviderLogo" src="" alt="Provider" class="w-8 h-8 rounded-lg">
+                        <h3 class="text-xl font-bold text-gray-800" id="modalProviderName">E-Wallet</h3>
+                    </div>
+                    <button onclick="closeEwalletModal()" class="text-gray-400 hover:text-gray-600 transition-colors">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+
+                <!-- Step 1: Input Nominal -->
+                <div id="step1" class="p-6">
+                    <div class="text-center mb-6">
+                        <div class="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-wallet text-white text-2xl"></i>
+                        </div>
+                        <h4 class="text-lg font-semibold text-gray-800 mb-2">Input Nominal</h4>
+                        <p class="text-gray-600 text-sm">Masukkan nominal yang ingin ditukar</p>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Nominal (Rp)</label>
+                            <input type="number" id="ewalletAmount" placeholder="0" 
+                                   class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-blue-500 focus:outline-none transition-colors text-center text-lg font-semibold">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Nomor HP/Rekening</label>
+                            <input type="text" id="ewalletNumber" placeholder="Masukkan nomor HP atau rekening" 
+                                   class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-blue-500 focus:outline-none transition-colors">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Nama Pemilik</label>
+                            <input type="text" id="ewalletOwner" placeholder="Masukkan nama pemilik rekening" 
+                                   class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-blue-500 focus:outline-none transition-colors">
+                        </div>
+                        
+                        <div class="bg-gray-50 rounded-xl p-4">
+                            <div class="flex justify-between items-center text-sm">
+                                <span class="text-gray-600">Poin yang akan ditukar:</span>
+                                <span id="pointsToExchange" class="font-semibold text-blue-600">0 poin</span>
+                            </div>
+                            <div class="flex justify-between items-center text-sm mt-2">
+                                <span class="text-gray-600">Sisa poin:</span>
+                                <span id="remainingPoints" class="font-semibold text-green-600">0 poin</span>
+                            </div>
+                        </div>
+
+                        <button onclick="nextToStep2()" id="nextStep1Btn" 
+                                class="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white py-3 rounded-xl font-semibold hover:from-blue-600 hover:to-purple-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
+                            Lanjutkan
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Step 2: Konfirmasi -->
+                <div id="step2" class="p-6 hidden">
+                    <div class="text-center mb-6">
+                        <div class="w-16 h-16 bg-gradient-to-r from-green-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-check-circle text-white text-2xl"></i>
+                        </div>
+                        <h4 class="text-lg font-semibold text-gray-800 mb-2">Konfirmasi Penukaran</h4>
+                        <p class="text-gray-600 text-sm">Periksa detail penukaran Anda</p>
+                    </div>
+
+                    <div class="bg-gray-50 rounded-xl p-4 mb-6">
+                        <div class="space-y-3">
+                            <div class="flex justify-between items-center">
+                                <span class="text-gray-600">Provider:</span>
+                                <span id="confirmProvider" class="font-semibold text-gray-800">-</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-gray-600">Nomor HP/Rekening:</span>
+                                <span id="confirmNumber" class="font-semibold text-gray-800">-</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-gray-600">Nama Pemilik:</span>
+                                <span id="confirmOwner" class="font-semibold text-gray-800">-</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-gray-600">Nominal E-Wallet:</span>
+                                <span id="confirmAmount" class="font-semibold text-gray-800">Rp 0</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-gray-600">Poin yang ditukar:</span>
+                                <span id="confirmPoints" class="font-semibold text-blue-600">0 poin</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-gray-600">Biaya admin:</span>
+                                <span id="confirmAdminFee" class="font-semibold text-gray-800">Rp 0</span>
+                            </div>
+                            <hr class="border-gray-300">
+                            <div class="flex justify-between items-center">
+                                <span class="text-gray-800 font-semibold">Total:</span>
+                                <span id="confirmTotal" class="font-bold text-lg text-blue-600">Rp 0</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex space-x-3">
+                        <button onclick="backToStep1()" 
+                                class="flex-1 bg-gray-200 text-gray-700 py-3 rounded-xl font-semibold hover:bg-gray-300 transition-colors">
+                            Kembali
+                        </button>
+                        <button onclick="confirmExchange()" 
+                                class="flex-1 bg-gradient-to-r from-green-500 to-blue-600 text-white py-3 rounded-xl font-semibold hover:from-green-600 hover:to-blue-700 transition-all duration-200">
+                            Konfirmasi
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Step 3: Sukses -->
+                <div id="step3" class="p-6 hidden">
+                    <div class="text-center mb-6">
+                        <div class="w-16 h-16 bg-gradient-to-r from-green-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-check-circle text-white text-2xl"></i>
+                        </div>
+                        <h4 class="text-lg font-semibold text-gray-800 mb-2">Penukaran Berhasil!</h4>
+                        <p class="text-gray-600 text-sm">E-wallet telah ditambahkan ke akun Anda</p>
+                    </div>
+
+                    <div class="bg-green-50 border border-green-200 rounded-xl p-4 mb-6">
+                        <div class="flex items-center space-x-3">
+                            <i class="fas fa-check-circle text-green-500 text-xl"></i>
+                            <div>
+                                <h5 class="font-semibold text-green-800">Transaksi Selesai</h5>
+                                <p class="text-green-600 text-sm">Poin berhasil ditukar ke e-wallet</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-gray-50 rounded-xl p-4 mb-6">
+                        <h6 class="font-semibold text-gray-800 mb-3">Detail Transaksi:</h6>
+                        <div class="space-y-2 text-sm">
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">ID Transaksi:</span>
+                                <span id="transactionId" class="font-mono text-gray-800">TRX-001</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Tanggal:</span>
+                                <span id="transactionDate" class="text-gray-800">-</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Status:</span>
+                                <span class="text-green-600 font-semibold">Berhasil</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button onclick="closeEwalletModal()" 
+                            class="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white py-3 rounded-xl font-semibold hover:from-blue-600 hover:to-purple-700 transition-all duration-200">
+                        Selesai
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
-    <style>
-    @keyframes fadeInToast { from { opacity: 0; transform: translateY(-20px);} to { opacity: 1; transform: translateY(0);} }
-    .animate-fade-in { animation: fadeInToast 0.4s ease; }
-    .badge-status { display: inline-block; padding: 2px 12px; border-radius: 12px; font-size: 12px; font-weight: 600; margin-left: 8px; }
-    .badge-berhasil { background: #e6f7ed; color: #1a7a2e; }
-    .badge-pending { background: #fff4e6; color: #f59e42; }
-    .badge-gagal { background: #ffe6e6; color: #e53e3e; }
-    </style>
+
+    <!-- Progress Bar -->
+    <div class="fixed top-0 left-0 w-full h-1 bg-gray-200 z-50">
+        <div id="progressBar" class="h-full bg-gradient-to-r from-blue-500 to-purple-600 transition-all duration-500" style="width: 0%"></div>
+    </div>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     
     <script>
-        // Data Dummy
-        let userPoints = 4297; // Poin awal pengguna
-        let transactions = []; // Riwayat transaksi kosong
-
-        const nominalData = {
-            gopay: [
-                { amount: 10000, points: 1249 },
-                { amount: 15000, points: 1874 },
-                { amount: 20000, points: 2498 },
-                { amount: 30000, points: 3747 },
-                { amount: 35000, points: 4372 },
-                { amount: 50000, points: 6245 },
-                { amount: 100000, points: 12490 },
-                { amount: 150000, points: 18735 },
-                { amount: 200000, points: 24980 }
-            ],
-            ovo: [
-                { amount: 10000, points: 1249 },
-                { amount: 15000, points: 1874 },
-                { amount: 20000, points: 2498 },
-                { amount: 30000, points: 3747 },
-                { amount: 35000, points: 4372 },
-                { amount: 50000, points: 6245 },
-                { amount: 100000, points: 12490 },
-                { amount: 150000, points: 18735 },
-                { amount: 200000, points: 24980 }
-            ],
-            dana: [
-                { amount: 10000, points: 1249 },
-                { amount: 15000, points: 1874 },
-                { amount: 20000, points: 2498 },
-                { amount: 30000, points: 3747 },
-                { amount: 35000, points: 4372 },
-                { amount: 50000, points: 6245 },
-                { amount: 100000, points: 12490 },
-                { amount: 150000, points: 18735 },
-                { amount: 200000, points: 24980 }
-            ],
-            shopeepay: [
-                { amount: 10000, points: 1249 },
-                { amount: 15000, points: 1874 },
-                { amount: 20000, points: 2498 },
-                { amount: 30000, points: 3747 },
-                { amount: 35000, points: 4372 },
-                { amount: 50000, points: 6245 },
-                { amount: 100000, points: 12490 },
-                { amount: 150000, points: 18735 },
-                { amount: 200000, points: 24980 }
-            ],
-            linkaja: [
-                { amount: 10000, points: 1249 },
-                { amount: 15000, points: 1874 },
-                { amount: 20000, points: 2498 },
-                { amount: 30000, points: 3747 },
-                { amount: 35000, points: 4372 },
-                { amount: 50000, points: 6245 },
-                { amount: 100000, points: 12490 },
-                { amount: 150000, points: 18735 },
-                { amount: 200000, points: 24980 }
-            ],
-            pulsa: [
-                { amount: 5000, points: 625 },
-                { amount: 10000, points: 1249 },
-                { amount: 15000, points: 1874 },
-                { amount: 20000, points: 2498 },
-                { amount: 30000, points: 3747 },
-                { amount: 35000, points: 4372 },
-                { amount: 50000, points: 6245 },
-                { amount: 100000, points: 12490 }
-            ],
-            tokenlistrik: [
-                { amount: 20000, points: 2498 },
-                { amount: 50000, points: 6245 },
-                { amount: 100000, points: 12490 },
-                { amount: 250000, points: 31225 },
-                { amount: 500000, points: 62450 }
-            ]
+        // E-Wallet Modal Functions
+        let currentStep = 1;
+        let ewalletData = {
+            provider: '',
+            providerName: '',
+            providerLogo: '',
+            amount: 0,
+            points: 0,
+            adminFee: 0
         };
 
-        let selectedProvider = {};
-        let selectedNominal = {};
+        // User data
+        let userPoints = 4297; // Poin user saat ini
+        let transactions = []; // Array untuk menyimpan transaksi
 
-        // Helper function to format points
-        function formatPoints(number) {
-            return new Intl.NumberFormat('id-ID').format(number);
-        }
-
-        // Function to render balances and point flow cards
-        function renderBalances() {
-            document.getElementById('user-points-display').innerText = `${formatPoints(userPoints)} Poin`;
+        // Add some dummy transactions for testing
+        function addDummyTransactions() {
+            const dummyTransactions = [
+                {
+                    id: 'TRX-001',
+                    provider: 'Gopay',
+                    number: '081234567890',
+                    owner: 'John Doe',
+                    amount: 50000,
+                    points: 500,
+                    date: '15 Januari 2025, 14:30',
+                    status: 'Berhasil'
+                },
+                {
+                    id: 'TRX-002',
+                    provider: 'OVO',
+                    number: '081234567891',
+                    owner: 'Jane Smith',
+                    amount: 25000,
+                    points: 250,
+                    date: '12 Januari 2025, 09:15',
+                    status: 'Berhasil'
+                },
+                {
+                    id: 'TRX-003',
+                    provider: 'DANA',
+                    number: '081234567892',
+                    owner: 'Bob Johnson',
+                    amount: 100000,
+                    points: 1000,
+                    date: '10 Januari 2025, 16:45',
+                    status: 'Berhasil'
+                }
+            ];
             
-            const poinIn = transactions.filter(t => t.amount > 0).reduce((sum, t) => sum + t.amount, 0);
-            const poinOut = transactions.filter(t => t.amount < 0).reduce((sum, t) => sum + Math.abs(t.amount), 0);
+            transactions = dummyTransactions;
+            renderTransactionHistory();
             
-            document.getElementById('poin-in-display').innerText = `${formatPoints(poinIn)} Poin`;
-            document.getElementById('poin-out-display').innerText = `${formatPoints(poinOut)} Poin`;
+            // Also update the user points to be more realistic
+            userPoints = 2500; // Set a realistic starting point
+            document.getElementById('user-points-display').textContent = userPoints + ' Poin';
         }
 
-        // Function to show a specific section and hide others
-        function showSection(sectionId) {
-            const sections = document.querySelectorAll('.poinmu-content-wrapper > div');
-            sections.forEach(section => {
-                section.classList.remove('active-section');
-            });
-            document.getElementById(sectionId).classList.add('active-section');
-            updateActiveMenu(sectionId);
-            updatePageTitle(sectionId);
+        function openEwalletModal(providerId, providerName, providerLogo) {
+            ewalletData.provider = providerId;
+            ewalletData.providerName = providerName;
+            ewalletData.providerLogo = providerLogo;
+            
+            // Update modal header
+            document.getElementById('modalProviderLogo').src = providerLogo;
+            document.getElementById('modalProviderName').textContent = providerName;
+            
+            // Reset modal
+            resetEwalletModal();
+            
+            // Show modal
+            document.getElementById('ewalletModal').classList.remove('hidden');
+            
+            // Update progress bar
+            updateProgressBar();
         }
 
-        // Function to update the active menu item in the sidebar
-        function updateActiveMenu(activeSectionId) {
-            const menuItems = document.querySelectorAll('.sidebar-nav-item');
-            menuItems.forEach(item => {
-                item.classList.remove('active');
-            });
-
-            if (activeSectionId === 'poinmuDashboard' || activeSectionId === 'ewalletSelectionSection' || activeSectionId === 'nominalSelectionSection' || activeSectionId === 'redemptionConfirmationSection') {
-                document.querySelector(`.sidebar-nav-item a[href="${route('poin-nasabah')}"]`).classList.add('active');
-            } else if (activeSectionId === 'transactionHistorySection') {
-                document.querySelector(`.sidebar-nav-item a[href="${route('riwayattransaksinasabah')}"]`).classList.add('active');
-            }
+        function closeEwalletModal() {
+            document.getElementById('ewalletModal').classList.add('hidden');
+            resetEwalletModal();
         }
 
-        // Function to update the page title
-        function updatePageTitle(activeSectionId) {
-            const pageTitleElement = document.getElementById('page-title-text');
-            if (activeSectionId === 'poinmuDashboard' || activeSectionId === 'ewalletSelectionSection') {
-                pageTitleElement.innerText = 'Poin Mu';
-            } else if (activeSectionId === 'transactionHistorySection') {
-                pageTitleElement.innerText = 'Riwayat Transaksi';
-            } else if (activeSectionId === 'nominalSelectionSection') {
-                pageTitleElement.innerText = `Pilih Nominal ${selectedProvider.name || ''}`;
-            } else if (activeSectionId === 'redemptionConfirmationSection') {
-                pageTitleElement.innerText = 'Konfirmasi Penukaran';
-            }
+        function resetEwalletModal() {
+            currentStep = 1;
+            
+            // Hide all steps
+            document.getElementById('step1').classList.remove('hidden');
+            document.getElementById('step2').classList.add('hidden');
+            document.getElementById('step3').classList.add('hidden');
+            
+            // Reset form
+            document.getElementById('ewalletAmount').value = '';
+            document.getElementById('ewalletNumber').value = '';
+            document.getElementById('ewalletOwner').value = '';
+            document.getElementById('pointsToExchange').textContent = '0 poin';
+            document.getElementById('remainingPoints').textContent = userPoints + ' poin';
+            
+            // Reset data
+            ewalletData.amount = 0;
+            ewalletData.points = 0;
+            ewalletData.adminFee = 0;
+            ewalletData.number = '';
+            ewalletData.owner = '';
+            
+            // Disable next button
+            document.getElementById('nextStep1Btn').disabled = true;
+            
+            // Update progress bar
+            updateProgressBar();
         }
 
-        // Function to render nominal selection
-        function showNominalSelection(providerId, providerName, providerLogo) {
-            selectedProvider = { id: providerId, name: providerName, logo: providerLogo };
-            const nominals = nominalData[providerId];
-            const nominalGrid = document.getElementById('nominal-grid');
-            nominalGrid.innerHTML = '';
+        function updateProgressBar() {
+            const progress = (currentStep / 3) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+        }
 
-            const nominalTitle = document.getElementById('nominal-provider-name');
-            nominalTitle.innerText = providerName;
-
-            if (!nominals) {
-                nominalGrid.innerHTML = '<p style="text-align: center; color: #6b7280; padding: 40px;">Nominal tidak tersedia.</p>';
+        function nextToStep2() {
+            const amount = parseInt(document.getElementById('ewalletAmount').value);
+            const number = document.getElementById('ewalletNumber').value.trim();
+            const owner = document.getElementById('ewalletOwner').value.trim();
+            
+            if (amount <= 0) {
+                alert('Masukkan nominal yang valid');
                 return;
             }
-
-            nominals.forEach(nominal => {
-                const item = document.createElement('div');
-                item.className = 'nominal-item';
-                item.innerHTML = `
-                    <div class="nominal-provider">${providerName}</div>
-                    <div class="nominal-currency">Rp</div>
-                    <div class="nominal-amount">${formatPoints(nominal.amount)}</div>
-                    <div class="nominal-points">${formatPoints(nominal.points)} Poin</div>
-                `;
-                item.onclick = () => showConfirmation(nominal);
-                nominalGrid.appendChild(item);
-            });
-
-            showSection('nominalSelectionSection');
-        }
-
-        // Function to show confirmation screen
-        function showConfirmation(nominal) {
-            selectedNominal = nominal;
-            document.getElementById('summary-points-text').innerText = `${formatPoints(selectedNominal.points)} Poin`;
-            document.getElementById('summary-points-amount').innerText = `${formatPoints(selectedNominal.points)} Poin`;
-            document.getElementById('recipient-number').value = '';
-            document.getElementById('bijaksampah-pin').value = '';
-            document.getElementById('number-error').style.display = 'none';
-            document.getElementById('pin-error').style.display = 'none';
-            document.getElementById('confirm-redemption-btn').onclick = () => {
-                const recipientNumber = document.getElementById('recipient-number').value;
-                const pin = document.getElementById('bijaksampah-pin').value;
-                let valid = true;
-                document.getElementById('number-error').style.display = 'none';
-                document.getElementById('pin-error').style.display = 'none';
-                if (recipientNumber.trim() === '' || recipientNumber.length < 8) {
-                    document.getElementById('number-error').innerText = 'Nomor tujuan tidak valid.';
-                    document.getElementById('number-error').style.display = 'block';
-                    showToast('error', 'Nomor Tidak Valid', 'Nomor tujuan harus diisi minimal 8 digit.');
-                    valid = false;
-                }
-                if (pin !== '123456') { // PIN dummy
-                    document.getElementById('pin-error').innerText = 'PIN yang Anda masukkan salah.';
-                    document.getElementById('pin-error').style.display = 'block';
-                    showToast('error', 'PIN Salah', 'PIN yang Anda masukkan salah.');
-                    valid = false;
-                }
-                if (!valid) return;
-                redeemPointsToEwallet(recipientNumber, pin);
-            };
-            showSection('redemptionConfirmationSection');
-        }
-
-        // Function to redeem points to e-wallet
-        function redeemPointsToEwallet(recipientNumber, pin) {
-            if (userPoints >= selectedNominal.points) {
-                userPoints -= selectedNominal.points;
-                const transactionDescription = `Penukaran ${new Intl.NumberFormat('id-ID').format(selectedNominal.amount)} ke ${selectedProvider.name} (${recipientNumber})`;
-                const transactionAmount = -selectedNominal.points;
-                addTransaction(transactionDescription, transactionAmount, 'Berhasil');
-                showToast('success', 'Penukaran Berhasil', 'Penukaran poin Anda berhasil! Silakan cek riwayat transaksi.');
-                renderBalances();
-                showSection('transactionHistorySection');
-            } else {
-                showToast('error', 'Poin Tidak Cukup', 'Poin Anda tidak cukup untuk melakukan penukaran ini.');
+            
+            if (!number) {
+                alert('Masukkan nomor HP atau rekening');
+                return;
             }
+            
+            if (!owner) {
+                alert('Masukkan nama pemilik rekening');
+                return;
+            }
+            
+            // Calculate points and admin fee
+            ewalletData.amount = amount;
+            ewalletData.points = Math.ceil(amount / 100); // 1 poin = Rp 100
+            ewalletData.adminFee = Math.ceil(amount * 0.02); // 2% admin fee
+            ewalletData.number = number;
+            ewalletData.owner = owner;
+            
+            // Check if user has enough points
+            if (ewalletData.points > userPoints) {
+                alert('Poin Anda tidak cukup untuk nominal ini');
+                return;
+            }
+            
+            // Update confirmation screen
+            document.getElementById('confirmProvider').textContent = ewalletData.providerName;
+            document.getElementById('confirmNumber').textContent = number;
+            document.getElementById('confirmOwner').textContent = owner;
+            document.getElementById('confirmAmount').textContent = 'Rp ' + amount.toLocaleString('id-ID');
+            document.getElementById('confirmPoints').textContent = ewalletData.points + ' poin';
+            document.getElementById('confirmAdminFee').textContent = 'Rp ' + ewalletData.adminFee.toLocaleString('id-ID');
+            document.getElementById('confirmTotal').textContent = 'Rp ' + (amount + ewalletData.adminFee).toLocaleString('id-ID');
+            
+            // Hide step 1, show step 2
+            document.getElementById('step1').classList.add('hidden');
+            document.getElementById('step2').classList.remove('hidden');
+            
+            currentStep = 2;
+            updateProgressBar();
         }
 
-        // Function to add a new transaction
-        function addTransaction(description, amount, status = 'Berhasil') {
-            const today = new Date();
-            const date = today.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
-            transactions.unshift({
-                date: date,
-                description: description,
-                amount: amount,
-                status: status
+        function backToStep1() {
+            document.getElementById('step2').classList.add('hidden');
+            document.getElementById('step1').classList.remove('hidden');
+            
+            currentStep = 1;
+            updateProgressBar();
+        }
+
+        function confirmExchange() {
+            // Deduct points from user
+            userPoints -= ewalletData.points;
+            
+            // Generate transaction ID
+            const transactionId = 'TRX-' + Date.now().toString().slice(-6);
+            
+            // Add to transaction history
+            addToTransactionHistory(transactionId, ewalletData.amount, ewalletData.points, new Date());
+            
+            // Update user points display
+            document.getElementById('user-points-display').textContent = userPoints + ' Poin';
+            document.getElementById('remainingPoints').textContent = userPoints + ' poin';
+            
+            // Update transaction details in step 3
+            document.getElementById('transactionId').textContent = transactionId;
+            document.getElementById('transactionDate').textContent = new Date().toLocaleDateString('id-ID', {
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
             });
-            renderTransactionHistory();
+            
+            // Hide step 2, show step 3
+            document.getElementById('step2').classList.add('hidden');
+            document.getElementById('step3').classList.remove('hidden');
+            
+            currentStep = 3;
+            updateProgressBar();
         }
 
-        // Function to render the transaction history list
+        function addToTransactionHistory(id, amount, points, date) {
+            const transaction = {
+                id: id,
+                provider: ewalletData.providerName,
+                number: ewalletData.number,
+                owner: ewalletData.owner,
+                amount: amount,
+                points: points,
+                date: date.toLocaleDateString('id-ID', {
+                    day: 'numeric',
+                    month: 'long',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                }),
+                status: 'Berhasil'
+            };
+            
+            transactions.unshift(transaction);
+            renderTransactionHistory();
+            updatePointsDisplay(); // Update points display after adding new transaction
+        }
+
         function renderTransactionHistory() {
             const transactionList = document.getElementById('transaction-history-list');
             const noHistoryMessage = document.getElementById('no-history-message');
+            
+            if (transactions.length === 0) {
+                noHistoryMessage.classList.remove('hidden');
+                return;
+            }
+            
+            noHistoryMessage.classList.add('hidden');
             transactionList.innerHTML = '';
             
-            if (transactions.length === 0) {
-                noHistoryMessage.style.display = 'block';
-                return;
-            } else {
-                noHistoryMessage.style.display = 'none';
-            }
-
             transactions.forEach(transaction => {
-                const row = document.createElement('tr');
-                row.className = 'transaction-item';
-                const amountClass = transaction.amount > 0 ? 'positive' : 'negative';
-                const formattedAmount = transaction.amount > 0 ?
-                    `+${formatPoints(transaction.amount)} Poin` :
-                    `${formatPoints(transaction.amount)} Poin`;
-                let badgeClass = 'badge-status badge-berhasil';
-                let badgeText = 'Berhasil';
-                if (transaction.status === 'Pending') { badgeClass = 'badge-status badge-pending'; badgeText = 'Pending'; }
-                if (transaction.status === 'Gagal') { badgeClass = 'badge-status badge-gagal'; badgeText = 'Gagal'; }
-                row.innerHTML = `
-                    <td>
-                        <div class="transaction-details flex items-center gap-2">
-                            <div class="transaction-icon tooltip" data-tooltip="Transaksi ${badgeText}">
-                                <i class="fas fa-exchange-alt"></i>
-                                <span class="tooltiptext">Transaksi ${badgeText}</span>
+                const transactionItem = document.createElement('div');
+                transactionItem.className = 'bg-gray-50 rounded-xl p-4 border border-gray-200';
+                transactionItem.innerHTML = `
+                    <div class="flex justify-between items-start">
+                        <div class="flex-1">
+                            <div class="flex items-center gap-3 mb-2">
+                                <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-wallet text-white text-sm"></i>
+                                </div>
+                                <div>
+                                    <h5 class="font-semibold text-gray-800">${transaction.provider}</h5>
+                                    <p class="text-sm text-gray-600">ID: ${transaction.id}</p>
+                                    <p class="text-sm text-gray-600">${transaction.number} - ${transaction.owner}</p>
+                                </div>
                             </div>
-                            <div class="transaction-info">
-                                <h4 class="font-semibold">${transaction.description}</h4>
-                                <span class="${badgeClass}">${badgeText}</span>
-                                <p class="text-xs text-gray-400">${transaction.amount > 0 ? 'Pemasukan' : 'Pengeluaran'}</p>
-                            </div>
+                            <div class="text-sm text-gray-500">${transaction.date}</div>
                         </div>
-                    </td>
-                    <td>${transaction.date}</td>
-                    <td style="text-align: right;">
-                        <span class="transaction-amount ${amountClass}">${formattedAmount}</span>
-                    </td>
+                        <div class="text-right">
+                            <div class="text-lg font-bold text-blue-600">Rp ${transaction.amount.toLocaleString('id-ID')}</div>
+                            <div class="text-sm text-gray-600">-${transaction.points} poin</div>
+                            <span class="inline-block px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full font-medium">${transaction.status}</span>
+                        </div>
+                    </div>
                 `;
-                transactionList.appendChild(row);
-            });
-            // Tooltip interaksi
-            document.querySelectorAll('.tooltip').forEach(el => {
-                el.onmouseenter = function() {
-                    const tip = el.querySelector('.tooltiptext');
-                    if (tip) tip.style.visibility = 'visible';
-                };
-                el.onmouseleave = function() {
-                    const tip = el.querySelector('.tooltiptext');
-                    if (tip) tip.style.visibility = 'hidden';
-                };
+                transactionList.appendChild(transactionItem);
             });
         }
 
-        // Function to print transaction history
-        function printTransactionHistory() {
-            const containerToPrint = document.getElementById('transactionHistorySection');
-            if (transactions.length === 0) {
-                 alert('Tidak ada riwayat transaksi yang dapat dicetak.');
-                 return;
-            }
-            
-            html2canvas(containerToPrint, { scale: 2 }).then(canvas => {
-                const imageData = canvas.toDataURL('image/png');
-                const printWindow = window.open('', '_blank');
-                printWindow.document.write(`
-                    <html>
-                    <head>
-                        <title>Cetak Riwayat Transaksi</title>
-                        <style>
-                            @media print {
-                                body { margin: 0; }
-                                img { max-width: 100%; height: auto; display: block; }
-                            }
-                        </style>
-                    </head>
-                    <body>
-                        <img src="${imageData}" onload="window.print(); window.close();" />
-                    </body>
-                    </html>
-                `);
-                printWindow.document.close();
+        // Function to update current date/time
+        function updateDateTime() {
+            const now = new Date();
+            const dateString = now.toLocaleDateString('id-ID', {
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
             });
+            
+            const dateElement = document.getElementById('current-date-1');
+            if (dateElement) {
+                dateElement.textContent = dateString;
+            }
         }
         
-        // Event listeners
-        document.addEventListener('DOMContentLoaded', () => {
-            const today = new Date();
-            const formattedDate = today.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
-            document.getElementById('current-date-1').innerText = formattedDate;
-            renderBalances();
-            renderTransactionHistory();
-            showSection('poinmuDashboard');
+        // Function to calculate and update points display
+        function updatePointsDisplay() {
+            let totalPointsIn = 0;
+            let totalPointsOut = 0;
             
-            document.getElementById('print-history-btn').addEventListener('click', printTransactionHistory);
-            // Note: Sidebar toggle is now handled by Alpine.js
+            // Calculate points from transaction history
+            transactions.forEach(transaction => {
+                if (transaction.status === 'Berhasil') {
+                    // For now, assume all successful transactions are points out (e-wallet exchanges)
+                    // In a real system, you'd have different transaction types
+                    totalPointsOut += transaction.points;
+                }
+            });
+            
+            // For demo purposes, let's add some sample points in (you can modify this logic)
+            // In a real system, this would come from actual point earning transactions
+            totalPointsIn = userPoints + totalPointsOut; // Total points user has + what they've spent
+            
+            // Update the display
+            document.getElementById('poin-in-display').textContent = totalPointsIn.toLocaleString('id-ID') + ' Poin';
+            document.getElementById('poin-out-display').textContent = totalPointsOut.toLocaleString('id-ID') + ' Poin';
+        }
+        
+        // Real-time calculation for step 1
+        document.addEventListener('DOMContentLoaded', function() {
+            const amountInput = document.getElementById('ewalletAmount');
+            if (amountInput) {
+                amountInput.addEventListener('input', function() {
+                    const amount = parseInt(this.value) || 0;
+                    const points = Math.ceil(amount / 100);
+                    const remaining = userPoints - points;
+                    
+                    document.getElementById('pointsToExchange').textContent = points + ' poin';
+                    document.getElementById('remainingPoints').textContent = remaining + ' poin';
+                    
+                    // Enable/disable next button
+                    const nextBtn = document.getElementById('nextStep1Btn');
+                    if (amount > 0 && points <= userPoints) {
+                        nextBtn.disabled = false;
+                        nextBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                    } else {
+                        nextBtn.disabled = true;
+                        nextBtn.classList.add('opacity-50', 'cursor-not-allowed');
+                    }
+                });
+            }
+            
+            // Initialize transaction history with dummy data
+            addDummyTransactions();
+            updatePointsDisplay(); // Update points display after loading transactions
         });
 
-        // Toast Notification
-        function showToast(type, title, message) {
-            const toast = document.getElementById('toast-notification');
-            const icon = document.getElementById('toast-icon');
-            const toastTitle = document.getElementById('toast-title');
-            const toastMessage = document.getElementById('toast-message');
-            toast.classList.remove('hidden');
-            toast.classList.add('animate-fade-in');
-            toastTitle.textContent = title;
-            toastMessage.textContent = message;
-            if (type === 'success') {
-                icon.className = 'fas fa-check-circle text-green-500 text-2xl';
-                toast.classList.remove('border-blue-500');
-                toast.classList.add('border-green-500');
-                toastTitle.className = 'font-bold text-green-700 mb-1';
-            } else if (type === 'error') {
-                icon.className = 'fas fa-times-circle text-red-500 text-2xl';
-                toast.classList.remove('border-blue-500');
-                toast.classList.add('border-red-500');
-                toastTitle.className = 'font-bold text-red-700 mb-1';
-            } else {
-                icon.className = 'fas fa-info-circle text-blue-500 text-2xl';
-                toast.classList.remove('border-green-500', 'border-red-500');
-                toast.classList.add('border-blue-500');
-                toastTitle.className = 'font-bold text-blue-700 mb-1';
+        // Close modal when clicking outside
+        document.getElementById('ewalletModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeEwalletModal();
             }
-            setTimeout(() => {
-                toast.classList.add('hidden');
-                toast.classList.remove('animate-fade-in');
-            }, 3000);
+        });
+
+        // Toast notification function
+        function showToast(type, title, message) {
+            // Simple alert for now, can be enhanced with proper toast
+            alert(`${title}: ${message}`);
         }
     </script>
 </div>

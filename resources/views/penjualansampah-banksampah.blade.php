@@ -140,12 +140,51 @@
 
         /* Animation */
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+            from { 
+                opacity: 0; 
+                transform: translateY(10px); 
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0); 
+            }
         }
 
         .animate-fade-in {
             animation: fadeIn 0.5s ease-out forwards;
+        }
+
+        /* Product card animation */
+        .product-card {
+            opacity: 0;
+            animation: fadeIn 0.3s ease-out forwards;
+            transition: all 0.3s ease;
+        }
+
+        /* New listing highlight */
+        .product-card.new-listing {
+            border: 2px solid #10b981 !important;
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1) !important;
+        }
+
+        /* Updated listing highlight */
+        .product-card.updated-listing {
+            border: 2px solid #3b82f6 !important;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
+            animation: pulse 1s ease-in-out;
+        }
+
+        /* Pulse animation for updated listings */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
+
+        /* Smooth transitions for all interactive elements */
+        .product-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
         }
 
         /* Tooltip */
@@ -341,6 +380,35 @@
 
         .tab-content.active {
             display: block;
+        }
+
+        /* Ensure marketplace content is always visible by default */
+        #marketplaceContent {
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+        }
+
+        /* Smooth scrolling for the entire page */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Tab content transition */
+        .tab-content {
+            transition: opacity 0.3s ease-in-out;
+        }
+
+        /* Visual feedback for active tab content */
+        .tab-content.active {
+            opacity: 1;
+        }
+
+        /* Ensure seamless connection between topbar and sidebar */
+        .topbar-sidebar-seamless {
+            background: linear-gradient(135deg, #75E6DA 0%, #05445E 30%, #05445E 100%);
+            border: none;
+            box-shadow: none;
         }
 </style>
 </head>
@@ -547,7 +615,7 @@
                 </button>
             </div>
 
-            <div id="marketplaceContent" class="space-y-6">
+            <div id="marketplaceContent" class="space-y-6" style="display: block !important;">
                 <div class="bg-white rounded-xl shadow-md p-6">
                     <div class="flex flex-col md:flex-row justify-between items-center gap-4">
                         <div>
@@ -564,11 +632,16 @@
                     <div class="flex justify-between items-center mb-6">
                         <h3 class="text-lg font-semibold text-gray-800">List Penawaran Saya</h3>
                         <div class="flex space-x-2">
+                            <button class="px-3 py-1 bg-blue-50 text-blue-600 rounded-full text-sm hover:bg-blue-100 transition-colors" onclick="exportMarketplaceData()">
+                                <i class="fas fa-download mr-1"></i> Export
+                            </button>
                             <button class="px-3 py-1 bg-blue-50 text-blue-600 rounded-full text-sm hover:bg-blue-100 transition-colors" onclick="showFilterModal()">
                                 <i class="fas fa-filter mr-1"></i> Filter
+                                <span id="filterIndicator" class="ml-1 hidden">●</span>
                             </button>
                             <button class="px-3 py-1 bg-gray-50 text-gray-600 rounded-full text-sm hover:bg-gray-100 transition-colors" onclick="showSortModal()">
                                 <i class="fas fa-sort mr-1"></i> Urutkan
+                                <span id="sortIndicator" class="ml-1 hidden">●</span>
                             </button>
                         </div>
                     </div>
@@ -579,6 +652,188 @@
                             <p>Belum ada penawaran yang dibuat</p>
                             <p class="text-sm">Klik "Buat Penawaran" untuk mulai menjual sampah Anda</p>
                         </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab Content untuk Penjualan Saya -->
+            <div id="mySalesContent" class="space-y-6" style="display: none;">
+                <div class="bg-white rounded-xl shadow-md p-6">
+                    <div class="flex justify-between items-center mb-6">
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-800">Ringkasan Penjualan</h3>
+                            <p class="text-sm text-gray-500">Statistik penjualan sampah Anda</p>
+                        </div>
+                        <div class="flex space-x-2">
+                            <select id="salesPeriod" class="px-3 py-2 border border-gray-300 rounded-lg text-sm">
+                                <option value="7">7 Hari Terakhir</option>
+                                <option value="30">30 Hari Terakhir</option>
+                                <option value="90">90 Hari Terakhir</option>
+                                <option value="365">1 Tahun</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                        <div class="bg-blue-50 rounded-lg p-4">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm text-blue-600 font-medium">Total Penjualan</p>
+                                    <p class="text-2xl font-bold text-blue-800">Rp 2.450.000</p>
+                                </div>
+                                <i class="fas fa-chart-line text-blue-500 text-xl"></i>
+                            </div>
+                        </div>
+                        <div class="bg-green-50 rounded-lg p-4">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm text-green-600 font-medium">Berat Terjual</p>
+                                    <p class="text-2xl font-bold text-green-800">1.250 kg</p>
+                                </div>
+                                <i class="fas fa-weight-hanging text-green-500 text-xl"></i>
+                            </div>
+                        </div>
+                        <div class="bg-yellow-50 rounded-lg p-4">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm text-yellow-600 font-medium">Transaksi</p>
+                                    <p class="text-2xl font-bold text-yellow-800">45</p>
+                                </div>
+                                <i class="fas fa-receipt text-yellow-500 text-xl"></i>
+                            </div>
+                        </div>
+                        <div class="bg-purple-50 rounded-lg p-4">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm text-purple-600 font-medium">Rating</p>
+                                    <p class="text-2xl font-bold text-purple-800">4.8/5</p>
+                                </div>
+                                <i class="fas fa-star text-purple-500 text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-md p-6">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-lg font-semibold text-gray-800">Riwayat Penjualan</h3>
+                        <div class="flex space-x-2">
+                            <button class="px-3 py-1 bg-blue-50 text-blue-600 rounded-full text-sm hover:bg-blue-100 transition-colors" onclick="exportSalesData()">
+                                <i class="fas fa-download mr-1"></i> Export
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="overflow-x-auto">
+                        <table class="w-full data-table">
+                            <thead>
+                                <tr>
+                                    <th>Tanggal</th>
+                                    <th>Produk</th>
+                                    <th>Pembeli</th>
+                                    <th>Berat</th>
+                                    <th>Harga</th>
+                                    <th>Total</th>
+                                    <th>Status</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="salesHistoryTable">
+                                <!-- Data riwayat penjualan akan ditampilkan di sini -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab Content untuk Transaksi -->
+            <div id="transactionsContent" class="space-y-6" style="display: none;">
+                <div class="bg-white rounded-xl shadow-md p-6">
+                    <div class="flex justify-between items-center mb-6">
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-800">Status Transaksi</h3>
+                            <p class="text-sm text-gray-500">Monitor semua transaksi Anda</p>
+                        </div>
+                        <div class="flex space-x-2">
+                            <select id="transactionStatus" class="px-3 py-2 border border-gray-300 rounded-lg text-sm">
+                                <option value="">Semua Status</option>
+                                <option value="pending">Menunggu Pembayaran</option>
+                                <option value="paid">Sudah Dibayar</option>
+                                <option value="shipped">Dikirim</option>
+                                <option value="delivered">Diterima</option>
+                                <option value="cancelled">Dibatalkan</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                        <div class="bg-orange-50 rounded-lg p-4">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm text-orange-600 font-medium">Menunggu Pembayaran</p>
+                                    <p class="text-2xl font-bold text-orange-800">3</p>
+                                </div>
+                                <i class="fas fa-clock text-orange-500 text-xl"></i>
+                            </div>
+                        </div>
+                        <div class="bg-blue-50 rounded-lg p-4">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm text-blue-600 font-medium">Dalam Proses</p>
+                                    <p class="text-2xl font-bold text-blue-800">7</p>
+                                </div>
+                                <i class="fas fa-truck text-blue-500 text-xl"></i>
+                            </div>
+                        </div>
+                        <div class="bg-green-50 rounded-lg p-4">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm text-green-600 font-medium">Selesai</p>
+                                    <p class="text-2xl font-bold text-green-800">28</p>
+                                </div>
+                                <i class="fas fa-check-circle text-green-500 text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-md p-6">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-lg font-semibold text-gray-800">Daftar Transaksi</h3>
+                        <div class="flex space-x-2">
+                            <button class="px-3 py-1 bg-blue-50 text-blue-600 rounded-full text-sm hover:bg-blue-100 transition-colors" onclick="exportTransactionData()">
+                                <i class="fas fa-download mr-1"></i> Export
+                            </button>
+                            <button class="px-3 py-1 bg-blue-50 text-blue-600 rounded-full text-sm hover:bg-blue-100 transition-colors" onclick="refreshTransactions()">
+                                <i class="fas fa-sync-alt mr-1"></i> Refresh
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-4" id="transactionsList">
+                        <!-- Daftar transaksi akan ditampilkan di sini -->
+                    </div>
+                </div>
+
+                <!-- Section Data Penjualan Sampah Tersimpan -->
+                <div class="bg-white rounded-xl shadow-md p-6">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-lg font-semibold text-gray-800">Data Penjualan Sampah Tersimpan</h3>
+                        <div class="flex space-x-2">
+                            <button class="px-3 py-1 bg-green-50 text-green-600 rounded-full text-sm hover:bg-green-100 transition-colors" onclick="displayStoredWasteSales()">
+                                <i class="fas fa-sync-alt mr-1"></i> Refresh
+                            </button>
+                            <button class="px-3 py-1 bg-blue-50 text-blue-600 rounded-full text-sm hover:bg-blue-100 transition-colors" onclick="exportWasteSalesData()">
+                                <i class="fas fa-download mr-1"></i> Export
+                            </button>
+                            <button class="px-3 py-1 bg-red-50 text-red-600 rounded-full text-sm hover:bg-red-100 transition-colors" onclick="clearWasteSalesData()">
+                                <i class="fas fa-trash mr-1"></i> Clear All
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div id="storedWasteSalesContainer">
+                        <!-- Data penjualan sampah akan ditampilkan di sini -->
                     </div>
                 </div>
             </div>
@@ -668,6 +923,7 @@
             </div>
         </div>
         <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="resetFilter()">Reset Filter</button>
             <button class="btn btn-secondary" onclick="closeModal('filterModal')">Batal</button>
             <button class="btn btn-primary" onclick="applyFilter()">Terapkan Filter</button>
         </div>
@@ -695,6 +951,7 @@
             </div>
         </div>
         <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="resetSort()">Reset Urutan</button>
             <button class="btn btn-secondary" onclick="closeModal('sortModal')">Batal</button>
             <button class="btn btn-primary" onclick="applySort()">Terapkan Urutan</button>
         </div>
@@ -749,9 +1006,6 @@
             <button class="modal-close" onclick="closeModal('productDetailModal')">&times;</button>
         </div>
         <div class="modal-body">
-            <div class="text-center mb-4">
-                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTkhzQG6s2X-haW0c3C_jdFh3OZInLXz5F_UA&s" alt="Plastik PET" class="w-full max-w-md mx-auto rounded-lg">
-            </div>
             <div class="form-group">
                 <label>Nama Produk</label>
                 <input type="text" id="detailProductName" readonly>
@@ -781,6 +1035,100 @@
 </div>
 
 <script>
+    // Global variables untuk menyimpan data penawaran
+    let allListings = [];
+    let filteredListings = [];
+    let currentFilters = {
+        wasteType: '',
+        minPrice: '',
+        maxPrice: '',
+        location: ''
+    };
+    let currentSort = '';
+
+    // Data contoh untuk penjualan dan transaksi
+    let salesData = [
+        {
+            id: 1,
+            date: '2024-01-15',
+            product: 'Plastik PET Bersih',
+            buyer: 'PT Daur Ulang Hijau',
+            weight: 50,
+            price: 7500,
+            total: 375000,
+            status: 'delivered'
+        },
+        {
+            id: 2,
+            date: '2024-01-14',
+            product: 'Kertas Koran Bekas',
+            buyer: 'CV Kertas Mandiri',
+            weight: 100,
+            price: 3000,
+            total: 300000,
+            status: 'shipped'
+        },
+        {
+            id: 3,
+            date: '2024-01-13',
+            product: 'Logam Aluminium',
+            buyer: 'PT Logam Bersih',
+            weight: 25,
+            price: 12000,
+            total: 300000,
+            status: 'paid'
+        },
+        {
+            id: 4,
+            date: '2024-01-12',
+            product: 'Elektronik Bekas',
+            buyer: 'CV Elektronik Daur Ulang',
+            weight: 15,
+            price: 25000,
+            total: 375000,
+            status: 'pending'
+        }
+    ];
+
+    let transactionsData = [
+        {
+            id: 'TRX-001',
+            date: '2024-01-15',
+            product: 'Plastik PET Bersih',
+            buyer: 'PT Daur Ulang Hijau',
+            amount: 375000,
+            status: 'delivered',
+            paymentMethod: 'Transfer Bank'
+        },
+        {
+            id: 'TRX-002',
+            date: '2024-01-14',
+            product: 'Kertas Koran Bekas',
+            buyer: 'CV Kertas Mandiri',
+            amount: 300000,
+            status: 'shipped',
+            paymentMethod: 'E-Wallet'
+        },
+        {
+            id: 'TRX-003',
+            date: '2024-01-13',
+            product: 'Logam Aluminium',
+            buyer: 'PT Logam Bersih',
+            amount: 300000,
+            status: 'paid',
+            paymentMethod: 'Transfer Bank'
+        },
+        {
+            id: 'TRX-004',
+            date: '2024-01-12',
+            product: 'Elektronik Bekas',
+            buyer: 'CV Elektronik Daur Ulang',
+            amount: 375000,
+            status: 'pending',
+            paymentMethod: 'COD'
+        }
+    ];
+
     // Tab switching functionality
     function switchTab(tabName) {
         // Remove active class from all tabs
@@ -793,13 +1141,109 @@
         event.target.classList.add('active', 'text-blue-600', 'border-blue-600');
         event.target.classList.remove('text-gray-500');
         
+        // Add visual feedback
+        highlightActiveTab(tabName);
+        
         // Hide all content
-        document.querySelectorAll('.tab-content').forEach(content => {
-            content.classList.remove('active');
+        document.getElementById('marketplaceContent').style.display = 'none';
+        document.getElementById('mySalesContent').style.display = 'none';
+        document.getElementById('transactionsContent').style.display = 'none';
+        
+        // Show selected content and scroll to it
+        if (tabName === 'marketplace') {
+            showMarketplaceContent();
+            scrollToMarketplace();
+        } else if (tabName === 'mySales') {
+            document.getElementById('marketplaceContent').style.display = 'none';
+            document.getElementById('mySalesContent').style.display = 'block';
+            document.getElementById('transactionsContent').style.display = 'none';
+            loadSalesData(); // Reload sales data when tab is opened
+            scrollToMySales();
+        } else if (tabName === 'transactions') {
+            document.getElementById('marketplaceContent').style.display = 'none';
+            document.getElementById('mySalesContent').style.display = 'none';
+            document.getElementById('transactionsContent').style.display = 'block';
+            loadTransactionsData(); // Reload transactions data when tab is opened
+            scrollToTransactions();
+        }
+    }
+
+    // Function untuk scroll ke konten yang dipilih
+    function scrollToContent(contentId) {
+        const contentElement = document.getElementById(contentId);
+        if (contentElement) {
+            // Delay kecil untuk memastikan konten sudah ter-render
+            setTimeout(() => {
+                // Scroll dengan offset untuk memberikan ruang di atas
+                const offset = 120; // Offset dalam pixel
+                const elementPosition = contentElement.getBoundingClientRect().top;
+                const offsetPosition = elementPosition + window.pageYOffset - offset;
+                
+                window.scrollTo({
+                    top: offsetPosition,
+                    behavior: 'smooth'
+                });
+                
+                console.log(`Scrolled to ${contentId} at position ${offsetPosition}`);
+            }, 150); // Delay 150ms untuk memastikan konten sudah ter-render
+        }
+    }
+
+    // Function untuk scroll ke marketplace dengan animasi khusus
+    function scrollToMarketplace() {
+        const marketplaceContent = document.getElementById('marketplaceContent');
+        if (marketplaceContent) {
+            setTimeout(() => {
+                marketplaceContent.scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'start' 
+                });
+            }, 100);
+        }
+    }
+
+    // Function untuk scroll ke penjualan saya dengan animasi khusus
+    function scrollToMySales() {
+        const mySalesContent = document.getElementById('mySalesContent');
+        if (mySalesContent) {
+            setTimeout(() => {
+                mySalesContent.scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'start' 
+                });
+            }, 200); // Delay lebih lama untuk memastikan data sudah ter-load
+        }
+    }
+
+    // Function untuk scroll ke transaksi dengan animasi khusus
+    function scrollToTransactions() {
+        const transactionsContent = document.getElementById('transactionsContent');
+        if (transactionsContent) {
+            setTimeout(() => {
+                transactionsContent.scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'start' 
+                });
+            }, 200); // Delay lebih lama untuk memastikan data sudah ter-load
+        }
+    }
+
+    // Function untuk memberikan feedback visual saat tab dipilih
+    function highlightActiveTab(tabName) {
+        // Remove highlight from all tabs
+        document.querySelectorAll('.tab-button').forEach(btn => {
+            btn.style.transform = 'scale(1)';
+            btn.style.transition = 'transform 0.2s ease';
         });
         
-        // Show selected content
-        document.getElementById(tabName + 'Content').classList.add('active');
+        // Add highlight to active tab
+        const activeTab = event.target;
+        if (activeTab) {
+            activeTab.style.transform = 'scale(1.05)';
+            setTimeout(() => {
+                activeTab.style.transform = 'scale(1)';
+            }, 200);
+        }
     }
 
     // Show Create Listing Modal
@@ -873,61 +1317,240 @@
             return;
         }
 
+        // Tutup modal terlebih dahulu
+        closeModal('createListingModal');
+        
+        // Reset form
+        document.getElementById('createListingForm').reset();
+        
         // Tambah penawaran ke list
         addListingToContainer(title, description, price, stock, location, wasteType);
         
-        alert('Penawaran berhasil dibuat!');
-        closeModal('createListingModal');
-        document.getElementById('createListingForm').reset();
+        // SIMPAN DATA PENJUALAN SAMPAH KE STORAGE
+        saveWasteSaleData(wasteType, title, description, price, stock, location);
+        
+        // Tampilkan pesan sukses setelah data ditambahkan
+        setTimeout(() => {
+            alert('Penawaran berhasil dibuat dan data tersimpan!');
+            // Scroll ke list penawaran untuk feedback visual
+            scrollToListings();
+        }, 100);
+    }
+
+    // Function untuk menyimpan data penjualan sampah
+    function saveWasteSaleData(wasteType, title, description, price, stock, location) {
+        // Generate Invoice ID unik
+        const invoiceId = 'TEK' + Date.now();
+        
+        // Buat objek data penjualan
+        const saleData = {
+            id: invoiceId,
+            nasabah: 'Nasabah Bijak Sampah', // Bisa diambil dari session/login
+            jenisSampah: wasteType,
+            judulPenawaran: title,
+            deskripsi: description,
+            hargaPerKg: parseInt(price),
+            berat: parseInt(stock),
+            totalHarga: parseInt(price) * parseInt(stock),
+            lokasi: location,
+            tanggal: new Date().toISOString(),
+            status: 'Baru',
+            isNew: true
+        };
+        
+        // Ambil data existing dari localStorage
+        let existingSales = JSON.parse(localStorage.getItem('wasteSalesData') || '[]');
+        
+        // Tambah data baru
+        existingSales.push(saleData);
+        
+        // Simpan kembali ke localStorage
+        localStorage.setItem('wasteSalesData', JSON.stringify(existingSales));
+        
+        // Trigger event untuk sync dengan halaman lain
+        window.dispatchEvent(new CustomEvent('wasteSaleAdded', { detail: saleData }));
+        
+        // Tambahan: Trigger storage event untuk sinkronisasi antar tab
+        window.dispatchEvent(new StorageEvent('storage', {
+            key: 'wasteSalesData',
+            newValue: JSON.stringify(existingSales),
+            oldValue: JSON.stringify(existingSales.slice(0, -1))
+        }));
+        
+        console.log('Data penjualan sampah tersimpan:', saleData);
+        console.log('Total data tersimpan:', existingSales.length);
+        console.log('Event wasteSaleAdded dan storage event telah dikirim');
+    }
+
+    // Function untuk scroll ke list penawaran
+    function scrollToListings() {
+        const listingsContainer = document.getElementById('myListingsContainer');
+        if (listingsContainer) {
+            listingsContainer.scrollIntoView({ 
+                behavior: 'smooth', 
+                block: 'start' 
+            });
+        }
     }
 
     // Function untuk menambah penawaran ke container
     function addListingToContainer(title, description, price, stock, location, wasteType) {
-        const container = document.getElementById('myListingsContainer');
+        // Buat objek penawaran baru
+        const newListing = {
+            id: Date.now(), // ID unik berdasarkan timestamp
+            title: title,
+            description: description,
+            price: parseInt(price),
+            stock: parseInt(stock),
+            location: location,
+            wasteType: wasteType,
+            status: 'Aktif',
+            createdAt: new Date(),
+            isNew: true // Flag untuk menandai penawaran baru
+        };
         
-        // Hapus pesan "Belum ada penawaran" jika ada
-        const emptyMessage = container.querySelector('.text-center');
-        if (emptyMessage) {
-            emptyMessage.remove();
+        // Tambahkan ke array global
+        allListings.push(newListing);
+        
+        // Clear filtered listings to show all data including new one
+        filteredListings = [];
+        
+        // Render ulang dengan filter dan sort yang aktif
+        renderListings();
+        
+        // Highlight penawaran baru
+        setTimeout(() => {
+            highlightNewListing(newListing.id);
+        }, 300);
+        
+        console.log('New listing added:', newListing);
+        console.log('Total listings now:', allListings.length);
+    }
+
+    // Function untuk highlight penawaran baru
+    function highlightNewListing(listingId) {
+        const listingCard = document.querySelector(`[data-listing-id="${listingId}"]`);
+        if (listingCard) {
+            listingCard.classList.add('new-listing');
+            
+            // Remove highlight after 3 seconds
+            setTimeout(() => {
+                listingCard.classList.remove('new-listing');
+            }, 3000);
+        }
+    }
+
+    // Function untuk highlight penawaran yang baru diupdate
+    function highlightUpdatedListing(listingId) {
+        const listingCard = document.querySelector(`[data-listing-id="${listingId}"]`);
+        if (listingCard) {
+            listingCard.classList.add('updated-listing');
+            
+            // Remove highlight after 3 seconds
+            setTimeout(() => {
+                listingCard.classList.remove('updated-listing');
+            }, 3000);
+        }
+    }
+
+    // Function untuk render semua penawaran
+    function renderListings() {
+        const container = document.getElementById('myListingsContainer');
+        console.log('renderListings called, container:', container);
+        
+        // Hapus semua konten yang ada
+        container.innerHTML = '';
+        
+        // Tentukan data yang akan ditampilkan
+        let listingsToShow = filteredListings.length > 0 ? filteredListings : allListings;
+        console.log('Listings to show:', listingsToShow.length);
+        
+        if (listingsToShow.length === 0) {
+            container.innerHTML = `
+                <div class="text-center py-8 text-gray-500">
+                    <i class="fas fa-box-open text-4xl mb-4"></i>
+                    <p>Belum ada penawaran yang dibuat</p>
+                    <p class="text-sm">Klik "Buat Penawaran" untuk mulai menjual sampah Anda</p>
+                </div>
+            `;
+            return;
         }
         
-        // Buat card penawaran baru
-        const listingCard = document.createElement('div');
-        listingCard.className = 'product-card bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow';
-        listingCard.innerHTML = `
-            <div class="relative">
-                <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop" alt="${title}" class="w-full h-48 object-cover">
-                <div class="absolute top-2 right-2 bg-white rounded-full p-2 shadow">
-                    <i class="fas fa-edit text-blue-500 hover:text-blue-700 cursor-pointer" onclick="editListing(this)" title="Edit Penawaran"></i>
-                </div>
-            </div>
-            <div class="p-4">
-                <div class="flex justify-between items-start">
-                    <div>
-                        <h4 class="font-semibold text-lg mb-1">${title}</h4>
-                        <p class="text-sm text-gray-500 mb-2">Lokasi: ${location}</p>
+        // Render setiap penawaran
+        listingsToShow.forEach((listing, index) => {
+            const listingCard = document.createElement('div');
+            listingCard.className = 'product-card bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow';
+            listingCard.setAttribute('data-listing-id', listing.id);
+            listingCard.style.animation = `fadeIn 0.3s ease-out ${index * 0.1}s forwards`;
+            listingCard.innerHTML = `
+                <div class="p-4">
+                    <div class="flex justify-between items-start mb-3">
+                        <div class="flex-1">
+                            <h4 class="font-semibold text-lg mb-1">${listing.title}</h4>
+                            <p class="text-sm text-gray-500 mb-2">Lokasi: ${listing.location}</p>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="status-badge status-pending">${listing.status}</span>
+                            <div class="bg-white rounded-full p-2 shadow">
+                                <i class="fas fa-edit text-blue-500 hover:text-blue-700 cursor-pointer" onclick="editListing(this)" title="Edit Penawaran"></i>
+                            </div>
+                        </div>
                     </div>
-                    <span class="status-badge status-pending">Aktif</span>
-                </div>
-                <p class="text-sm text-gray-600 mb-3">${description}</p>
-                <div class="flex justify-between items-center">
-                    <div>
-                        <p class="font-bold text-blue-600">Rp ${price}/kg</p>
-                        <p class="text-xs text-gray-500">Stok: ${stock} kg</p>
+                    <p class="text-sm text-gray-600 mb-3">${listing.description}</p>
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <p class="font-bold text-blue-600">Rp ${listing.price}/kg</p>
+                            <p class="text-xs text-gray-500">Stok: ${listing.stock} kg</p>
+                        </div>
+                        <div class="flex gap-2">
+                            <button class="px-3 py-1 bg-green-50 text-green-600 rounded-full text-sm hover:bg-green-100 transition-colors" onclick="viewOrders('${listing.title}')">
+                                <i class="fas fa-eye mr-1"></i> Lihat Pesanan
+                            </button>
+                            <button class="px-3 py-1 bg-red-50 text-red-600 rounded-full text-sm hover:bg-red-100 transition-colors" onclick="deleteListing(this)">
+                                <i class="fas fa-trash mr-1"></i> Hapus
+                            </button>
+                        </div>
                     </div>
-                    <div class="flex gap-2">
-                        <button class="px-3 py-1 bg-green-50 text-green-600 rounded-full text-sm hover:bg-green-100 transition-colors" onclick="viewOrders('${title}')">
-                            <i class="fas fa-eye mr-1"></i> Lihat Pesanan
-                        </button>
-                        <button class="px-3 py-1 bg-red-50 text-red-600 rounded-full text-sm hover:bg-red-100 transition-colors" onclick="deleteListing(this)">
-                            <i class="fas fa-trash mr-1"></i> Hapus
-                        </button>
-                    </div>
                 </div>
-            </div>
-        `;
+            `;
+            
+            container.appendChild(listingCard);
+        });
         
-        container.appendChild(listingCard);
+        // Update indicators
+        updateFilterIndicator();
+        updateSortIndicator();
+        
+        console.log('Render completed. Total cards rendered:', listingsToShow.length);
+    }
+
+    // Function untuk update filter indicator
+    function updateFilterIndicator() {
+        const filterBtn = document.getElementById('filterBtn');
+        if (filterBtn) {
+            const hasActiveFilters = Object.values(currentFilters).some(value => value !== '' && value !== 'all');
+            if (hasActiveFilters) {
+                filterBtn.classList.add('bg-blue-500', 'text-white');
+                filterBtn.classList.remove('bg-gray-200', 'text-gray-700');
+            } else {
+                filterBtn.classList.remove('bg-blue-500', 'text-white');
+                filterBtn.classList.add('bg-gray-200', 'text-gray-700');
+            }
+        }
+    }
+
+    // Function untuk update sort indicator
+    function updateSortIndicator() {
+        const sortBtn = document.getElementById('sortBtn');
+        if (sortBtn) {
+            if (currentSort && currentSort !== 'default') {
+                sortBtn.classList.add('bg-green-500', 'text-white');
+                sortBtn.classList.remove('bg-gray-200', 'text-gray-700');
+            } else {
+                sortBtn.classList.remove('bg-green-500', 'text-white');
+                sortBtn.classList.add('bg-gray-200', 'text-gray-700');
+            }
+        }
     }
 
     // Apply Filter
@@ -937,14 +1560,105 @@
         const maxPrice = document.getElementById('maxPrice').value;
         const location = document.getElementById('filterLocation').value;
 
-        alert('Filter diterapkan!');
+        // Update current filters
+        currentFilters = {
+            wasteType: wasteType,
+            minPrice: minPrice ? parseInt(minPrice) : '',
+            maxPrice: maxPrice ? parseInt(maxPrice) : '',
+            location: location
+        };
+
+        // Apply filters
+        applyFiltersToData();
+        
+        // Render filtered results
+        renderListings();
+        
+        // Show success message
+        const filterCount = filteredListings.length;
+        const totalCount = allListings.length;
+        alert(`Filter diterapkan! Menampilkan ${filterCount} dari ${totalCount} penawaran.`);
+        
+        // Update indicators
+        updateFilterIndicator();
+        
         closeModal('filterModal');
+    }
+
+    // Function untuk menerapkan filter ke data
+    function applyFiltersToData() {
+        filteredListings = allListings.filter(listing => {
+            // Filter berdasarkan jenis sampah
+            if (currentFilters.wasteType && listing.wasteType !== currentFilters.wasteType) {
+                return false;
+            }
+            
+            // Filter berdasarkan rentang harga
+            if (currentFilters.minPrice && listing.price < currentFilters.minPrice) {
+                return false;
+            }
+            if (currentFilters.maxPrice && listing.price > currentFilters.maxPrice) {
+                return false;
+            }
+            
+            // Filter berdasarkan lokasi
+            if (currentFilters.location && !listing.location.toLowerCase().includes(currentFilters.location.toLowerCase())) {
+                return false;
+            }
+            
+            return true;
+        });
+
+        // Apply current sort if exists
+        if (currentSort) {
+            applySortToData();
+        }
+    }
+
+    // Function untuk menerapkan sort ke data yang sudah difilter
+    function applySortToData() {
+        const dataToSort = filteredListings.length > 0 ? filteredListings : allListings;
+        
+        dataToSort.sort((a, b) => {
+            switch (currentSort) {
+                case 'price-low':
+                    return a.price - b.price;
+                case 'price-high':
+                    return b.price - a.price;
+                case 'date-new':
+                    return new Date(b.createdAt) - new Date(a.createdAt);
+                case 'date-old':
+                    return new Date(a.createdAt) - new Date(b.createdAt);
+                case 'stock-high':
+                    return b.stock - a.stock;
+                case 'stock-low':
+                    return a.stock - b.stock;
+                default:
+                    return 0;
+            }
+        });
     }
 
     // Apply Sort
     function applySort() {
         const sortBy = document.getElementById('sortBy').value;
-        alert('Urutan diterapkan!');
+        
+        // Update current sort
+        currentSort = sortBy;
+        
+        // Apply sort to data
+        applySortToData();
+        
+        // Render sorted results
+        renderListings();
+        
+        // Show success message
+        const sortText = document.getElementById('sortBy').options[document.getElementById('sortBy').selectedIndex].text;
+        alert(`Urutan diterapkan: ${sortText}`);
+        
+        // Update indicators
+        updateSortIndicator();
+        
         closeModal('sortModal');
     }
 
@@ -974,19 +1688,22 @@
     // Edit Listing
     function editListing(element) {
         const card = element.closest('.product-card');
-        const title = card.querySelector('h4').textContent;
-        const description = card.querySelector('p.text-gray-600').textContent;
-        const price = card.querySelector('.text-blue-600').textContent.replace('Rp ', '').replace('/kg', '');
-        const stock = card.querySelector('.text-xs.text-gray-500').textContent.replace('Stok: ', '').replace(' kg', '');
-        const location = card.querySelector('p.text-gray-500').textContent.replace('Lokasi: ', '');
+        const listingId = parseInt(card.getAttribute('data-listing-id'));
+        
+        // Cari data penawaran berdasarkan ID
+        const listing = allListings.find(l => l.id === listingId);
+        if (!listing) {
+            alert('Data penawaran tidak ditemukan!');
+            return;
+        }
         
         // Populate edit modal
-        document.getElementById('wasteType').value = 'plastik'; // Default
-        document.getElementById('listingTitle').value = title;
-        document.getElementById('listingDescription').value = description;
-        document.getElementById('listingPrice').value = price;
-        document.getElementById('listingStock').value = stock;
-        document.getElementById('listingLocation').value = location;
+        document.getElementById('wasteType').value = listing.wasteType;
+        document.getElementById('listingTitle').value = listing.title;
+        document.getElementById('listingDescription').value = listing.description;
+        document.getElementById('listingPrice').value = listing.price;
+        document.getElementById('listingStock').value = listing.stock;
+        document.getElementById('listingLocation').value = listing.location;
         
         // Show modal
         showCreateListingModal();
@@ -995,58 +1712,96 @@
         document.querySelector('#createListingModal .modal-header h3').textContent = 'Edit Penawaran';
         document.querySelector('#createListingModal .btn-success').textContent = 'Update Penawaran';
         document.querySelector('#createListingModal .btn-success').onclick = function() {
-            updateListing(card);
+            updateListing(listingId);
         };
     }
 
     // Update Listing
-    function updateListing(card) {
+    function updateListing(listingId) {
         const title = document.getElementById('listingTitle').value;
         const description = document.getElementById('listingDescription').value;
         const price = document.getElementById('listingPrice').value;
         const stock = document.getElementById('listingStock').value;
         const location = document.getElementById('listingLocation').value;
+        const wasteType = document.getElementById('wasteType').value;
 
-        if (!title || !description || !price || !stock || !location) {
+        if (!title || !description || !price || !stock || !location || !wasteType) {
             alert('Harap isi semua field yang wajib!');
             return;
         }
 
-        // Update card content
-        card.querySelector('h4').textContent = title;
-        card.querySelector('p.text-gray-600').textContent = description;
-        card.querySelector('.text-blue-600').textContent = `Rp ${price}/kg`;
-        card.querySelector('.text-xs.text-gray-500').textContent = `Stok: ${stock} kg`;
-        card.querySelector('p.text-gray-500').textContent = `Lokasi: ${location}`;
-        card.querySelector('img').alt = title;
+        // Cari dan update data penawaran
+        const listingIndex = allListings.findIndex(l => l.id === listingId);
+        if (listingIndex === -1) {
+            alert('Data penawaran tidak ditemukan!');
+            return;
+        }
 
-        alert('Penawaran berhasil diupdate!');
+        // Update data
+        allListings[listingIndex] = {
+            ...allListings[listingIndex],
+            title: title,
+            description: description,
+            price: parseInt(price),
+            stock: parseInt(stock),
+            location: location,
+            wasteType: wasteType
+        };
+
+        console.log('Listing updated:', allListings[listingIndex]);
+        console.log('Total listings:', allListings.length);
+
+        // Tutup modal terlebih dahulu
         closeModal('createListingModal');
+        
+        // Reset form
         document.getElementById('createListingForm').reset();
         
         // Reset modal title and button
         document.querySelector('#createListingModal .modal-header h3').textContent = 'Buat Penawaran Baru';
         document.querySelector('#createListingModal .btn-success').textContent = 'Buat Penawaran';
         document.querySelector('#createListingModal .btn-success').onclick = submitCreateListing;
+
+        // Re-apply filters and sort
+        applyFiltersToData();
+        renderListings();
+
+        // Tampilkan pesan sukses setelah data diupdate
+        setTimeout(() => {
+            alert('Penawaran berhasil diupdate!');
+            // Highlight penawaran yang baru diupdate
+            highlightUpdatedListing(listingId);
+            // Scroll ke penawaran yang baru diupdate
+            scrollToUpdatedListing(listingId);
+        }, 100);
+    }
+
+    // Function untuk scroll ke penawaran yang baru diupdate
+    function scrollToUpdatedListing(listingId) {
+        const listingCard = document.querySelector(`[data-listing-id="${listingId}"]`);
+        if (listingCard) {
+            listingCard.scrollIntoView({ 
+                behavior: 'smooth', 
+                block: 'center' 
+            });
+        }
     }
 
     // Delete Listing
     function deleteListing(element) {
         if (confirm('Apakah Anda yakin ingin menghapus penawaran ini?')) {
             const card = element.closest('.product-card');
-            card.remove();
+            const listingId = parseInt(card.getAttribute('data-listing-id'));
             
-            // Check if no more listings
-            const container = document.getElementById('myListingsContainer');
-            if (container.children.length === 0) {
-                container.innerHTML = `
-                    <div class="text-center py-8 text-gray-500">
-                        <i class="fas fa-box-open text-4xl mb-4"></i>
-                        <p>Belum ada penawaran yang dibuat</p>
-                        <p class="text-sm">Klik "Buat Penawaran" untuk mulai menjual sampah Anda</p>
-                    </div>
-                `;
+            // Hapus dari array global
+            const listingIndex = allListings.findIndex(l => l.id === listingId);
+            if (listingIndex !== -1) {
+                allListings.splice(listingIndex, 1);
             }
+            
+            // Re-apply filters and sort
+            applyFiltersToData();
+            renderListings();
             
             alert('Penawaran berhasil dihapus!');
         }
@@ -1079,6 +1834,537 @@
                 }
             });
         }
+        
+        // Add sample data for testing
+        addSampleData();
+        
+        // Load sales and transactions data
+        loadSalesData();
+        loadTransactionsData();
+        
+        // Add event listener for transaction status filter
+        document.getElementById('transactionStatus').addEventListener('change', function() {
+            filterTransactionsByStatus(this.value);
+        });
+        
+        // Ensure marketplace is shown by default
+        document.getElementById('marketplaceContent').style.display = 'block';
+        document.getElementById('mySalesContent').style.display = 'none';
+        document.getElementById('transactionsContent').style.display = 'none';
+        
+        // Debug: Log to ensure marketplace is visible
+        console.log('Marketplace content display:', document.getElementById('marketplaceContent').style.display);
+        console.log('Marketplace content visibility:', document.getElementById('marketplaceContent').offsetHeight);
+        
+        // Force show marketplace content
+        showMarketplaceContent();
+        
+        // Force render listings after a short delay to ensure DOM is ready
+        setTimeout(() => {
+            console.log('Forcing render listings after delay...');
+            renderListings();
+        }, 500);
+    });
+
+    // Additional event listener to ensure marketplace is shown on page load
+    window.addEventListener('load', function() {
+        setTimeout(() => {
+            showMarketplaceContent();
+        }, 100);
+    });
+
+    // Function untuk memastikan konten marketplace ditampilkan
+    function showMarketplaceContent() {
+        const marketplaceContent = document.getElementById('marketplaceContent');
+        const mySalesContent = document.getElementById('mySalesContent');
+        const transactionsContent = document.getElementById('transactionsContent');
+        
+        if (marketplaceContent) {
+            marketplaceContent.style.display = 'block';
+            marketplaceContent.style.visibility = 'visible';
+            marketplaceContent.style.opacity = '1';
+            marketplaceContent.style.position = 'relative';
+            marketplaceContent.style.zIndex = '1';
+        }
+        
+        if (mySalesContent) {
+            mySalesContent.style.display = 'none';
+        }
+        
+        if (transactionsContent) {
+            transactionsContent.style.display = 'none';
+        }
+        
+        console.log('Marketplace content forced to show');
+        console.log('Marketplace element:', marketplaceContent);
+        console.log('Marketplace display style:', marketplaceContent ? marketplaceContent.style.display : 'element not found');
+    }
+
+    // Function untuk memuat data penjualan
+    function loadSalesData() {
+        const tableBody = document.getElementById('salesHistoryTable');
+        if (!tableBody) return;
+        
+        tableBody.innerHTML = '';
+        
+        salesData.forEach(sale => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${formatDate(sale.date)}</td>
+                <td>${sale.product}</td>
+                <td>${sale.buyer}</td>
+                <td>${sale.weight} kg</td>
+                <td>Rp ${sale.price.toLocaleString()}/kg</td>
+                <td>Rp ${sale.total.toLocaleString()}</td>
+                <td><span class="status-badge status-${sale.status}">${getStatusText(sale.status)}</span></td>
+                <td>
+                    <button class="px-2 py-1 bg-blue-50 text-blue-600 rounded text-xs hover:bg-blue-100" onclick="viewSaleDetail(${sale.id})">
+                        <i class="fas fa-eye mr-1"></i> Detail
+                    </button>
+                </td>
+            `;
+            tableBody.appendChild(row);
+        });
+    }
+
+    // Function untuk memuat data transaksi
+    function loadTransactionsData() {
+        const container = document.getElementById('transactionsList');
+        if (!container) return;
+        
+        container.innerHTML = '';
+        
+        transactionsData.forEach(transaction => {
+            const card = document.createElement('div');
+            card.className = 'bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow';
+            card.innerHTML = `
+                <div class="flex justify-between items-start mb-3">
+                    <div>
+                        <h4 class="font-semibold text-gray-800">${transaction.product}</h4>
+                        <p class="text-sm text-gray-500">ID: ${transaction.id}</p>
+                        <p class="text-sm text-gray-500">Pembeli: ${transaction.buyer}</p>
+                    </div>
+                    <div class="text-right">
+                        <p class="font-bold text-lg text-gray-800">Rp ${transaction.amount.toLocaleString()}</p>
+                        <span class="status-badge status-${transaction.status}">${getStatusText(transaction.status)}</span>
+                    </div>
+                </div>
+                <div class="flex justify-between items-center text-sm text-gray-600">
+                    <div>
+                        <p>Tanggal: ${formatDate(transaction.date)}</p>
+                        <p>Metode: ${transaction.paymentMethod}</p>
+                    </div>
+                    <div class="flex space-x-2">
+                        <button class="px-3 py-1 bg-blue-50 text-blue-600 rounded-full text-xs hover:bg-blue-100" onclick="viewTransactionDetail('${transaction.id}')">
+                            <i class="fas fa-eye mr-1"></i> Detail
+                        </button>
+                        <button class="px-3 py-1 bg-green-50 text-green-600 rounded-full text-xs hover:bg-green-100" onclick="trackTransaction('${transaction.id}')">
+                            <i class="fas fa-truck mr-1"></i> Track
+                        </button>
+                    </div>
+                </div>
+            `;
+            container.appendChild(card);
+        });
+    }
+
+    // Function untuk format tanggal
+    function formatDate(dateString) {
+        const date = new Date(dateString);
+        return date.toLocaleDateString('id-ID', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric'
+        });
+    }
+
+    // Function untuk mendapatkan teks status
+    function getStatusText(status) {
+        const statusMap = {
+            'pending': 'Menunggu Pembayaran',
+            'paid': 'Sudah Dibayar',
+            'shipped': 'Dikirim',
+            'delivered': 'Diterima',
+            'cancelled': 'Dibatalkan'
+        };
+        return statusMap[status] || status;
+    }
+
+    // Function untuk melihat detail penjualan
+    function viewSaleDetail(saleId) {
+        const sale = salesData.find(s => s.id === saleId);
+        if (sale) {
+            alert(`Detail Penjualan:\n\nProduk: ${sale.product}\nPembeli: ${sale.buyer}\nBerat: ${sale.weight} kg\nHarga: Rp ${sale.price.toLocaleString()}/kg\nTotal: Rp ${sale.total.toLocaleString()}\nStatus: ${getStatusText(sale.status)}`);
+        }
+    }
+
+    // Function untuk melihat detail transaksi
+    function viewTransactionDetail(transactionId) {
+        const transaction = transactionsData.find(t => t.id === transactionId);
+        if (transaction) {
+            alert(`Detail Transaksi:\n\nID: ${transaction.id}\nProduk: ${transaction.product}\nPembeli: ${transaction.buyer}\nJumlah: Rp ${transaction.amount.toLocaleString()}\nStatus: ${getStatusText(transaction.status)}\nMetode Pembayaran: ${transaction.paymentMethod}`);
+        }
+    }
+
+    // Function untuk tracking transaksi
+    function trackTransaction(transactionId) {
+        alert(`Tracking Transaksi ${transactionId}:\n\nStatus: Dalam pengiriman\nEstimasi: 2-3 hari kerja\nKurir: JNE Express\nResi: JNE${transactionId.replace('TRX-', '')}123456`);
+    }
+
+    // Function untuk export data penjualan
+    function exportSalesData() {
+        // Buat data untuk export
+        const exportData = salesData.map(sale => ({
+            'Tanggal': formatDate(sale.date),
+            'Produk': sale.product,
+            'Pembeli': sale.buyer,
+            'Berat (kg)': sale.weight,
+            'Harga per kg': `Rp ${sale.price.toLocaleString()}`,
+            'Total': `Rp ${sale.total.toLocaleString()}`,
+            'Status': getStatusText(sale.status)
+        }));
+
+        // Buat header untuk Excel
+        const headers = ['Tanggal', 'Produk', 'Pembeli', 'Berat (kg)', 'Harga per kg', 'Total', 'Status'];
+        
+        // Gunakan fungsi universal
+        exportDataToExcel(exportData, 'Data_Penjualan', headers);
+    }
+
+    // Function untuk refresh transaksi
+    function refreshTransactions() {
+        loadTransactionsData();
+        alert('Data transaksi berhasil diperbarui!');
+    }
+
+    // Function untuk filter transaksi berdasarkan status
+    function filterTransactionsByStatus(status) {
+        const container = document.getElementById('transactionsList');
+        if (!container) return;
+        
+        container.innerHTML = '';
+        
+        let filteredTransactions = transactionsData;
+        if (status) {
+            filteredTransactions = transactionsData.filter(t => t.status === status);
+        }
+        
+        if (filteredTransactions.length === 0) {
+            container.innerHTML = `
+                <div class="text-center py-8 text-gray-500">
+                    <i class="fas fa-search text-4xl mb-4"></i>
+                    <p>Tidak ada transaksi dengan status tersebut</p>
+                </div>
+            `;
+            return;
+        }
+        
+        filteredTransactions.forEach(transaction => {
+            const card = document.createElement('div');
+            card.className = 'bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow';
+            card.innerHTML = `
+                <div class="flex justify-between items-start mb-3">
+                    <div>
+                        <h4 class="font-semibold text-gray-800">${transaction.product}</h4>
+                        <p class="text-sm text-gray-500">ID: ${transaction.id}</p>
+                        <p class="text-sm text-gray-500">Pembeli: ${transaction.buyer}</p>
+                    </div>
+                    <div class="text-right">
+                        <p class="font-bold text-lg text-gray-800">Rp ${transaction.amount.toLocaleString()}</p>
+                        <span class="status-badge status-${transaction.status}">${getStatusText(transaction.status)}</span>
+                    </div>
+                </div>
+                <div class="flex justify-between items-center text-sm text-gray-600">
+                    <div>
+                        <p>Tanggal: ${formatDate(transaction.date)}</p>
+                        <p>Metode: ${transaction.paymentMethod}</p>
+                    </div>
+                    <div class="flex space-x-2">
+                        <button class="px-3 py-1 bg-blue-50 text-blue-600 rounded-full text-xs hover:bg-blue-100" onclick="viewTransactionDetail('${transaction.id}')">
+                            <i class="fas fa-eye mr-1"></i> Detail
+                        </button>
+                        <button class="px-3 py-1 bg-green-50 text-green-600 rounded-full text-xs hover:bg-green-100" onclick="trackTransaction('${transaction.id}')">
+                            <i class="fas fa-truck mr-1"></i> Track
+                        </button>
+                    </div>
+                </div>
+            `;
+            container.appendChild(card);
+        });
+    }
+
+    // Function untuk menambah data contoh
+    function addSampleData() {
+        console.log('addSampleData called, current listings:', allListings.length);
+        
+        if (allListings.length === 0) {
+            const sampleData = [
+                {
+                    id: Date.now() - 3000,
+                    title: 'Plastik PET Bersih',
+                    description: 'Plastik PET bersih, sudah dicuci dan dikeringkan, siap untuk didaur ulang.',
+                    price: 7500,
+                    stock: 150,
+                    location: 'Jakarta Selatan',
+                    wasteType: 'plastik',
+                    status: 'Aktif',
+                    createdAt: new Date(Date.now() - 3000)
+                },
+                {
+                    id: Date.now() - 2000,
+                    title: 'Kertas Koran Bekas',
+                    description: 'Kertas koran bekas dalam kondisi baik, cocok untuk daur ulang.',
+                    price: 3000,
+                    stock: 200,
+                    location: 'Jakarta Barat',
+                    wasteType: 'kertas',
+                    status: 'Aktif',
+                    createdAt: new Date(Date.now() - 2000)
+                },
+                {
+                    id: Date.now() - 1000,
+                    title: 'Logam Aluminium',
+                    description: 'Logam aluminium bekas kemasan, sudah dibersihkan.',
+                    price: 12000,
+                    stock: 50,
+                    location: 'Jakarta Utara',
+                    wasteType: 'logam',
+                    status: 'Aktif',
+                    createdAt: new Date(Date.now() - 1000)
+                },
+                {
+                    id: Date.now() - 500,
+                    title: 'Elektronik Bekas',
+                    description: 'Komponen elektronik bekas yang masih bisa didaur ulang.',
+                    price: 25000,
+                    stock: 30,
+                    location: 'Jakarta Timur',
+                    wasteType: 'elektronik',
+                    status: 'Aktif',
+                    createdAt: new Date(Date.now() - 500)
+                },
+                {
+                    id: Date.now(),
+                    title: 'Sampah Organik',
+                    description: 'Sampah organik dari dapur, cocok untuk kompos.',
+                    price: 2000,
+                    stock: 100,
+                    location: 'Jakarta Pusat',
+                    wasteType: 'organik',
+                    status: 'Aktif',
+                    createdAt: new Date()
+                }
+            ];
+            
+            allListings.push(...sampleData);
+            console.log('Sample data added, total listings:', allListings.length);
+            renderListings();
+        } else {
+            console.log('Sample data already exists, skipping...');
+        }
+    }
+
+    // Function untuk export data transaksi
+    function exportTransactionData() {
+        // Buat data untuk export
+        const exportData = transactionsData.map(transaction => ({
+            'ID Transaksi': transaction.id,
+            'Tanggal': formatDate(transaction.date),
+            'Produk': transaction.product,
+            'Pembeli': transaction.buyer,
+            'Jumlah': `Rp ${transaction.amount.toLocaleString()}`,
+            'Status': getStatusText(transaction.status),
+            'Metode Pembayaran': transaction.paymentMethod
+        }));
+
+        // Buat header untuk Excel
+        const headers = ['ID Transaksi', 'Tanggal', 'Produk', 'Pembeli', 'Jumlah', 'Status', 'Metode Pembayaran'];
+        
+        // Gunakan fungsi universal
+        exportDataToExcel(exportData, 'Data_Transaksi', headers);
+    }
+
+    // Function untuk export data penawaran marketplace
+    function exportMarketplaceData() {
+        // Tentukan data yang akan diexport (semua atau yang difilter)
+        const dataToExport = filteredListings.length > 0 ? filteredListings : allListings;
+        
+        if (dataToExport.length === 0) {
+            alert('Tidak ada data penawaran untuk diexport!');
+            return;
+        }
+
+        // Buat data untuk export
+        const exportData = dataToExport.map(listing => ({
+            'Judul Penawaran': listing.title,
+            'Deskripsi': listing.description,
+            'Jenis Sampah': listing.wasteType,
+            'Harga per kg': `Rp ${listing.price.toLocaleString()}`,
+            'Stok (kg)': listing.stock,
+            'Lokasi': listing.location,
+            'Status': listing.status,
+            'Tanggal Dibuat': formatDate(listing.createdAt)
+        }));
+
+        // Buat header untuk Excel
+        const headers = ['Judul Penawaran', 'Deskripsi', 'Jenis Sampah', 'Harga per kg', 'Stok (kg)', 'Lokasi', 'Status', 'Tanggal Dibuat'];
+        
+        // Gunakan fungsi universal
+        exportDataToExcel(exportData, 'Data_Penawaran_Marketplace', headers);
+    }
+
+    // Function untuk export data yang universal
+    function exportDataToExcel(data, filename, headers) {
+        if (data.length === 0) {
+            alert('Tidak ada data untuk diexport!');
+            return;
+        }
+
+        // Buat CSV content
+        let csvContent = '\uFEFF'; // BOM untuk UTF-8
+        csvContent += headers.join(',') + '\n';
+        
+        data.forEach(row => {
+            const values = headers.map(header => {
+                const value = row[header] || '';
+                // Escape quotes dan wrap dalam quotes jika ada koma
+                return `"${value.toString().replace(/"/g, '""')}"`;
+            });
+            csvContent += values.join(',') + '\n';
+        });
+
+        // Buat dan download file
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+        const url = URL.createObjectURL(blob);
+        
+        link.setAttribute('href', url);
+        link.setAttribute('download', `${filename}_${new Date().toISOString().split('T')[0]}.csv`);
+        link.style.visibility = 'hidden';
+        
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        // Tampilkan pesan sukses
+        setTimeout(() => {
+            alert(`${filename} berhasil diexport!\n\nFile: ${filename}_${new Date().toISOString().split('T')[0]}.csv\nTotal data: ${data.length} baris`);
+        }, 100);
+    }
+
+    // Function untuk menampilkan data penjualan sampah yang tersimpan
+    function displayStoredWasteSales() {
+        const storedData = JSON.parse(localStorage.getItem('wasteSalesData') || '[]');
+        const container = document.getElementById('storedWasteSalesContainer');
+        
+        if (!container) return;
+        
+        if (storedData.length === 0) {
+            container.innerHTML = '<p class="text-gray-500 text-center py-8">Belum ada data penjualan sampah tersimpan</p>';
+            return;
+        }
+        
+        let html = '<div class="space-y-4">';
+        storedData.forEach((sale, index) => {
+            const date = new Date(sale.tanggal).toLocaleDateString('id-ID');
+            const isNew = sale.isNew ? 'border-l-4 border-l-green-500' : '';
+            
+            html += `
+                <div class="bg-white rounded-lg shadow-md p-4 ${isNew}">
+                    <div class="flex justify-between items-start mb-3">
+                        <div>
+                            <h4 class="font-semibold text-gray-800">${sale.judulPenawaran}</h4>
+                            <p class="text-sm text-gray-600">Invoice: ${sale.id}</p>
+                        </div>
+                        <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">${sale.status}</span>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3 text-sm">
+                        <div>
+                            <span class="text-gray-600">Jenis:</span>
+                            <span class="font-medium">${sale.jenisSampah}</span>
+                        </div>
+                        <div>
+                            <span class="text-gray-600">Berat:</span>
+                            <span class="font-medium">${sale.berat} kg</span>
+                        </div>
+                        <div>
+                            <span class="text-gray-600">Harga/kg:</span>
+                            <span class="font-medium">Rp ${sale.hargaPerKg.toLocaleString()}</span>
+                        </div>
+                        <div>
+                            <span class="text-gray-600">Total:</span>
+                            <span class="font-medium text-green-600">Rp ${sale.totalHarga.toLocaleString()}</span>
+                        </div>
+                    </div>
+                    <div class="mt-3 pt-3 border-t border-gray-200">
+                        <p class="text-sm text-gray-600 mb-2">${sale.deskripsi}</p>
+                        <div class="flex justify-between items-center text-xs text-gray-500">
+                            <span>${sale.lokasi}</span>
+                            <span>${date}</span>
+                        </div>
+                    </div>
+                    ${sale.isNew ? '<div class="mt-2 text-xs text-green-600 font-medium">✨ Data Baru</div>' : ''}
+                </div>
+            `;
+        });
+        html += '</div>';
+        
+        container.innerHTML = html;
+    }
+
+    // Function untuk export data penjualan sampah
+    function exportWasteSalesData() {
+        const storedData = JSON.parse(localStorage.getItem('wasteSalesData') || '[]');
+        
+        if (storedData.length === 0) {
+            alert('Tidak ada data untuk diexport!');
+            return;
+        }
+        
+        // Convert to CSV
+        let csvContent = 'Invoice ID,Nasabah,Jenis Sampah,Judul Penawaran,Berat (kg),Harga per kg,Total Harga,Lokasi,Tanggal,Status\n';
+        
+        storedData.forEach(sale => {
+            const date = new Date(sale.tanggal).toLocaleDateString('id-ID');
+            csvContent += `${sale.id},${sale.nasabah},${sale.jenisSampah},${sale.judulPenawaran},${sale.berat},${sale.hargaPerKg},${sale.totalHarga},${sale.lokasi},${date},${sale.status}\n`;
+        });
+        
+        // Download CSV
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+        const url = URL.createObjectURL(blob);
+        link.setAttribute('href', url);
+        link.setAttribute('download', `data_penjualan_sampah_${new Date().toISOString().split('T')[0]}.csv`);
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+
+    // Function untuk clear data penjualan sampah
+    function clearWasteSalesData() {
+        if (confirm('Yakin ingin menghapus semua data penjualan sampah? Data tidak dapat dikembalikan!')) {
+            localStorage.removeItem('wasteSalesData');
+            displayStoredWasteSales();
+            alert('Data penjualan sampah berhasil dihapus!');
+        }
+    }
+
+    // Event listener untuk sync data dengan halaman lain
+    window.addEventListener('wasteSaleAdded', function(event) {
+        console.log('Event wasteSaleAdded diterima:', event.detail);
+        // Update tampilan data
+        displayStoredWasteSales();
+    });
+
+    // Event listener saat halaman dimuat
+    document.addEventListener('DOMContentLoaded', function() {
+        // Tampilkan data yang tersimpan
+        displayStoredWasteSales();
+        
+        // Log jumlah data tersimpan
+        const storedData = JSON.parse(localStorage.getItem('wasteSalesData') || '[]');
+        console.log('Data penjualan sampah tersimpan:', storedData.length);
     });
 </script>
 </body>

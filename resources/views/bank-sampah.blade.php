@@ -12,7 +12,7 @@
     .sidebar-hover { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
     .sidebar-item-hover { transition: all 0.2s ease-in-out; }
     .sidebar-item-hover:hover { background-color: rgba(255, 255, 255, 0.2); }
-    .sidebar-logo { transition: all 0.3s ease-in-out; }
+    .sidebar-logo { transition: all 0.3s cubic-bezier(0.4, 0.2, 0.2, 1); }
     .sidebar-nav-item { transition: all 0.2s ease-in-out; border-radius: 8px; }
     .sidebar-nav-item:hover { background-color: rgba(255, 255, 255, 0.1); }
     .sidebar-nav-item.active { background-color: rgba(255, 255, 255, 0.2); box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); }
@@ -152,7 +152,7 @@
             {{-- Logo Section --}}
             <div class="flex items-center justify-center mb-8 mt-2 sidebar-logo">
                 <img x-show="open" class="w-32 h-auto" src="{{ asset('asset/img/logo1.png') }}" alt="Logo Penuh">
-                <img x-show="!open" class="w-16 h" src="{{ asset('asset/img/logo.png') }}" alt="Logo Ikon">
+                <img x-show="!open" class="w-6 h" src="{{ asset('asset/img/logo.png') }}" alt="Logo Ikon">
             </div>
             
             {{-- Navigation Menu --}}
@@ -382,100 +382,21 @@
             </div>
 
             {{-- Invoice Cards Grid --}}
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-8">
-                @for ($i = 0; $i < 6; $i++)
-                <div class="invoice-card rounded-2xl shadow-2xl overflow-hidden">
-                    {{-- Top Section --}}
-                    <div class="p-6 bg-gradient-to-r from-teal-500 to-teal-600 relative overflow-hidden">
-                        <div class="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-16 translate-x-16"></div>
-                        <div class="absolute bottom-0 left-0 w-24 h-24 bg-white/5 rounded-full translate-y-12 -translate-x-12"></div>
-                        
-                        <div class="flex items-center justify-between mb-4 relative z-10">
-                            <div>
-                                <h3 class="text-white font-bold text-xl">Invoice #TEK{{ 12345 + $i }}</h3>
-                                <p class="text-white/90 text-sm">{{ date('d/m/Y', strtotime('+' . $i . ' days')) }}</p>
-                            </div>
-                            <div class="flex items-center gap-2">
-                                @if($i % 3 == 0)
-                                <div class="relative">
-                                    <i class="fas fa-comment-dots text-white text-xl chat-bubble"></i>
-                                    <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">3</span>
-                                </div>
-                                @else
-                                <div class="flex items-center gap-1">
-                                    <i class="fas fa-thumbs-up text-yellow-300 text-xl"></i>
-                                    <span class="text-white font-bold text-sm">{{ 4 + ($i % 2) }}/5</span>
-                                </div>
-                                @endif
-                            </div>
-                        </div>
-                        
-                        {{-- Waste Image --}}
-                        <div class="waste-image h-40 flex items-center justify-center mb-4 relative">
-                            <div class="w-24 h-24 bg-white rounded-full flex items-center justify-center shadow-2xl">
-                                <i class="fas fa-wine-bottle text-4xl text-teal-600"></i>
-                            </div>
-                            <div class="absolute top-2 right-2">
-                                <span class="px-3 py-1 rounded-full text-xs font-bold bg-white/20 text-white border border-white/30">
-                                    {{ $i % 4 == 0 ? 'Plastik' : ($i % 4 == 1 ? 'Kertas' : ($i % 4 == 2 ? 'Logam' : 'Kaca')) }}
-                                </span>
-                            </div>
-                        </div>
-                        
-                        <a href="#" class="text-white/90 hover:text-white text-sm underline relative z-10">Selengkapnya</a>
-                    </div>
-                    
-                    {{-- Details Section --}}
-                    <div class="p-6">
-                        <div class="space-y-4 mb-6">
-                            <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                                <span class="text-gray-600 text-sm font-medium">Jenis Sampah:</span>
-                                <span class="text-gray-900 font-bold">Botol Plastik</span>
-                            </div>
-                            <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                                <span class="text-gray-600 text-sm font-medium">Name:</span>
-                                <span class="text-gray-900 font-bold">BS - Lodaya II</span>
-                            </div>
-                            <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                                <span class="text-gray-600 text-sm font-medium">Phone:</span>
-                                <span class="text-gray-900 font-bold">087876529</span>
-                            </div>
-                            <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                                <span class="text-gray-600 text-sm font-medium">Address:</span>
-                                <span class="text-gray-900 font-bold">Lodaya II, Bogor</span>
-                            </div>
-                            <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                                <span class="text-gray-600 text-sm font-medium">Quantity:</span>
-                                <span class="text-gray-900 font-bold text-lg">{{ 50 + ($i * 10) }} Kg</span>
-                            </div>
-                        </div>
-                        
-                        {{-- Action Button --}}
-                        @if($i % 3 == 0)
-                        <button @click="pickupLater({{ $i + 1 }})" class="w-full pickup-button bg-gradient-to-r from-yellow-500 to-yellow-600 text-white py-4 rounded-xl hover:from-yellow-600 hover:to-yellow-700 transition-all duration-300 font-bold shadow-lg border-2 border-yellow-600">
-                            <i class="fas fa-clock mr-2"></i>Diambil Nanti
-                        </button>
-                        @else
-                        <button @click="pickupCompleted({{ $i + 1 }})" class="w-full pickup-button bg-gradient-to-r from-green-500 to-green-600 text-white py-4 rounded-xl hover:from-green-600 hover:to-green-700 transition-all duration-300 font-bold shadow-lg border-2 border-green-600">
-                            <i class="fas fa-check mr-2"></i>Sudah Diambil
-                        </button>
-                        @endif
-                        
-                        {{-- Additional Action Buttons --}}
-                        <div class="flex gap-2 mt-3">
-                            <button @click="viewWasteDetail({{ $i + 1 }})" class="flex-1 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-colors font-bold border-2 border-blue-700 text-sm">
-                                <i class="fas fa-eye mr-1"></i>Detail
-                            </button>
-                            <button @click="downloadReport({{ $i + 1 }})" class="flex-1 bg-purple-600 text-white py-2 rounded-lg hover:bg-purple-700 transition-colors font-bold border-2 border-purple-700 text-sm">
-                                <i class="fas fa-download mr-1"></i>Laporan
-                            </button>
-                            <button @click="openChat({{ $i + 1 }})" class="flex-1 bg-teal-600 text-white py-2 rounded-lg hover:bg-teal-700 transition-colors font-bold border-2 border-teal-700 text-sm">
-                                <i class="fas fa-comment mr-1"></i>Chat
-                            </button>
-                        </div>
-                    </div>
+            <div class="mb-4">
+                <button onclick="addTestData()" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                    <i class="fas fa-plus mr-2"></i>Tambah Data Test
+                </button>
+                <button onclick="clearAllData()" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors ml-2">
+                    <i class="fas fa-trash mr-2"></i>Hapus Semua Data
+                </button>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-8" id="wasteSalesContainer">
+                <!-- Data penjualan sampah akan ditampilkan di sini secara dinamis -->
+                <div class="text-center py-8 text-gray-500">
+                    <i class="fas fa-inbox text-4xl mb-4"></i>
+                    <p class="text-lg">Belum ada data penjualan sampah</p>
                 </div>
-                @endfor
+            </div>
             </div>
 
             {{-- History Section --}}
@@ -1017,5 +938,416 @@
             }
         }
     }
-    </script>
+
+    // Function untuk menambahkan data test
+    function addTestData() {
+        const testData = [
+            {
+                id: 'TEK' + Math.floor(Math.random() * 90000) + 10000,
+                nasabah: 'Ahmad Suryadi',
+                jenisSampah: 'Plastik',
+                judulPenawaran: 'Sampah Plastik Berkualitas',
+                deskripsi: 'Sampah plastik bersih dari rumah tangga, cocok untuk daur ulang',
+                berat: 25,
+                hargaPerKg: 3000,
+                totalHarga: 75000,
+                lokasi: 'Jakarta Selatan',
+                tanggal: new Date().toISOString(),
+                status: 'Baru',
+                isNew: true
+            },
+            {
+                id: 'TEK' + Math.floor(Math.random() * 90000) + 10000,
+                nasabah: 'Siti Nurhaliza',
+                jenisSampah: 'Kertas',
+                judulPenawaran: 'Kertas Bekas Koran',
+                deskripsi: 'Kertas koran bekas dalam kondisi baik, ideal untuk daur ulang',
+                berat: 15,
+                hargaPerKg: 2500,
+                totalHarga: 37500,
+                lokasi: 'Bandung',
+                tanggal: new Date().toISOString(),
+                status: 'Baru',
+                isNew: true
+            },
+            {
+                id: 'TEK' + Math.floor(Math.random() * 90000) + 10000,
+                nasabah: 'Budi Santoso',
+                jenisSampah: 'Logam',
+                judulPenawaran: 'Kaleng Bekas Minuman',
+                deskripsi: 'Kaleng aluminium bekas minuman, sudah dibersihkan',
+                berat: 8,
+                hargaPerKg: 8000,
+                totalHarga: 64000,
+                lokasi: 'Surabaya',
+                tanggal: new Date().toISOString(),
+                status: 'Baru',
+                isNew: true
+            }
+        ];
+
+        // Ambil data yang sudah ada
+        const existingData = JSON.parse(localStorage.getItem('wasteSalesData') || '[]');
+        
+        // Tambahkan data test baru
+        const newData = [...existingData, ...testData];
+        
+        // Simpan ke localStorage
+        localStorage.setItem('wasteSalesData', JSON.stringify(newData));
+        
+        // Reload tampilan
+        loadWasteSalesData();
+        
+        // Tampilkan notifikasi
+        if (window.Alpine && window.Alpine.store && window.Alpine.store('notifications')) {
+            window.Alpine.store('notifications').showNotification('Data test berhasil ditambahkan!', 'success');
+        } else {
+            showManualNotification('Data test berhasil ditambahkan!', 'success');
+        }
+        
+        console.log('Data test berhasil ditambahkan:', testData);
+    }
+
+    // Function untuk menghapus semua data
+    function clearAllData() {
+        if (confirm('Apakah Anda yakin ingin menghapus semua data penjualan sampah?')) {
+            localStorage.removeItem('wasteSalesData');
+            loadWasteSalesData();
+            
+            if (window.Alpine && window.Alpine.store && window.Alpine.store('notifications')) {
+                window.Alpine.store('notifications').showNotification('Semua data berhasil dihapus!', 'success');
+            } else {
+                showManualNotification('Semua data berhasil dihapus!', 'success');
+            }
+            
+            console.log('Semua data penjualan sampah berhasil dihapus');
+        }
+    }
+
+    // Script untuk menampilkan data penjualan sampah real dari localStorage
+    function loadWasteSalesData() {
+        const storedData = JSON.parse(localStorage.getItem('wasteSalesData') || '[]');
+        const container = document.getElementById('wasteSalesContainer');
+        
+        console.log('loadWasteSalesData dipanggil');
+        console.log('Data dari localStorage:', storedData);
+        console.log('Container element:', container);
+        
+        if (!container) {
+            console.error('Container wasteSalesContainer tidak ditemukan!');
+            return;
+        }
+        
+        if (storedData.length === 0) {
+            console.log('Tidak ada data, tampilkan pesan kosong');
+            container.innerHTML = '<p class="text-gray-500 text-center py-8">Belum ada data penjualan sampah</p>';
+            return;
+        }
+        
+        let html = '';
+        storedData.forEach((sale, index) => {
+            const date = new Date(sale.tanggal).toLocaleDateString('id-ID');
+            const isNew = sale.isNew ? 'border-l-4 border-l-green-500' : '';
+            
+            html += `
+                <div class="invoice-card rounded-2xl shadow-2xl overflow-hidden ${isNew}">
+                    {{-- Top Section --}}
+                    <div class="p-6 bg-gradient-to-r from-teal-500 to-teal-600 relative overflow-hidden">
+                        <div class="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-16 translate-x-16"></div>
+                        <div class="absolute bottom-0 left-0 w-24 h-24 bg-white/5 rounded-full translate-y-12 -translate-x-12"></div>
+                        
+                        <div class="flex items-center justify-between mb-4 relative z-10">
+                            <div>
+                                <h3 class="text-white font-bold text-xl">${sale.id}</h3>
+                                <p class="text-white/90 text-sm">${date}</p>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                ${sale.isNew ? `
+                                <div class="relative">
+                                    <i class="fas fa-star text-yellow-300 text-xl"></i>
+                                    <span class="absolute -top-1 -right-1 bg-green-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">N</span>
+                                </div>
+                                ` : `
+                                <div class="flex items-center gap-1">
+                                    <i class="fas fa-thumbs-up text-yellow-300 text-xl"></i>
+                                    <span class="text-white font-bold text-sm">4/5</span>
+                                </div>
+                                `}
+                            </div>
+                        </div>
+                        
+                        {{-- Waste Image --}}
+                        <div class="waste-image h-40 flex items-center justify-center mb-4 relative">
+                            <div class="w-24 h-24 bg-white rounded-full flex items-center justify-center shadow-2xl">
+                                <i class="fas fa-wine-bottle text-4xl text-teal-600"></i>
+                            </div>
+                            <div class="absolute top-2 right-2">
+                                <span class="px-3 py-1 rounded-full text-xs font-bold bg-white/20 text-white border border-white/30">
+                                    ${sale.jenisSampah}
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <a href="#" class="text-white/90 hover:text-white text-sm underline relative z-10">Selengkapnya</a>
+                    </div>
+                    
+                    {{-- Details Section --}}
+                    <div class="p-6">
+                        <div class="space-y-4 mb-6">
+                            <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                                <span class="text-gray-600 text-sm font-medium">Jenis Sampah:</span>
+                                <span class="text-gray-900 font-bold">${sale.jenisSampah}</span>
+                            </div>
+                            <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                                <span class="text-gray-600 text-sm font-medium">Name:</span>
+                                <span class="text-gray-900 font-bold">${sale.nasabah}</span>
+                            </div>
+                            <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                                <span class="text-gray-600 text-sm font-medium">Judul:</span>
+                                <span class="text-gray-900 font-bold">${sale.judulPenawaran}</span>
+                            </div>
+                            <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                                <span class="text-gray-600 text-sm font-medium">Lokasi:</span>
+                                <span class="text-gray-900 font-bold">${sale.lokasi}</span>
+                            </div>
+                            <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                                <span class="text-gray-600 text-sm font-medium">Quantity:</span>
+                                <span class="text-gray-900 font-bold text-lg">${sale.berat} Kg</span>
+                            </div>
+                            <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                                <span class="text-gray-600 text-sm font-medium">Total Harga:</span>
+                                <span class="text-gray-900 font-bold text-lg text-green-600">Rp ${sale.totalHarga.toLocaleString()}</span>
+                            </div>
+                        </div>
+                        
+                        {{-- Action Button --}}
+                        ${sale.status === 'Baru' ? `
+                        <button onclick="pickupLater('${sale.id}')" class="w-full pickup-button bg-gradient-to-r from-yellow-500 to-yellow-600 text-white py-4 rounded-xl hover:from-yellow-600 hover:to-yellow-700 transition-all duration-300 font-bold shadow-lg border-2 border-yellow-600">
+                            <i class="fas fa-clock mr-2"></i>Diambil Nanti
+                        </button>
+                        ` : `
+                        <button onclick="pickupCompleted('${sale.id}')" class="w-full pickup-button bg-gradient-to-r from-green-500 to-green-600 text-white py-4 rounded-xl hover:from-green-600 hover:to-green-700 transition-all duration-300 font-bold shadow-lg border-2 border-green-600">
+                            <i class="fas fa-check mr-2"></i>Sudah Diambil
+                        </button>
+                        `}
+                        
+                        {{-- Additional Action Buttons --}}
+                        <div class="flex gap-2 mt-3">
+                            <button onclick="viewWasteDetail('${sale.id}')" class="flex-1 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-colors font-bold border-2 border-blue-700 text-sm">
+                                <i class="fas fa-eye mr-1"></i>Detail
+                            </button>
+                            <button onclick="downloadReport('${sale.id}')" class="flex-1 bg-purple-600 text-white py-2 rounded-lg hover:bg-purple-700 transition-colors font-bold border-2 border-purple-700 text-sm">
+                                <i class="fas fa-download mr-1"></i>Laporan
+                            </button>
+                            <button onclick="openChat('${sale.id}')" class="flex-1 bg-teal-600 text-white py-2 rounded-lg hover:bg-teal-700 transition-colors font-bold border-2 border-teal-700 text-sm">
+                                <i class="fas fa-comment mr-1"></i>Chat
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+        
+        container.innerHTML = html;
+    }
+
+    // Event listener untuk sync data dengan halaman penjualan sampah
+    window.addEventListener('wasteSaleAdded', function(event) {
+        console.log('=== EVENT wasteSaleAdded DITERIMA ===');
+        console.log('Detail event:', event.detail);
+        console.log('Event type:', event.type);
+        
+        // Update tampilan data
+        console.log('Memanggil loadWasteSalesData...');
+        loadWasteSalesData();
+        
+        // Tampilkan notifikasi menggunakan Alpine.js store yang sudah ada
+        if (window.Alpine && window.Alpine.store && window.Alpine.store('notifications')) {
+            console.log('Menggunakan Alpine.js store untuk notifikasi');
+            window.Alpine.store('notifications').showNotification('Data penjualan sampah baru tersedia!', 'success');
+        } else {
+            console.log('Menggunakan fallback manual notification');
+            // Fallback: tampilkan notifikasi manual jika store tidak tersedia
+            showManualNotification('Data penjualan sampah baru tersedia!', 'success');
+        }
+    });
+
+    // Tambahan: Event listener untuk storage change (untuk sinkronisasi antar tab)
+    window.addEventListener('storage', function(event) {
+        console.log('=== STORAGE EVENT DITERIMA ===');
+        console.log('Key yang berubah:', event.key);
+        console.log('Value baru:', event.newValue);
+        
+        if (event.key === 'wasteSalesData') {
+            console.log('Data wasteSalesData berubah, reload tampilan...');
+            loadWasteSalesData();
+            showManualNotification('Data baru tersedia dari tab lain!', 'info');
+        }
+    });
+
+    // Tambahan: Polling untuk sinkronisasi data setiap 2 detik
+    setInterval(function() {
+        const currentData = JSON.parse(localStorage.getItem('wasteSalesData') || '[]');
+        const lastKnownData = window.lastKnownWasteData || [];
+        
+        if (JSON.stringify(currentData) !== JSON.stringify(lastKnownData)) {
+            console.log('Data berubah melalui polling, update tampilan...');
+            window.lastKnownWasteData = currentData;
+            loadWasteSalesData();
+        }
+    }, 2000);
+
+    // Force load data saat halaman dimuat
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('=== DOMContentLoaded EVENT ===');
+        console.log('Memanggil loadWasteSalesData dari DOMContentLoaded...');
+        loadWasteSalesData();
+        
+        // Tambahan: Force reload data setiap 5 detik untuk memastikan data muncul
+        setInterval(function() {
+            console.log('Force reload data setiap 5 detik...');
+            loadWasteSalesData();
+        }, 5000);
+    });
+
+    // Event listener saat halaman dimuat
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('=== DOMContentLoaded EVENT ===');
+        
+        // Tampilkan data penjualan sampah real
+        console.log('Memanggil loadWasteSalesData dari DOMContentLoaded...');
+        loadWasteSalesData();
+        
+        // Log jumlah data tersimpan
+        const storedData = JSON.parse(localStorage.getItem('wasteSalesData') || '[]');
+        console.log('Data penjualan sampah tersimpan:', storedData.length);
+        console.log('Detail data tersimpan:', storedData);
+        
+        // Test notifikasi untuk memastikan sistem notifikasi berfungsi
+        setTimeout(() => {
+            showManualNotification('Sistem notifikasi siap!', 'info');
+        }, 1000);
+    });
+
+    // Function untuk update status pickup
+    function pickupLater(id) {
+        const storedData = JSON.parse(localStorage.getItem('wasteSalesData') || '[]');
+        const saleIndex = storedData.findIndex(sale => sale.id === id);
+        
+        if (saleIndex !== -1) {
+            storedData[saleIndex].status = 'Diproses';
+            storedData[saleIndex].isNew = false;
+            localStorage.setItem('wasteSalesData', JSON.stringify(storedData));
+            loadWasteSalesData();
+            alert('Status berhasil diupdate: Diambil Nanti');
+        }
+    }
+
+    function pickupCompleted(id) {
+        const storedData = JSON.parse(localStorage.getItem('wasteSalesData') || '[]');
+        const saleIndex = storedData.findIndex(sale => sale.id === id);
+        
+        if (saleIndex !== -1) {
+            storedData[saleIndex].status = 'Selesai';
+            storedData[saleIndex].isNew = false;
+            localStorage.setItem('wasteSalesData', JSON.stringify(storedData));
+            loadWasteSalesData();
+            alert('Status berhasil diupdate: Sudah Diambil');
+        }
+    }
+
+    function viewWasteDetail(id) {
+        const storedData = JSON.parse(localStorage.getItem('wasteSalesData') || '[]');
+        const sale = storedData.find(sale => sale.id === id);
+        
+        if (sale) {
+            alert(`Detail Penjualan Sampah:\n\nInvoice: ${sale.id}\nNasabah: ${sale.nasabah}\nJenis: ${sale.jenisSampah}\nJudul: ${sale.judulPenawaran}\nDeskripsi: ${sale.deskripsi}\nBerat: ${sale.berat} kg\nHarga/kg: Rp ${sale.hargaPerKg.toLocaleString()}\nTotal: Rp ${sale.totalHarga.toLocaleString()}\nLokasi: ${sale.lokasi}\nTanggal: ${new Date(sale.tanggal).toLocaleDateString('id-ID')}\nStatus: ${sale.status}`);
+        }
+    }
+
+    function downloadReport(id) {
+        const storedData = JSON.parse(localStorage.getItem('wasteSalesData') || '[]');
+        const sale = storedData.find(sale => sale.id === id);
+        
+        if (sale) {
+            // Generate report content
+            const reportContent = `LAPORAN PENJUALAN SAMPAH\n\nInvoice: ${sale.id}\nNasabah: ${sale.nasabah}\nJenis Sampah: ${sale.jenisSampah}\nJudul Penawaran: ${sale.judulPenawaran}\nDeskripsi: ${sale.deskripsi}\nBerat: ${sale.berat} kg\nHarga per kg: Rp ${sale.hargaPerKg.toLocaleString()}\nTotal Harga: Rp ${sale.totalHarga.toLocaleString()}\nLokasi: ${sale.lokasi}\nTanggal: ${new Date(sale.tanggal).toLocaleDateString('id-ID')}\nStatus: ${sale.status}\n\nDicetak pada: ${new Date().toLocaleString('id-ID')}`;
+            
+            // Download as text file
+            const blob = new Blob([reportContent], { type: 'text/plain;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', `laporan_${sale.id}_${new Date().toISOString().split('T')[0]}.txt`);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+    }
+
+    function openChat(id) {
+        alert(`Chat untuk invoice ${id} akan dibuka...\n\nFitur chat sedang dalam pengembangan.`);
+    }
+
+    // Function untuk menampilkan notifikasi manual jika Alpine.js store tidak tersedia
+    function showManualNotification(message, type = 'info') {
+        // Buat elemen notifikasi
+        const notification = document.createElement('div');
+        notification.className = `fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg max-w-sm transform transition-all duration-300 translate-x-full`;
+        
+        // Set warna berdasarkan tipe
+        let bgColor, textColor, icon;
+        switch(type) {
+            case 'success':
+                bgColor = 'bg-green-500';
+                textColor = 'text-white';
+                icon = '✓';
+                break;
+            case 'error':
+                bgColor = 'bg-red-500';
+                textColor = 'text-white';
+                icon = '✗';
+                break;
+            case 'warning':
+                bgColor = 'bg-yellow-500';
+                textColor = 'text-white';
+                icon = '⚠';
+                break;
+            default:
+                bgColor = 'bg-blue-500';
+                textColor = 'text-white';
+                icon = 'ℹ';
+        }
+        
+        notification.className += ` ${bgColor} ${textColor}`;
+        
+        // Set konten
+        notification.innerHTML = `
+            <div class="flex items-center">
+                <span class="text-xl mr-2">${icon}</span>
+                <span class="font-medium">${message}</span>
+                <button onclick="this.parentElement.parentElement.remove()" class="ml-auto text-white/80 hover:text-white text-xl">×</button>
+            </div>
+        `;
+        
+        // Tambahkan ke body
+        document.body.appendChild(notification);
+        
+        // Animate masuk
+        setTimeout(() => {
+            notification.classList.remove('translate-x-full');
+        }, 100);
+        
+        // Auto remove setelah 5 detik
+        setTimeout(() => {
+            notification.classList.add('translate-x-full');
+            setTimeout(() => {
+                if (notification.parentElement) {
+                    notification.remove();
+                }
+            }, 300);
+        }, 5000);
+    }
+</script>
 @endsection

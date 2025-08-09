@@ -185,7 +185,7 @@
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
       gap: 20px;
-            margin-bottom: 60px;
+            margin-bottom: 80px;
     }
 
     .stat-card {
@@ -250,7 +250,8 @@
       border-radius: 12px;
             padding: 30px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            margin-top: 50px;
+            margin-top: 100px;
+      padding-top: 50px;
     }
 
     .table-header {
@@ -751,6 +752,9 @@
           </div>
         </div>
       </div>
+
+      <!-- Spacer untuk memberikan jarak -->
+      <div style="height: 60px;"></div>
 
       <div class="data-table-section">
         <div class="table-header">

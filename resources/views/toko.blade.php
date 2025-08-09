@@ -2,41 +2,163 @@
 
 @section('content')
 <style>
-    html, body {
+    html, body { 
+        overflow-x: hidden; 
+        margin: 0;
+        padding: 0;
+        scroll-behavior: smooth;
+    }
+    .sidebar-gradient { background: linear-gradient(135deg, #75E6DA 0%, #05445E 63%); }
+    .sidebar-hover { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+    .sidebar-item-hover { transition: all 0.2s ease-in-out; }
+    .sidebar-item-hover:hover { background-color: rgba(255, 255, 255, 0.2); }
+    .sidebar-logo { transition: all 0.3s ease-in-out; }
+    .sidebar-nav-item { transition: all 0.2s ease-in-out; border-radius: 8px; }
+    .sidebar-nav-item:hover { background-color: rgba(255, 255, 255, 0.1); }
+    .sidebar-nav-item.active { background-color: rgba(255, 255, 255, 0.2); box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); }
+    .fixed-header {
+        position: fixed; top: 0; left: 0; right: 0; height: 48px; z-index: 40;
+        display: flex; align-items: center; justify-content: space-between; 
+        padding: 0 1.5rem; background: linear-gradient(135deg, #75E6DA 0%, #05445E 63%);
+        transition: padding-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .main-content-wrapper {
+        min-height: 100vh;
+        background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #f1f5f9 100%);
+        padding-top: 30px; 
+        padding-left: 2rem; 
+        padding-right: 0;
+        transition: padding-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative; 
         overflow-x: hidden;
+        width: 100%;
+        scroll-behavior: smooth;
     }
-    .sidebar-gradient {
-        background: var(--sidebar-gradient);
+    .content-container { 
+        width: 100%; 
+        margin: 0; 
+        padding: 2rem; 
+        position: relative; 
+        z-index: 1; 
+        box-sizing: border-box;
+        scroll-behavior: smooth;
     }
-    .sidebar-hover {
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    .sidebar-overlay {
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0, 0, 0, 0.5); z-index: 45; opacity: 0; visibility: hidden;
+        transition: all 0.3s ease;
     }
-    .sidebar-item-hover {
-        transition: all 0.2s ease-in-out;
+    .sidebar-overlay.active { opacity: 1; visibility: visible; }
+    
+    .text-highlight {
+        color: #75E6DA;
     }
-    .sidebar-item-hover:hover {
-        background-color: rgba(255, 255, 255, 0.2);
+    
+    .btn-primary {
+        background: linear-gradient(135deg, #10B981, #059669);
+        color: white;
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
     }
-    .sidebar-logo {
-        transition: all 0.3s ease-in-out;
+    
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
     }
-    .sidebar-nav-item {
-        transition: all 0.2s ease-in-out;
-        border-radius: 8px;
+    
+    .btn-secondary {
+        background: linear-gradient(135deg, #05445E, #043a4e);
+        color: white;
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+        box-shadow: 0 4px 12px rgba(5, 68, 94, 0.3);
     }
-    .sidebar-nav-item:hover {
-        background-color: rgba(255, 255, 255, 0.1);
+    
+    .btn-secondary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(5, 68, 94, 0.4);
     }
-    .sidebar-nav-item.active {
-        background-color: rgba(255, 255, 255, 0.2);
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+    .stat-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(15px);
+        border-radius: 16px;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
     }
+
+    .stat-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+    }
+
+    .activity-card {
+        background: rgba(255, 255, 255, 0.9);
+        backdrop-filter: blur(10px);
+        border-radius: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        transition: all 0.3s ease;
+    }
+
+    .activity-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    }
+
+    .quick-action-btn {
+        background: linear-gradient(135deg, #75E6DA, #05445E);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        padding: 1rem;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        box-shadow: 0 4px 12px rgba(117, 230, 218, 0.3);
+    }
+
+    .quick-action-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(117, 230, 218, 0.4);
+    }
+
+    .progress-bar {
+        background: linear-gradient(90deg, #75E6DA, #05445E);
+        height: 8px;
+        border-radius: 4px;
+        transition: width 0.3s ease;
+    }
+
+    .chart-container {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(15px);
+        border-radius: 16px;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    }
+    
+    /* Responsive fixes */
+    @media (max-width: 1024px) {
+        .main-content-wrapper { padding-left: 1rem; padding-right: 1rem; }
+        .content-container { padding: 1.5rem; }
+    }
+    @media (max-width: 768px) {
+        .main-content-wrapper { padding-left: 0.5rem; padding-right: 0.5rem; }
+        .content-container { padding: 1rem; }
+    }
+
+    /* Toko specific styles */
     .toko-card {
-        background: var(--bg-primary) !important;
+        background: rgba(255, 255, 255, 0.95) !important;
         border-radius: 16px;
         box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-        border: 1px solid var(--border-primary) !important;
-        color: var(--text-primary) !important;
+        border: 1px solid rgba(255, 255, 255, 0.3) !important;
+        color: #1f2937 !important;
         transition: all 0.3s ease;
         backdrop-filter: blur(10px);
     }
@@ -64,27 +186,6 @@
     }
     .stats-card:hover {
         transform: translateY(-4px);
-        box-shadow: 0 12px 32px rgba(117, 230, 218, 0.4);
-    }
-    .stats-card:nth-child(2) {
-        background: linear-gradient(135deg, #75E6DA 0%, #05445E 63%);
-        box-shadow: 0 8px 32px rgba(117, 230, 218, 0.3);
-    }
-    .stats-card:nth-child(2):hover {
-        box-shadow: 0 12px 32px rgba(117, 230, 218, 0.4);
-    }
-    .stats-card:nth-child(3) {
-        background: linear-gradient(135deg, #75E6DA 0%, #05445E 63%);
-        box-shadow: 0 8px 32px rgba(117, 230, 218, 0.3);
-    }
-    .stats-card:nth-child(3):hover {
-        box-shadow: 0 12px 32px rgba(117, 230, 218, 0.4);
-    }
-    .stats-card:nth-child(4) {
-        background: linear-gradient(135deg, #75E6DA 0%, #05445E 63%);
-        box-shadow: 0 8px 32px rgba(117, 230, 218, 0.3);
-    }
-    .stats-card:nth-child(4):hover {
         box-shadow: 0 12px 32px rgba(117, 230, 218, 0.4);
     }
     .action-button {
@@ -180,38 +281,6 @@
         width: 24px;
         height: 24px;
     }
-    .fixed-header {
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 48px;
-        z-index: 40;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding-right: 1.5rem;
-        background: var(--sidebar-gradient) !important;
-        transition: padding-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    
-    /* Dark theme overrides for toko page */
-    .dark .text-gray-900 { color: var(--text-primary) !important; }
-    .dark .text-gray-600 { color: var(--text-secondary) !important; }
-    .dark .text-gray-500 { color: var(--text-muted) !important; }
-    .dark .border-gray-100 { border-color: var(--border-primary) !important; }
-    .dark .border-gray-300 { border-color: var(--border-secondary) !important; }
-    .dark .bg-gray-50 { background-color: var(--bg-secondary) !important; }
-    .dark .bg-white { background-color: var(--bg-primary) !important; }
-    
-    /* Ensure all text elements use theme colors */
-    .text-gray-900 { color: var(--text-primary) !important; }
-    .text-gray-600 { color: var(--text-secondary) !important; }
-    .text-gray-500 { color: var(--text-muted) !important; }
-    .border-gray-100 { border-color: var(--border-primary) !important; }
-    .border-gray-300 { border-color: var(--border-secondary) !important; }
-    .bg-gray-50 { background-color: var(--bg-secondary) !important; }
-    .bg-white { background-color: var(--bg-primary) !important; }
     
     /* Animations */
     @keyframes fadeInUp {
@@ -239,14 +308,18 @@
         animation: pulse 3s infinite;
     }
 </style>
-<div class="flex min-h-screen" style="background-color: var(--bg-secondary);" x-data="tokoApp()" x-init="init()">
+
+<div class="flex min-h-screen bg-gray-50" x-data="{ sidebarOpen: false }">
+    {{-- Sidebar Overlay --}}
+    <div class="sidebar-overlay" :class="{ 'active': sidebarOpen }" @click="sidebarOpen = false"></div>
+
     {{-- Sidebar --}}
     <aside
         x-data="{ open: false, active: 'toko' }"
         x-ref="sidebar"
         @mouseenter="open = true; $root.sidebarOpen = true"
         @mouseleave="open = false; $root.sidebarOpen = false"
-        class="fixed top-0 left-0 z-20 flex flex-col py-6 sidebar-hover overflow-hidden shadow-2xl group sidebar-gradient"
+        class="fixed top-0 left-0 z-50 flex flex-col py-6 sidebar-hover overflow-hidden shadow-2xl group sidebar-gradient"
         :class="open ? 'w-64' : 'w-16'"
         style="transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1); margin-top: 48px; height: calc(100vh - 48px);"
     >
@@ -260,55 +333,55 @@
             {{-- Navigation Menu --}}
             <nav class="flex flex-col gap-2 w-full flex-1">
                 {{-- Dashboard Link --}}
-                <a href="{{ route('dashboard') }}" class="flex items-center gap-3 p-3 font-medium sidebar-nav-item whitespace-nowrap w-full" :class="open ? (active === 'dashboard' ? 'active text-white' : 'text-white') : (active === 'dashboard' ? 'active text-white justify-center' : 'text-white justify-center')">
+                <a href="/dashboard" class="flex items-center gap-3 p-3 font-medium sidebar-nav-item whitespace-nowrap w-full" :class="open ? (active === 'dashboard' ? 'active text-white' : 'text-white') : (active === 'dashboard' ? 'active text-white justify-center' : 'text-white justify-center')">
                     <i class="fas fa-home text-lg"></i>
                     <span x-show="open" class="text-sm font-medium">Dashboard</span>
                 </a>
                 
                 {{-- Bank Sampah Link --}}
-                <a href="{{ route('bank-sampah') }}" class="flex items-center gap-3 p-3 rounded-lg sidebar-item-hover whitespace-nowrap w-full" :class="open ? (active === 'bank-sampah' ? 'bg-white/20 text-white shadow-lg' : 'hover:bg-white/20 text-white') : (active === 'bank-sampah' ? 'bg-white/20 text-white justify-center' : 'hover:bg-white/20 text-white justify-center')">
+                <a href="/bank-sampah" class="flex items-center gap-3 p-3 rounded-lg sidebar-item-hover whitespace-nowrap w-full" :class="open ? (active === 'bank-sampah' ? 'bg-white/20 text-white shadow-lg' : 'hover:bg-white/20 text-white') : (active === 'bank-sampah' ? 'bg-white/20 text-white justify-center' : 'hover:bg-white/20 text-white justify-center')">
                     <i class="fas fa-tachometer-alt text-lg"></i>
                     <span x-show="open" class="text-sm font-medium">Bank Sampah</span>
                 </a>
                 
                 {{-- Toko Link --}}
-                <a href="{{ route('toko') }}" class="flex items-center gap-3 p-3 rounded-lg sidebar-item-hover whitespace-nowrap w-full" :class="open ? (active === 'toko' ? 'bg-white/20 text-white shadow-lg' : 'hover:bg-white/20 text-white') : (active === 'toko' ? 'bg-white/20 text-white justify-center' : 'hover:bg-white/20 text-white justify-center')">
+                <a href="/toko" class="flex items-center gap-3 p-3 rounded-lg sidebar-item-hover whitespace-nowrap w-full" :class="open ? (active === 'toko' ? 'bg-white/20 text-white shadow-lg' : 'hover:bg-white/20 text-white') : (active === 'toko' ? 'bg-white/20 text-white justify-center' : 'hover:bg-white/20 text-white justify-center')">
                     <i class="fas fa-store text-lg"></i>
                     <span x-show="open" class="text-sm font-medium">Toko</span>
                 </a>
                 
                 {{-- Komunitas Link --}}
-                <a href="{{ route('komunitas') }}" class="flex items-center gap-3 p-3 rounded-lg sidebar-item-hover whitespace-nowrap w-full" :class="open ? (active === 'komunitas' ? 'bg-white/20 text-white shadow-lg' : 'hover:bg-white/20 text-white') : (active === 'komunitas' ? 'bg-white/20 text-white justify-center' : 'hover:bg-white/20 text-white justify-center')">
+                <a href="/komunitas" class="flex items-center gap-3 p-3 rounded-lg sidebar-item-hover whitespace-nowrap w-full" :class="open ? (active === 'komunitas' ? 'bg-white/20 text-white shadow-lg' : 'hover:bg-white/20 text-white') : (active === 'komunitas' ? 'bg-white/20 text-white justify-center' : 'hover:bg-white/20 text-white justify-center')">
                     <i class="fas fa-users text-lg"></i>
                     <span x-show="open" class="text-sm font-medium">Komunitas</span>
                 </a>
                 
                 {{-- Berita Link --}}
-                <a href="{{ route('berita') }}" class="flex items-center gap-3 p-3 rounded-lg sidebar-item-hover whitespace-nowrap w-full" :class="open ? (active === 'berita' ? 'bg-white/20 text-white shadow-lg' : 'hover:bg-white/20 text-white') : (active === 'berita' ? 'bg-white/20 text-white justify-center' : 'hover:bg-white/20 text-white justify-center')">
+                <a href="/berita" class="flex items-center gap-3 p-3 rounded-lg sidebar-item-hover whitespace-nowrap w-full" :class="open ? (active === 'berita' ? 'bg-white/20 text-white shadow-lg' : 'hover:bg-white/20 text-white') : (active === 'berita' ? 'bg-white/20 text-white justify-center' : 'hover:bg-white/20 text-white justify-center')">
                     <i class="fas fa-newspaper text-lg"></i>
                     <span x-show="open" class="text-sm font-medium">Berita</span>
                 </a>
                 
                 {{-- Keuangan Link --}}
-                <a href="{{ route('keuangan') }}" class="flex items-center gap-3 p-3 rounded-lg sidebar-item-hover whitespace-nowrap w-full" :class="open ? (active === 'keuangan' ? 'bg-white/20 text-white shadow-lg' : 'hover:bg-white/20 text-white') : (active === 'keuangan' ? 'bg-white/20 text-white justify-center' : 'hover:bg-white/20 text-white justify-center')">
+                <a href="/keuangan" class="flex items-center gap-3 p-3 rounded-lg sidebar-item-hover whitespace-nowrap w-full" :class="open ? (active === 'keuangan' ? 'bg-white/20 text-white shadow-lg' : 'hover:bg-white/20 text-white') : (active === 'keuangan' ? 'bg-white/20 text-white justify-center' : 'hover:bg-white/20 text-white justify-center')">
                     <i class="fas fa-file-invoice-dollar text-lg"></i>
                     <span x-show="open" class="text-sm font-medium">Keuangan</span>
                 </a>
                 
                 {{-- Pesan Link --}}
-                <a href="{{ route('chat') }}" class="flex items-center gap-3 p-3 rounded-lg sidebar-item-hover whitespace-nowrap w-full" :class="open ? (active === 'chat' ? 'bg-white/20 text-white shadow-lg' : 'hover:bg-white/20 text-white') : (active === 'pesan' ? 'bg-white/20 text-white justify-center' : 'hover:bg-white/20 text-white justify-center')">
+                <a href="/chat" class="flex items-center gap-3 p-3 rounded-lg sidebar-item-hover whitespace-nowrap w-full" :class="open ? (active === 'chat' ? 'bg-white/20 text-white shadow-lg' : 'hover:bg-white/20 text-white') : (active === 'chat' ? 'bg-white/20 text-white justify-center' : 'hover:bg-white/20 text-white justify-center')">
                     <i class="fas fa-comment-dots text-lg"></i>
                     <span x-show="open" class="text-sm font-medium">Pesan</span>
                 </a>
                 
                 {{-- Umpan Balik Link --}}
-                <a href="{{ route('feedback') }}" class="flex items-center gap-3 p-3 rounded-lg sidebar-item-hover whitespace-nowrap w-full" :class="open ? (active === 'feedback' ? 'bg-white/20 text-white shadow-lg' : 'hover:bg-white/20 text-white') : (active === 'umpan-balik' ? 'bg-white/20 text-white justify-center' : 'hover:bg-white/20 text-white justify-center')">
+                <a href="/feedback" class="flex items-center gap-3 p-3 rounded-lg sidebar-item-hover whitespace-nowrap w-full" :class="open ? (active === 'feedback' ? 'bg-white/20 text-white shadow-lg' : 'hover:bg-white/20 text-white') : (active === 'feedback' ? 'bg-white/20 text-white justify-center' : 'hover:bg-white/20 text-white justify-center')">
                     <i class="fas fa-info-circle text-lg"></i>
                     <span x-show="open" class="text-sm font-medium">Umpan Balik</span>
                 </a>
                 
                 {{-- Settings Link --}}
-                <a href="{{ route('settings') }}" class="flex items-center gap-3 p-3 rounded-lg sidebar-item-hover whitespace-nowrap w-full" :class="open ? (active === 'settings' ? 'bg-white/20 text-white shadow-lg' : 'hover:bg-white/20 text-white') : (active === 'settings' ? 'bg-white/20 text-white justify-center' : 'hover:bg-white/20 text-white justify-center')">
+                <a href="/settings" class="flex items-center gap-3 p-3 rounded-lg sidebar-item-hover whitespace-nowrap w-full" :class="open ? (active === 'settings' ? 'bg-white/20 text-white shadow-lg' : 'hover:bg-white/20 text-white') : (active === 'settings' ? 'bg-white/20 text-white justify-center' : 'hover:bg-white/20 text-white justify-center')">
                     <i class="fas fa-cog text-lg"></i>
                     <span x-show="open" class="text-sm font-medium">Settings</span>
                 </a>
@@ -316,29 +389,29 @@
             
             {{-- Logout Section --}}
             <div class="w-full flex items-center py-3 mt-auto">
-                <a href="{{ route('logout') }}" class="flex items-center gap-3 p-3 rounded-lg sidebar-item-hover text-white hover:text-red-300 transition-all duration-200 w-full whitespace-nowrap" :class="open ? (active === 'logout' ? 'bg-white/20 text-white shadow-lg' : 'hover:bg-white/20 text-white') : (active === 'logout' ? 'bg-white/20 text-white justify-center' : 'hover:bg-white/20 text-white justify-center')">
+                <a href="/logout" class="flex items-center gap-3 p-3 rounded-lg sidebar-item-hover text-white hover:text-red-300 transition-all duration-200 w-full whitespace-nowrap" :class="open ? (active === 'logout' ? 'bg-white/20 text-white shadow-lg' : 'hover:bg-white/20 text-white') : (active === 'logout' ? 'bg-white/20 text-white justify-center' : 'hover:bg-white/20 text-white justify-center')">
                     <i class="fas fa-sign-out-alt text-lg"></i>
                     <span x-show="open" class="text-sm font-medium">Logout</span>
                 </a>
             </div>
         </div>
     </aside>
-    
+
     {{-- Main Content Area --}}
-    <div class="flex-1 min-h-screen" style="background-color: var(--bg-primary);" :style="'padding-left:' + (sidebarOpen ? '16rem' : '4rem') + '; transition: padding-left 0.3s cubic-bezier(0.4,0,0.2,1);'">
+    <div class="main-content-wrapper">
         {{-- Top Header Bar --}}
-        <div class="fixed-header" :style="'padding-left:' + (sidebarOpen ? '16rem' : '4rem') + ';'">
+        <div class="fixed-header">
             <h1 class="text-white font-semibold text-lg">BijakSampah</h1>
             <div class="flex items-center gap-4">
-                <button onclick="openModal('notificationModal')" class="relative">
+                <a href="/notifikasi" class="relative">
                     <i class="far fa-bell text-white text-sm"></i>
                     <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center font-medium">3</span>
-                </button>
+                </a>
                 <button class="focus:outline-none">
                     <i class="fas fa-search text-white text-sm"></i>
                 </button>
                 <div class="flex items-center gap-2">
-                    <a href="{{ route('profile') }}" class="w-8 h-8 rounded-full overflow-hidden flex items-center justify-center border-2 border-gray-300">
+                    <a href="/profile" class="w-8 h-8 rounded-full overflow-hidden flex items-center justify-center border-2 border-gray-300">
                         <img src="{{ asset('asset/img/user_profile.jpg') }}" alt="Profile" class="w-full h-full object-cover">
                     </a>
                     <i class="fas fa-chevron-down text-white text-xs"></i>
@@ -346,68 +419,69 @@
             </div>
         </div>
         
-        {{-- Main Content --}}
-        <div class="p-8 w-full" style="padding-top: 60px;">
+        {{-- Content Container --}}
+        <div class="content-container">
             {{-- Toko Title --}}
-            <div class="mb-8">
-                <h1 class="text-3xl font-bold text-gray-900">Dashboard Toko UMKM</h1>
-                <p class="text-gray-600 mt-2">Kelola produk, pesanan, dan bisnis UMKM Anda</p>
+            <div class="mb-8 text-content">
+                <h1 class="text-4xl font-bold text-gray-900 mb-2">Dashboard Toko UMKM 🏪</h1>
+                <p class="text-gray-600 text-lg">Kelola produk, pesanan, dan bisnis UMKM Anda dengan mudah</p>
             </div>
-        <!-- Stats Cards -->
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-            <div class="stats-card p-6 animate-fade-in-up" style="animation-delay: 0.1s;">
-                <div class="flex items-center relative z-10">
-                    <div class="p-3 rounded-full bg-white/20 backdrop-blur-sm">
-                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
-                        </svg>
+
+            <!-- Stats Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                <div class="stats-card p-6 animate-fade-in-up" style="animation-delay: 0.1s;">
+                    <div class="flex items-center relative z-10">
+                        <div class="p-3 rounded-full bg-white/20 backdrop-blur-sm">
+                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+                            </svg>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-sm font-medium text-white/80">Total Produk</p>
+                            <p class="text-2xl font-bold text-white">24</p>
+                        </div>
                     </div>
-                    <div class="ml-4">
-                        <p class="text-sm font-medium text-white/80">Total Produk</p>
-                        <p class="text-2xl font-bold text-white">24</p>
+                </div>
+                <div class="stats-card p-6 animate-fade-in-up" style="animation-delay: 0.2s;">
+                    <div class="flex items-center relative z-10">
+                        <div class="p-3 rounded-full bg-white/20 backdrop-blur-sm">
+                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-sm font-medium text-white/80">Pesanan Hari Ini</p>
+                            <p class="text-2xl font-bold text-white">8</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="stats-card p-6 animate-fade-in-up" style="animation-delay: 0.3s;">
+                    <div class="flex items-center relative z-10">
+                        <div class="p-3 rounded-full bg-white/20 backdrop-blur-sm">
+                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
+                            </svg>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-sm font-medium text-white/80">Pendapatan Bulan</p>
+                            <p class="text-2xl font-bold text-white">Rp 2.4M</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="stats-card p-6 animate-fade-in-up" style="animation-delay: 0.4s;">
+                    <div class="flex items-center relative z-10">
+                        <div class="p-3 rounded-full bg-white/20 backdrop-blur-sm">
+                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                            </svg>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-sm font-medium text-white/80">Pelanggan Aktif</p>
+                            <p class="text-2xl font-bold text-white">156</p>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="stats-card p-6 animate-fade-in-up" style="animation-delay: 0.2s;">
-                <div class="flex items-center relative z-10">
-                    <div class="p-3 rounded-full bg-white/20 backdrop-blur-sm">
-                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                        </svg>
-                    </div>
-                    <div class="ml-4">
-                        <p class="text-sm font-medium text-white/80">Pesanan Hari Ini</p>
-                        <p class="text-2xl font-bold text-white">8</p>
-                    </div>
-                </div>
-            </div>
-            <div class="stats-card p-6 animate-fade-in-up" style="animation-delay: 0.3s;">
-                <div class="flex items-center relative z-10">
-                    <div class="p-3 rounded-full bg-white/20 backdrop-blur-sm">
-                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
-                        </svg>
-                    </div>
-                    <div class="ml-4">
-                        <p class="text-sm font-medium text-white/80">Pendapatan Bulan</p>
-                        <p class="text-2xl font-bold text-white">Rp 2.4M</p>
-                    </div>
-                </div>
-            </div>
-            <div class="stats-card p-6 animate-fade-in-up" style="animation-delay: 0.4s;">
-                <div class="flex items-center relative z-10">
-                    <div class="p-3 rounded-full bg-white/20 backdrop-blur-sm">
-                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
-                        </svg>
-                    </div>
-                    <div class="ml-4">
-                        <p class="text-sm font-medium text-white/80">Pelanggan Aktif</p>
-                        <p class="text-2xl font-bold text-white">156</p>
-                    </div>
-                </div>
-            </div>
-        </div>
 
         <!-- Action Buttons -->
         <div class="flex flex-wrap gap-4 mb-8">
@@ -1072,15 +1146,37 @@
 </div>
 
 <script>
-function tokoApp() {
-    return {
-        sidebarOpen: false,
-        init() {
-            // Initialize sidebar state
-            this.sidebarOpen = false;
+// Sidebar functionality
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize sidebar state
+    window.sidebarOpen = false;
+    
+    // Add click event listeners for existing product cards
+    const existingProductCards = document.querySelectorAll('.product-card');
+    existingProductCards.forEach(card => {
+        const editButton = card.querySelector('button[onclick*="editProduct"]');
+        const deleteButton = card.querySelector('button[onclick*="deleteProduct"]');
+        
+        if (editButton) {
+            editButton.addEventListener('click', function(e) {
+                e.preventDefault();
+                const productId = this.getAttribute('onclick').match(/\d+/)[0];
+                editProduct(productId);
+            });
         }
-    };
-}
+        
+        if (deleteButton) {
+            deleteButton.addEventListener('click', function(e) {
+                e.preventDefault();
+                const productId = this.getAttribute('onclick').match(/\d+/)[0];
+                deleteProduct(productId);
+            });
+        }
+    });
+    
+    // Initialize product stats on page load
+    updateProductStats();
+});
 
 function openModal(modalId) {
     document.getElementById(modalId).classList.remove('hidden');
@@ -1538,105 +1634,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-function confirmPayment(paymentId) {
-    if (confirm('Apakah Anda yakin ingin mengkonfirmasi pembayaran ini?')) {
-        const paymentCard = document.querySelector(`[data-payment-id="${paymentId}"]`);
-        if (paymentCard) {
-            // Update status
-            paymentCard.setAttribute('data-status', 'confirmed');
-            const statusBadge = paymentCard.querySelector('span');
-            statusBadge.className = 'bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-full';
-            statusBadge.textContent = 'Dikonfirmasi';
-            
-            // Disable buttons
-            const buttons = paymentCard.querySelectorAll('button');
-            buttons.forEach(button => {
-                button.disabled = true;
-                button.className = 'flex-1 bg-gray-400 text-white py-2 px-4 rounded-md cursor-not-allowed';
-                button.textContent = 'Sudah Dikonfirmasi';
-            });
-            
-            // Update total count
-            updatePaymentCount();
-            showNotification('Pembayaran berhasil dikonfirmasi!', 'success');
-        }
-    }
-}
-
-function rejectPayment(paymentId) {
-    const reason = prompt('Alasan penolakan pembayaran:');
-    if (reason !== null) {
-        const paymentCard = document.querySelector(`[data-payment-id="${paymentId}"]`);
-        if (paymentCard) {
-            // Update status
-            paymentCard.setAttribute('data-status', 'rejected');
-            const statusBadge = paymentCard.querySelector('span');
-            statusBadge.className = 'bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded-full';
-            statusBadge.textContent = 'Ditolak';
-            
-            // Disable buttons
-            const buttons = paymentCard.querySelectorAll('button');
-            buttons.forEach(button => {
-                button.disabled = true;
-                button.className = 'flex-1 bg-gray-400 text-white py-2 px-4 rounded-md cursor-not-allowed';
-                button.textContent = 'Sudah Ditolak';
-            });
-            
-            // Add rejection reason
-            const reasonDiv = document.createElement('div');
-            reasonDiv.className = 'mt-2 p-2 bg-red-50 border border-red-200 rounded text-sm';
-            reasonDiv.innerHTML = `<strong>Alasan penolakan:</strong> ${reason}`;
-            paymentCard.appendChild(reasonDiv);
-            
-            // Update total count
-            updatePaymentCount();
-            showNotification('Pembayaran ditolak!', 'error');
-        }
-    }
-}
-
-function updatePaymentCount() {
-    const totalPayments = document.querySelectorAll('[data-payment-id]').length;
-    const pendingPayments = document.querySelectorAll('[data-status="pending"]').length;
-    const confirmedPayments = document.querySelectorAll('[data-status="confirmed"]').length;
-    const rejectedPayments = document.querySelectorAll('[data-status="rejected"]').length;
-    
-    document.getElementById('totalPayments').textContent = totalPayments;
-    
-    // Update filter options
-    const filterSelect = document.getElementById('paymentFilter');
-    if (filterSelect) {
-        const currentValue = filterSelect.value;
-        filterSelect.innerHTML = `
-            <option value="">Semua Status (${totalPayments})</option>
-            <option value="pending">Menunggu Konfirmasi (${pendingPayments})</option>
-            <option value="confirmed">Dikonfirmasi (${confirmedPayments})</option>
-            <option value="rejected">Ditolak (${rejectedPayments})</option>
-        `;
-        filterSelect.value = currentValue;
-    }
-}
-
-// Filter payments by status
-document.addEventListener('DOMContentLoaded', function() {
-    const paymentFilter = document.getElementById('paymentFilter');
-    if (paymentFilter) {
-        paymentFilter.addEventListener('change', function() {
-            const selectedStatus = this.value;
-            const paymentCards = document.querySelectorAll('[data-payment-id]');
-            
-            paymentCards.forEach(card => {
-                const cardStatus = card.getAttribute('data-status');
-                if (selectedStatus === '' || cardStatus === selectedStatus) {
-                    card.style.display = 'block';
-                } else {
-                    card.style.display = 'none';
-                }
-            });
-        });
-    }
-});
-
 // Close modal when clicking outside
 document.addEventListener('click', function(event) {
     if (event.target.classList.contains('fixed')) {
@@ -1671,5 +1668,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 });
+
 </script>
 @endsection
